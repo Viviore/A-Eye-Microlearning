@@ -526,7 +526,7 @@ export default function Level3Page() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-sm backdrop-blur-sm relative overflow-hidden space-y-6"
+            className="bg-zinc-900/60 border border-zinc-800 p-6 md:p-8 rounded-sm backdrop-blur-sm relative overflow-hidden space-y-6 shadow-2xl"
           >
             {/* Timer UI */}
             <div className={`absolute top-0 right-0 p-4 flex items-center gap-2 font-mono text-xl ${timeLeft <= 10 && !isTimeUp ? 'text-red-500 animate-pulse' : 'text-zinc-400'}`}>
@@ -535,37 +535,37 @@ export default function Level3Page() {
             </div>
 
             <div>
-              <h2 className="text-xl font-bold font-heading uppercase tracking-wide text-zinc-100 flex items-center gap-2">
-                <Video className="w-5 h-5 text-emerald-400" /> Case 003 Investigation
+              <h2 className="text-xl md:text-2xl font-bold font-heading uppercase tracking-wide text-zinc-100 flex items-center gap-2.5">
+                <Video className="w-6 h-6 text-emerald-400" /> Case 003 Report
               </h2>
-              <p className="text-zinc-400 text-xs mt-1 leading-relaxed">
+              <p className="text-sm text-zinc-300 mt-1.5 leading-relaxed font-sans">
                 Analyze temporal video streams across 3 difficulty rounds and establish your forensic verdict.
               </p>
             </div>
 
             {/* 3-Round Progress Tracker */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs font-mono uppercase tracking-widest text-zinc-400">
-                <span>Rounds Progress</span>
-                <span className="text-emerald-400 font-bold">Round {currentRoundIndex + 1} of 3</span>
+              <div className="flex justify-between items-center text-sm font-mono uppercase">
+                <span className="text-zinc-300 font-medium">Rounds Progress</span>
+                <span className="text-emerald-400 font-bold text-base">Round {currentRoundIndex + 1} of 3</span>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2.5">
                 {VIDEO_ROUNDS.map((r, idx) => {
                   const isCurrent = currentRoundIndex === idx;
                   const isPassed = currentRoundIndex > idx;
                   return (
                     <div
                       key={r.round}
-                      className={`p-2 border text-center rounded-sm transition-all ${
+                      className={`p-2.5 border text-center rounded-sm transition-all ${
                         isCurrent
-                          ? "bg-emerald-950/60 border-emerald-500 text-emerald-300 font-bold"
+                          ? "bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold"
                           : isPassed
-                          ? "bg-zinc-900/80 border-emerald-900/50 text-emerald-500"
-                          : "bg-zinc-950 border-zinc-850 text-zinc-600"
+                          ? "bg-zinc-900/80 border-emerald-900/50 text-emerald-400"
+                          : "bg-zinc-950 border-zinc-850 text-zinc-500"
                       }`}
                     >
-                      <div className="text-[10px] font-mono uppercase">Round {r.round}</div>
-                      <div className="text-[9px] truncate">{r.difficulty}</div>
+                      <div className="text-xs font-mono font-bold uppercase">Round {r.round}</div>
+                      <div className="text-[10px] font-mono truncate">{r.difficulty}</div>
                     </div>
                   );
                 })}
@@ -575,11 +575,11 @@ export default function Level3Page() {
             {/* Round-Specific Video Identification */}
             <div className="space-y-3 pt-2 border-t border-zinc-800">
               <div className="flex justify-between items-center">
-                <h3 className="text-xs font-bold text-zinc-200 uppercase tracking-widest">
+                <h3 className="text-sm md:text-base font-bold text-zinc-100 uppercase tracking-wider">
                   1. Round {currentRoundIndex + 1} Identification ({currentRoundConfig.difficulty})
                 </h3>
               </div>
-              <div className="grid grid-cols-1 gap-2">
+              <div className="grid grid-cols-1 gap-2.5">
                 {[
                   { key: "Video Source B is AI", label: "🔴 Video Source B contains Deepfake Artifacts" },
                   { key: "Video Source A is AI", label: "🔴 Video Source A contains Deepfake Artifacts" },
@@ -595,10 +595,10 @@ export default function Level3Page() {
                         if (v.key.includes("Source B")) handleSelectVideoEvidence("Video Source B");
                         else if (v.key.includes("Source A")) handleSelectVideoEvidence("Video Source A");
                       }}
-                      className={`p-3 border text-left text-xs font-bold transition-all ${
+                      className={`p-4 border text-left text-sm md:text-base font-bold transition-all rounded-sm font-sans ${
                         isSelected
-                          ? "bg-emerald-950/60 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-950/40"
-                          : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                          ? "bg-emerald-950/80 border-emerald-500 text-emerald-200 shadow-md shadow-emerald-950/40"
+                          : "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100"
                       }`}
                     >
                       {v.label}
@@ -611,10 +611,10 @@ export default function Level3Page() {
             {/* Certainty Calibration */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <h3 className="text-xs font-bold text-zinc-200 uppercase tracking-widest">
+                <h3 className="text-sm md:text-base font-bold text-zinc-100 uppercase tracking-wider">
                   2. Certainty Calibration
                 </h3>
-                <span className="font-mono text-emerald-400 font-bold text-sm">{confidenceScore[0]}%</span>
+                <span className="font-mono text-emerald-400 font-bold text-base md:text-lg">{confidenceScore[0]}%</span>
               </div>
               <Slider
                 defaultValue={[70]}
@@ -622,9 +622,9 @@ export default function Level3Page() {
                 step={5}
                 value={confidenceScore}
                 onValueChange={(val) => setConfidenceScore(Array.isArray(val) ? [...val] : [Number(val)])}
-                className="mb-1"
+                className="mb-2"
               />
-              <div className="flex justify-between text-[10px] font-mono text-zinc-500 uppercase mt-1">
+              <div className="flex justify-between text-xs md:text-sm font-mono text-zinc-300 font-medium uppercase mt-2">
                 <span>🤔 Just Guessing (0%)</span>
                 <span>⚖️ Moderately Sure (50%)</span>
                 <span>🎯 100% Certain</span>
@@ -635,17 +635,17 @@ export default function Level3Page() {
             {currentRoundIndex < VIDEO_ROUNDS.length - 1 ? (
               <Button
                 onClick={handleNextRound}
-                className="w-full h-14 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700"
+                className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 font-bold text-base md:text-lg shadow-lg"
               >
-                Lock Round {currentRoundIndex + 1} & Advance to Round {currentRoundIndex + 2} <ChevronRight className="ml-2 w-4 h-4" />
+                Lock Round {currentRoundIndex + 1} & Advance to Round {currentRoundIndex + 2} <ChevronRight className="ml-2 w-5 h-5" />
               </Button>
             ) : (
               <Button
                 onClick={handleSubmitFinalReport}
                 disabled={!selectedVerdict}
-                className="w-full h-14 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 disabled:opacity-50"
+                className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 disabled:opacity-50 font-bold text-base md:text-lg shadow-lg"
               >
-                Submit Case 003 Final Report 🚀
+                Submit Case 003 Report 🚀
               </Button>
             )}
           </motion.div>

@@ -1,4 +1,4 @@
-# A-Eye — Architecture
+# A-Eye — System & Game Architecture
 
 ## Project Vision
 
@@ -18,346 +18,112 @@ The objective is simple:
 
 # Design Principles
 
-Every feature in A-Eye follows these principles.
+Every feature in A-Eye follows these principles:
 
-## 1. Evidence Over Guessing
-
-Players should never guess.
-
-Every conclusion should be supported by collected evidence.
-
----
-
-## 2. Learn Through Investigation
-
-Players learn by actively inspecting content rather than reading lessons.
-
----
-
-## 3. Reflection Before Progression
-
-Every completed investigation explains **why** the conclusion was correct.
-
-Mistakes become learning opportunities.
-
----
-
-## 4. Consistent Gameplay
-
-Every case follows the same investigation process regardless of media type.
-
-The content changes.
-
-The investigation workflow does not.
-
----
-
-## 5. Simplicity
-
-The interface should remain minimal and approachable.
-
-Complexity comes from analyzing information—not navigating the UI.
+1. **Evidence Over Guessing**: Every conclusion should be supported by collected evidence and database cross-referencing.
+2. **Learn Through Investigation**: Players learn by actively inspecting content rather than reading passive slides.
+3. **Reflection Before Progression**: Every completed investigation explains **why** the conclusion was correct through learning debriefs.
+4. **Consistent Gameplay**: Every case follows the same investigation process regardless of media type.
+5. **Accessibility & High Readability**: Clean, high-contrast, large-font interface designed for all age groups, non-tech users, and children.
 
 ---
 
 # Core Gameplay Loop
 
-Every investigation follows the same structure.
+Every investigation follows the same structure:
 
 ```
 Mission Brief
-
-↓
-
-Observe Content
-
-↓
-
-Collect Evidence
-
-↓
-
-Review Evidence
-
-↓
-
+    ↓
+Observe Content & Tool Analysis
+    ↓
+Collect Evidence & Discover Clues
+    ↓
+Rate Certainty Calibration (0-100%)
+    ↓
 Submit Investigation Report
-
-↓
-
-Learning Debrief
-
-↓
-
-Next Case
-```
-
-This gameplay loop remains identical across all investigations.
-
----
-
-# Screen Flow
-
-```
-Home
-
-↓
-
-How To Play
-
-↓
-
-Pre-Assessment Quiz
-
-↓
-
-Case 001
-
-↓
-
-Case 002
-
-↓
-
-Case 003
-
-↓
-
-Learning Report
-
-↓
-
-Post-Assessment Quiz
+    ↓
+Learning Debrief & Context Card
+    ↓
+Next Case Progression
 ```
 
 ---
 
-# Investigation Cases
+# Sequential Route Locking & Screen Flow
 
-Instead of traditional game levels, A-Eye presents investigations as Cases.
+Linear route progression is guarded by `RouteGuard.tsx` and displayed on the persistent `Header.tsx`:
 
-Each case teaches a different Media and Information Literacy competency.
-
----
-
-# Case 001 — Text Investigation
-
-## Learning Objective
-
-Evaluate whether online claims are supported by evidence.
-
-## Scenario
-
-Players review two competing social media posts discussing the same topic.
-
-The objective is not to identify AI.
-
-The objective is to determine whether the information is trustworthy.
-
-Players inspect:
-
-- claims
-- wording
-- sources
-- scientific accuracy
-- sensational language
-
-### Examples of Evidence
-
-- Extraordinary claim
-- Unsupported statistic
-- Missing source
-- Hallucinated information
-- Clickbait wording
-
-### Investigation Outcome
-
-Players submit an Investigation Report explaining whether the claim is:
-
-- Credible
-- Needs Verification
-- Misleading
-- Insufficient Evidence
+```
+Home / How to Play
+    ↓
+Pre-Assessment Quiz (/quiz/pre) — [Unlocked Baseline]
+    ↓ 🔒 (Requires Pre-Quiz completion)
+Case 001: Text Investigation (/level/1) — Redaction Pen & Fact Checker Drawer
+    ↓ 🔒 (Requires Case 001 completion)
+Case 002: Photo Investigation (/level/2) — Forensic Lens & Evidence Tagging
+    ↓ 🔒 (Requires Case 002 completion)
+Case 003: Video Investigation (/level/3) — 3-Round Temporal Video Forensics
+    ↓ 🔒 (Requires Case 003 completion)
+Results Dashboard (/results) — MIL Competency Report
+    ↓ 🔒 (Requires Case 003 completion)
+Post-Assessment Quiz (/quiz/post) — Growth & Impact Evaluation
+```
 
 ---
 
-# Case 002 — Photo Investigation
-
-## Learning Objective
-
-Evaluate visual evidence within an online image.
-
-## Scenario
-
-Players inspect a viral image using investigation tools.
-
-Rather than searching for "AI", players collect observable evidence.
-
-### Evidence Examples
-
-- Impossible anatomy
-- Texture fusion
-- Reflection inconsistency
-- Distorted objects
-- Unrealistic perspective
-
-### Investigation Tools
-
-- Zoom
-- Brightness Adjustment
-- Grid Overlay
-
-### Investigation Outcome
-
-Players determine whether the image supports the accompanying claim.
+# Investigation Cases Implementation
 
 ---
 
-# Case 003 — Video Investigation
+## Case 001 — Text Investigation (Redaction Pen & Fact-Checker Drawer)
 
-## Learning Objective
+### Learning Objective
+Cross-reference claims against database registries rather than guessing based on writing style alone.
 
-Evaluate competing video evidence.
-
-## Scenario
-
-Players compare two videos covering the same event.
-
-One may contain AI-generated content.
-
-One may be authentic.
-
-Both may require verification.
-
-The player should never assume.
-
-### Investigation Tools
-
-- Play / Pause
-- Slow Motion
-- Frame-by-frame
-- Zoom
-
-### Evidence Examples
-
-- Lip-sync inconsistencies
-- Temporal flickering
-- Fabricated quotes
-- Suspicious captions
-- Source credibility
-
-### Investigation Outcome
-
-Players submit a conclusion based on collected evidence.
+### Core Mechanics
+- **Redaction Pen Document View**: Players review a press release document and click claim sentences to inspect them.
+- **Source Inspection Drawer (Fact / Claim Checker Tool)**:
+  - Interactive drawer where players click **"Cross-Reference Claim against Registries"**.
+  - **Dr. Aris Thorne Claim**: Querying MIT Directory reveals *"❌ Database Alert: No researcher named Dr. Aris Thorne exists in MIT's database."*
+  - **5,000 Lumens Claim**: Querying optics registry reveals *"❌ Infrastructure Alert: Physical optics limits plant luminescence output to <0.8% of a standard LED bulb."*
+  - **NSF Statement Claim**: Verified as genuine research context (*"✅ Source Verified: NSF Official Statement"*).
 
 ---
 
-# Evidence System
+## Case 002 — Photo Investigation (Forensic Lens & 3-Choice Tagging)
 
-Evidence is the foundation of every investigation.
+### Learning Objective
+Inspect visual geometry, text rendering, and lighting consistency using forensic heatmaps.
 
-Instead of scoring clicks, players collect Evidence.
-
-Each piece of evidence represents an observation made during the investigation.
-
-## Evidence Model
-
-Each Evidence item stores:
-
-- id
-- missionId
-- title
-- description
-- category
-- discovered
-- timestamp
-- explanation
-- metadata
-
-Evidence is reusable across every investigation.
+### Core Mechanics & Inspection Console
+- **Interactive Inspection Canvas**: 4-way Pan & Zoom controls (`react-zoom-pan-pinch`), **Visual Contrast Boost**, and **Grid Overlay**.
+- **🔍 Forensic Lens Heatmap Mode**: Toggle button (`🔍 Forensic Lens`) renders subtle dashed heatmap outlines around structural distortion zones so players don't click blindly.
+- **3-Choice Evidence Tagging Modal**: Clicking a hotspot presents 3 classification options:
+  1. `A) Anatomic Anomaly` (Extra limbs, fused skin)
+  2. `B) Geometric Distortion` (Melted window bars, perspective fault)
+  3. `C) Text Garbling` (Unreadable pseudo-script signage)
 
 ---
 
-# Investigation Session
+## Case 003 — Video Investigation (3-Round Progressive Forensics)
 
-Each Case owns one Investigation Session.
+### Learning Objective
+Analyze temporal video streams across multi-stage difficulty levels.
 
-The Investigation Session tracks:
-
-- discovered evidence
-- investigation progress
-- player confidence
-- submitted verdict
-- completion state
-
-Future gameplay systems attach to the Investigation Session.
-
----
-
-# Investigation Report
-
-At the end of every Case, players submit an Investigation Report.
-
-Possible conclusions include:
-
-- Credible
-- Needs Verification
-- Misleading
-- Insufficient Evidence
-
-The report summarizes:
-
-- evidence collected
-- reasoning
-- confidence
-- final conclusion
-
-The emphasis is evidence-based reasoning rather than AI detection.
-
----
-
-# Confidence Calibration
-
-Before submitting an Investigation Report, players rate their confidence.
-
-Confidence is compared against actual investigation performance.
-
-This teaches players to reflect on their own certainty rather than relying on intuition.
-
-Future versions may expand this into confidence progression tracking.
-
----
-
-# Learning Debrief
-
-Every investigation ends with an explanation.
-
-The debrief includes:
-
-- why the conclusion was correct
-- supporting evidence
-- verification techniques
-- real-world examples
-- media literacy takeaway
-
-Players should understand **why** they were correct or incorrect.
-
----
-
-# Results Dashboard
-
-The Results Dashboard focuses on learning rather than scoring.
-
-Each completed Case displays:
-
-- Investigation Quality
-- Evidence Collected
-- Confidence Rating
-- Final Conclusion
-- Media Literacy Lesson
-- Real-world Verification Tip
-
-Future versions may include personalized investigator profiles.
+### 3-Round Progressive Difficulty System
+- **🟢 Round 1 (Easy Mode — `cut_real.mp4` vs `cut_ai.mp4`)**:
+  - *Set*: Paper Cut / Fine Edge Interaction (`public/videos/set1/`)
+  - *Timer*: 60s
+  - *Forensics*: Facial mask boundary edge bleed & paper smudging under normal playback.
+- **🟡 Round 2 (Medium Mode — `race_real.mp4` vs `race_ai.mp4`)**:
+  - *Set*: Fast Motion Race (`public/videos/set2/`)
+  - *Timer*: 45s
+  - *Forensics*: High-speed motion blur & frame-rate jittering evaluated under **0.5x Slow-Mo**.
+- **🔴 Round 3 (Hard Mode — `sushi_real.mp4` vs `sushi_ai.mp4`)**:
+  - *Set*: Sushi Preparation (`public/videos/set3/`)
+  - *Timer*: 30s
+  - *Forensics*: Pupil catchlight refraction mismatch & knife-rice micro-grain merging evaluated using **Visual Boost** & **Grid Overlay**.
 
 ---
 
@@ -365,93 +131,23 @@ Future versions may include personalized investigator profiles.
 
 | Technology | Purpose |
 |------------|----------|
-| Next.js | Application framework and routing |
-| React | Component architecture |
-| TypeScript | Type safety |
-| Tailwind CSS | Responsive UI styling |
-| Zustand | Global investigation state |
-| Framer Motion | Animations and transitions |
-| shadcn/ui | Accessible UI components |
-| react-zoom-pan-pinch | Image inspection tools |
-| js-cookie | Local telemetry and retention checks |
-| canvas-confetti | Completion celebration |
-| Vercel | Hosting and deployment |
+| Next.js 16 (Turbopack) | Application framework and routing |
+| React 19 | Component architecture |
+| TypeScript | Strict type safety |
+| Tailwind CSS | High-contrast dark responsive styling |
+| Zustand | Global investigation & route state |
+| Framer Motion | Fluid card swiping and modal animations |
+| Lucide React | Modern iconography system |
+| react-zoom-pan-pinch | Image pan/zoom inspection tools |
 
-No backend is required.
-
-All investigation data, cases, quizzes, and evidence definitions are stored as static TypeScript/JSON files.
+No backend or external API is required. All static assets, video sets (`public/videos/set1`, `set2`, `set3`), and case definitions build cleanly into static HTML/JS pages.
 
 ---
 
-# State Management
+# Verification & Build Guarantee
 
-Zustand manages:
-
-- current case
-- collected evidence
-- investigation progress
-- confidence
-- investigation reports
-- quiz progress
-- learning results
-
-The Investigation Session acts as the central gameplay object.
-
----
-
-# Data Structure
-
-Example Evidence Definition
-
-```ts
-{
-  id: "extra-finger",
-  missionId: "case-002",
-  title: "Extra Finger",
-  category: "Impossible Anatomy",
-  description: "The subject appears to have six fingers.",
-  explanation: "Modern image generation models occasionally produce inconsistent hand anatomy.",
-  discovered: false,
-  metadata: {
-    xPercent: 42,
-    yPercent: 68,
-    widthPercent: 8,
-    heightPercent: 10
-  }
-}
+The application maintains a strict **0-Error Build Guarantee**:
+```powershell
+npm run build
 ```
-
----
-
-# Future Roadmap
-
-The architecture is intentionally modular.
-
-Future features include:
-
-- Investigation Case File
-- Source Credibility Analysis
-- Observation vs Assumption classification
-- Red Herrings
-- Mixed Media Investigations
-- Educational Coaching
-- Advanced Confidence Analytics
-- Multiplayer Investigation Challenges
-
-These systems should build upon the existing Investigation Session and Evidence architecture without requiring major refactoring.
-
----
-
-# Guiding Philosophy
-
-A-Eye is not an AI detector.
-
-It is a Media and Information Literacy training platform.
-
-Players should finish each investigation thinking:
-
-> "I know how to evaluate digital information."
-
-—not—
-
-> "I know how to spot AI."
+- All 11 static routes (`/`, `/how-to-play`, `/quiz/pre`, `/level/1`, `/level/2`, `/level/3`, `/results`, `/quiz/post`) build cleanly without warnings or type errors.
