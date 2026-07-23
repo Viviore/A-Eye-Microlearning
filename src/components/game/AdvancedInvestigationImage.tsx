@@ -34,7 +34,9 @@ export function AdvancedInvestigationImage({
         maxScale={4}
         wheel={{ step: 0.1 }}
       >
-        {({ zoomIn, zoomOut, resetTransform, scale }) => (
+        {({ zoomIn, zoomOut, resetTransform, state }) => {
+          const currentScale = state?.scale ?? 1;
+          return (
           <>
             {/* Toolbar */}
             <div className="absolute top-4 right-4 z-50 flex flex-col gap-2 bg-zinc-900/80 backdrop-blur-md p-2 rounded-md border border-zinc-700 shadow-2xl">
@@ -75,7 +77,7 @@ export function AdvancedInvestigationImage({
 
             {/* Current Zoom Level Indicator */}
             <div className="absolute top-4 left-4 z-50 px-3 py-1 bg-zinc-900/80 backdrop-blur-md rounded-sm border border-zinc-700 font-mono text-xs text-emerald-400">
-              {Math.round(scale * 100)}%
+              {Math.round(currentScale * 100)}%
             </div>
 
             {/* The Zoomable Area */}
@@ -141,7 +143,8 @@ export function AdvancedInvestigationImage({
               </TransformComponent>
             </div>
           </>
-        )}
+        );
+        }}
       </TransformWrapper>
     </div>
   );

@@ -69,7 +69,8 @@ export default function PostAssessmentQuizPage() {
       setIsFinished(true);
 
       // Trigger celebration if they improved
-      if (percentageScore > preQuizScore) {
+      const safePreScore = preQuizScore ?? 0;
+      if (percentageScore > safePreScore) {
         confetti({
           particleCount: 150,
           spread: 70,
@@ -84,7 +85,8 @@ export default function PostAssessmentQuizPage() {
     resetGame();
   };
 
-  const improvementDelta = finalScore - preQuizScore;
+  const safePreScore = preQuizScore ?? 0;
+  const improvementDelta = finalScore - safePreScore;
   const didImprove = improvementDelta > 0;
 
   if (isFinished) {

@@ -1,86 +1,457 @@
 # A-Eye — Architecture
 
-## Stack
+## Project Vision
 
-| Techstack | Purpose |
-|---|---|
-| Next.js (React) | App framework, handles routing between screens (Home, Quiz, Level 1-3, Report) |
-| TypeScript | Type safety for game state, level/artifact data |
-| Tailwind CSS | Utility-first styling for feed UI, flat design, modals/transitions |
-| Zustand | Game state management — score, confidence, progress across levels |
-| Framer Motion | Screen transitions, modal animations, badge reveal animations |
-| shadcn/ui | Accessible prebuilt UI primitives (buttons, sliders, dialogs) for quiz + confidence meter |
-| react-zoom-pan-pinch | Zoom/pan/magnifier tool for image inspection |
-| js-cookie | Cookie storage for delayed retention check telemetry |
-| canvas-confetti | Achievement/badge celebration effect |
-| Vercel | Hosting/deployment |
+A-Eye is an interactive **Digital Investigation Simulator** built for the UNESCO Youth Hackathon.
 
-No database needed — level data, artifacts, and quiz questions can live as static JSON/TS files in the repo. No custom backend required for the core game.
+Unlike traditional AI detection games, A-Eye does not teach players to memorize AI-generated artifacts. Instead, it develops Media and Information Literacy (MIL) by training players to investigate digital content using observation, evidence, reasoning, and critical thinking.
 
-## Screen flow
-Home → How to Play → Pre-Assessment Quiz → Investigation (Level 1 → 2 → 3) → Learning Report
+Players take on the role of a Digital Investigator responsible for reviewing viral online content before it spreads. Every investigation requires collecting evidence, evaluating credibility, and reaching a justified conclusion.
 
-## Core components
-- **Social Media Simulation Mode**: Tailwind components mimicking Instagram/Facebook-style posts (caption, reactions, comments, share count) wrapping each level.
-- **Confidence Meter**: JS slider, player self-rates confidence before submitting a verdict. Feeds calibration data.
-- **Real-World Context Cards**: Shown right after verdict — explains the structural failure, viral case study, or verification takeaway.
-- **Achievement System**: state-driven micro-badges (e.g. Eagle Eye, Anatomy Expert, Critical Thinker).
-- **Investigation Tools** (available every level): Zoom, Brightness adjustment, Grid overlay, Investigation marker (animated ring on correct find), Hint system (small score penalty).
-- **Artifact Hotspot Detection**: Each image has invisible clickable zones defined as percentages of image width/height (not raw pixels), so they stay aligned when the image resizes. Zones sit in an `absolute`-positioned layer on top of the image; the image container must be `position: relative`. On click, check if it lands inside a zone → mark found, show ring + explanation. Level 3 must handle clicks that hit nothing (some images have zero artifacts, since they're real photos).
+The objective is simple:
+
+> **Don't guess whether something is AI.**
+>
+> **Investigate whether it can be trusted.**
+
+---
+
+# Design Principles
+
+Every feature in A-Eye follows these principles.
+
+## 1. Evidence Over Guessing
+
+Players should never guess.
+
+Every conclusion should be supported by collected evidence.
+
+---
+
+## 2. Learn Through Investigation
+
+Players learn by actively inspecting content rather than reading lessons.
+
+---
+
+## 3. Reflection Before Progression
+
+Every completed investigation explains **why** the conclusion was correct.
+
+Mistakes become learning opportunities.
+
+---
+
+## 4. Consistent Gameplay
+
+Every case follows the same investigation process regardless of media type.
+
+The content changes.
+
+The investigation workflow does not.
+
+---
+
+## 5. Simplicity
+
+The interface should remain minimal and approachable.
+
+Complexity comes from analyzing information—not navigating the UI.
+
+---
+
+# Core Gameplay Loop
+
+Every investigation follows the same structure.
+
+```
+Mission Brief
+
+↓
+
+Observe Content
+
+↓
+
+Collect Evidence
+
+↓
+
+Review Evidence
+
+↓
+
+Submit Investigation Report
+
+↓
+
+Learning Debrief
+
+↓
+
+Next Case
+```
+
+This gameplay loop remains identical across all investigations.
+
+---
+
+# Screen Flow
+
+```
+Home
+
+↓
+
+How To Play
+
+↓
+
+Pre-Assessment Quiz
+
+↓
+
+Case 001
+
+↓
+
+Case 002
+
+↓
+
+Case 003
+
+↓
+
+Learning Report
+
+↓
+
+Post-Assessment Quiz
+```
+
+---
+
+# Investigation Cases
+
+Instead of traditional game levels, A-Eye presents investigations as Cases.
+
+Each case teaches a different Media and Information Literacy competency.
+
+---
+
+# Case 001 — Text Investigation
+
+## Learning Objective
+
+Evaluate whether online claims are supported by evidence.
+
+## Scenario
+
+Players review two competing social media posts discussing the same topic.
+
+The objective is not to identify AI.
+
+The objective is to determine whether the information is trustworthy.
+
+Players inspect:
+
+- claims
+- wording
+- sources
+- scientific accuracy
+- sensational language
+
+### Examples of Evidence
+
+- Extraordinary claim
+- Unsupported statistic
+- Missing source
+- Hallucinated information
+- Clickbait wording
+
+### Investigation Outcome
+
+Players submit an Investigation Report explaining whether the claim is:
+
+- Credible
+- Needs Verification
+- Misleading
+- Insufficient Evidence
+
+---
+
+# Case 002 — Photo Investigation
+
+## Learning Objective
+
+Evaluate visual evidence within an online image.
+
+## Scenario
+
+Players inspect a viral image using investigation tools.
+
+Rather than searching for "AI", players collect observable evidence.
+
+### Evidence Examples
+
+- Impossible anatomy
+- Texture fusion
+- Reflection inconsistency
+- Distorted objects
+- Unrealistic perspective
+
+### Investigation Tools
+
+- Zoom
+- Brightness Adjustment
+- Grid Overlay
+
+### Investigation Outcome
+
+Players determine whether the image supports the accompanying claim.
+
+---
+
+# Case 003 — Video Investigation
+
+## Learning Objective
+
+Evaluate competing video evidence.
+
+## Scenario
+
+Players compare two videos covering the same event.
+
+One may contain AI-generated content.
+
+One may be authentic.
+
+Both may require verification.
+
+The player should never assume.
+
+### Investigation Tools
+
+- Play / Pause
+- Slow Motion
+- Frame-by-frame
+- Zoom
+
+### Evidence Examples
+
+- Lip-sync inconsistencies
+- Temporal flickering
+- Fabricated quotes
+- Suspicious captions
+- Source credibility
+
+### Investigation Outcome
+
+Players submit a conclusion based on collected evidence.
+
+---
+
+# Evidence System
+
+Evidence is the foundation of every investigation.
+
+Instead of scoring clicks, players collect Evidence.
+
+Each piece of evidence represents an observation made during the investigation.
+
+## Evidence Model
+
+Each Evidence item stores:
+
+- id
+- missionId
+- title
+- description
+- category
+- discovered
+- timestamp
+- explanation
+- metadata
+
+Evidence is reusable across every investigation.
+
+---
+
+# Investigation Session
+
+Each Case owns one Investigation Session.
+
+The Investigation Session tracks:
+
+- discovered evidence
+- investigation progress
+- player confidence
+- submitted verdict
+- completion state
+
+Future gameplay systems attach to the Investigation Session.
+
+---
+
+# Investigation Report
+
+At the end of every Case, players submit an Investigation Report.
+
+Possible conclusions include:
+
+- Credible
+- Needs Verification
+- Misleading
+- Insufficient Evidence
+
+The report summarizes:
+
+- evidence collected
+- reasoning
+- confidence
+- final conclusion
+
+The emphasis is evidence-based reasoning rather than AI detection.
+
+---
+
+# Confidence Calibration
+
+Before submitting an Investigation Report, players rate their confidence.
+
+Confidence is compared against actual investigation performance.
+
+This teaches players to reflect on their own certainty rather than relying on intuition.
+
+Future versions may expand this into confidence progression tracking.
+
+---
+
+# Learning Debrief
+
+Every investigation ends with an explanation.
+
+The debrief includes:
+
+- why the conclusion was correct
+- supporting evidence
+- verification techniques
+- real-world examples
+- media literacy takeaway
+
+Players should understand **why** they were correct or incorrect.
+
+---
+
+# Results Dashboard
+
+The Results Dashboard focuses on learning rather than scoring.
+
+Each completed Case displays:
+
+- Investigation Quality
+- Evidence Collected
+- Confidence Rating
+- Final Conclusion
+- Media Literacy Lesson
+- Real-world Verification Tip
+
+Future versions may include personalized investigator profiles.
+
+---
+
+# Technical Stack
+
+| Technology | Purpose |
+|------------|----------|
+| Next.js | Application framework and routing |
+| React | Component architecture |
+| TypeScript | Type safety |
+| Tailwind CSS | Responsive UI styling |
+| Zustand | Global investigation state |
+| Framer Motion | Animations and transitions |
+| shadcn/ui | Accessible UI components |
+| react-zoom-pan-pinch | Image inspection tools |
+| js-cookie | Local telemetry and retention checks |
+| canvas-confetti | Completion celebration |
+| Vercel | Hosting and deployment |
+
+No backend is required.
+
+All investigation data, cases, quizzes, and evidence definitions are stored as static TypeScript/JSON files.
+
+---
+
+# State Management
+
+Zustand manages:
+
+- current case
+- collected evidence
+- investigation progress
+- confidence
+- investigation reports
+- quiz progress
+- learning results
+
+The Investigation Session acts as the central gameplay object.
+
+---
+
+# Data Structure
+
+Example Evidence Definition
 
 ```ts
 {
-  imageId: "selfie-01",
-  artifacts: [
-    { id: "extra-finger", xPercent: 42, yPercent: 68, widthPercent: 8, heightPercent: 10, explanation: "..." }
-  ]
+  id: "extra-finger",
+  missionId: "case-002",
+  title: "Extra Finger",
+  category: "Impossible Anatomy",
+  description: "The subject appears to have six fingers.",
+  explanation: "Modern image generation models occasionally produce inconsistent hand anatomy.",
+  discovered: false,
+  metadata: {
+    xPercent: 42,
+    yPercent: 68,
+    widthPercent: 8,
+    heightPercent: 10
+  }
 }
 ```
 
-## Levels
+---
 
-### Level 1 — Everyday Selfies
-**Artifacts to find:** extra fingers, fused hands, floating earrings, misaligned eyes, hair blending into clothing, missing accessories
-**Verdict options:** AI Generated / Real / Unsure
+# Future Roadmap
 
-**Mechanics:**
-- Player clicks suspicious areas on the image
-- Correct clicks get an investigation marker (animated ring)
-- Each found artifact opens a short explanation
-- After finding all artifacts, player picks a verdict
-- Player rates confidence (0–100%)
-- Immediate feedback shows the correct answer
+The architecture is intentionally modular.
 
-**Stack used:** Tailwind (Instagram-style post layout), shadcn/ui (explanation dialog, verdict buttons, confidence slider), Framer Motion (marker ring animation, dialog transitions), Zustand (tracks found artifacts, score, confidence per level)
+Future features include:
 
-### Level 2 — Viral News Posts
-**Artifacts to find:** distorted buildings, impossible shadows, gibberish signs, broken perspective, cloned crowds, repeating windows
-**Verdict options:** Trusted / Questioned / Fact-Checked First
+- Investigation Case File
+- Source Credibility Analysis
+- Observation vs Assumption classification
+- Red Herrings
+- Mixed Media Investigations
+- Educational Coaching
+- Advanced Confidence Analytics
+- Multiplayer Investigation Challenges
 
-**Mechanics:**
-- Same click-to-find flow as Level 1, wrapped in a Facebook-style post (headline, reactions, comments, share count)
-- Player picks a verdict, rates confidence, gets feedback
+These systems should build upon the existing Investigation Session and Evidence architecture without requiring major refactoring.
 
-**Stack used:** same as Level 1 (Tailwind, shadcn/ui, Framer Motion, Zustand) — just a different feed layout and copy
+---
 
-### Level 3 — Deepfake Reality
-**Artifacts to find:** subtle lighting inconsistencies, near-perfect AI portraits mixed with real photos
-**Verdict options:** Authentic / AI Generated / Insufficient Evidence
+# Guiding Philosophy
 
-**Mechanics:**
-- Player gets a mixed feed of real and AI images, not labeled
-- Player uses investigation tools before deciding: zoom, brightness adjustment, grid overlay, magnifier
-- Marks suspected artifacts, picks a verdict, rates confidence
-- Reviews an expert explanation after submitting
+A-Eye is not an AI detector.
 
-**Stack used:** everything from Level 1/2, plus react-zoom-pan-pinch (zoom/pan/magnifier tool) and a brightness filter applied directly on the image element (CSS filter, no extra library needed)
+It is a Media and Information Literacy training platform.
 
-## Results screen (after each level)
-Artifacts found, accuracy score, time taken, confidence score, verdict, MIL lesson, real-world verification tip.
+Players should finish each investigation thinking:
 
-## Data/telemetry
-- Cookie storage for optional delayed retention checks (post-game skill decay tracking)
-- Confidence calibration: compares self-declared confidence vs actual correctness
+> "I know how to evaluate digital information."
 
-## Note
-Closer to Navi's usual React setup now, but still no Node/Express/Prisma/Postgres — A-Eye doesn't need a database or server for the core game, everything is static/client-side.
+—not—
+
+> "I know how to spot AI."
