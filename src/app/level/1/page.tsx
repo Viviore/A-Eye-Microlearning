@@ -27,12 +27,12 @@ interface ClaimDocumentSegment {
 const DOCUMENT_SEGMENTS: ClaimDocumentSegment[] = [
   {
     id: "seg_1",
-    text: "PRESS RELEASE // CAMBRIDGE BIOTECH LABS — ",
+    text: "🚨 TRENDING TECH ALERT 🚨\n\nJust saw this viral post from tech page @FutureTechDaily:\n\n\"",
     isClaim: false,
   },
   {
     id: "claim_1",
-    text: "Dr. Aris Thorne from MIT published a breakthrough paper in 2024 proving that bioluminescent clover plants produce 5,000 lumens of continuous illumination.",
+    text: "Dr. Aris Thorne from MIT just published a breakthrough study proving that new bioluminescent street clovers produce 5,000 lumens of continuous light.",
     isClaim: true,
     claimTitle: "Claim #1: Dr. Aris Thorne / 5,000 Lumens MIT Study",
     sourceQuery: "Query MIT Directory & Academic Journal Database for 'Dr. Aris Thorne'",
@@ -44,12 +44,12 @@ const DOCUMENT_SEGMENTS: ClaimDocumentSegment[] = [
   },
   {
     id: "seg_2",
-    text: " According to the announcement, ",
+    text: "\" According to their post, \"",
     isClaim: false,
   },
   {
     id: "claim_2",
-    text: "municipalities can completely replace all city streetlights next month, cutting urban energy expenditure to zero.",
+    text: "municipalities can replace all city streetlights with these clovers next month, cutting urban electricity expenditure to absolute zero!",
     isClaim: true,
     claimTitle: "Claim #2: Zero-Cost City Streetlight Replacement",
     sourceQuery: "Cross-reference Municipal Infrastructure Grid Standards & Energy Audits",
@@ -61,12 +61,12 @@ const DOCUMENT_SEGMENTS: ClaimDocumentSegment[] = [
   },
   {
     id: "seg_3",
-    text: " While geneticists have successfully introduced luciferase genes into plant tissue for scientific research, ",
+    text: "\" While geneticists have successfully introduced luciferase genes into plant tissue for research, ",
     isClaim: false,
   },
   {
     id: "claim_3",
-    text: "independent verification from the National Science Foundation confirms that commercial streetlight deployment remains unfeasible.",
+    text: "the National Science Foundation issued a statement confirming that commercial deployment of streetlights remains unfeasible.",
     isClaim: true,
     claimTitle: "Claim #3: NSF Scientific Verification Statement",
     sourceQuery: "Query National Science Foundation Public Release Registry",
@@ -176,7 +176,7 @@ export default function Level1Page() {
 
   // Results Screen
   if (showResults) {
-    const isCorrect = selectedVerdict === "Misleading";
+    const isCorrect = selectedVerdict === "Misleading" || selectedVerdict === "AI-Generated";
 
     return (
       <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex items-center justify-center p-6 relative overflow-hidden font-sans">
@@ -225,12 +225,21 @@ export default function Level1Page() {
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button
-              onClick={() => setShowContextCard(true)}
-              className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-emerald-500 hover:bg-emerald-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-emerald-700 font-bold"
-            >
-              Proceed to Case 002
-            </Button>
+            {isCorrect ? (
+              <Button
+                onClick={() => setShowContextCard(true)}
+                className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-emerald-500 hover:bg-emerald-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-emerald-700 font-bold"
+              >
+                Proceed to Case 002
+              </Button>
+            ) : (
+              <Button
+                onClick={handleRetry}
+                className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-red-500 hover:bg-red-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-red-700 font-bold"
+              >
+                Retry Case 001
+              </Button>
+            )}
           </div>
         </motion.div>
 
@@ -297,19 +306,30 @@ export default function Level1Page() {
           </div>
 
           {/* Document Inspection Canvas */}
-          <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-6 md:p-8 shadow-2xl space-y-6 relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-zinc-900 pb-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-                <FileText className="w-4 h-4 text-emerald-400" />
-                <span>SUBMISSION_DOC // PRESS_RELEASE_2024.TXT</span>
+          <div className="bg-zinc-905 border border-zinc-800 rounded-sm shadow-2xl overflow-hidden">
+            {/* Social Post Header */}
+            <div className="p-4 md:p-6 border-b border-zinc-800 bg-zinc-900/40 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
+                <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold font-mono text-sm rounded-full shrink-0">
+                  FT
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-heading font-bold text-sm tracking-wide text-zinc-100">Future Tech Daily</span>
+                    <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded-sm font-mono font-bold uppercase">Influencer</span>
+                  </div>
+                  <div className="text-xs text-zinc-500 font-mono">@FutureTechDaily // Trending now</div>
+                </div>
               </div>
-              <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-950/60 px-2.5 py-1 border border-emerald-800/60 rounded-sm">
-                🖊️ Redaction Pen Active
+              
+              <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-950/60 px-2.5 py-1 border border-emerald-800/60 rounded-sm flex items-center gap-1">
+                <Highlighter className="w-3.5 h-3.5" /> Claim Highlighter Active
               </span>
             </div>
 
-            {/* Document Content - Clickable Claims */}
-            <div className="p-6 bg-zinc-900/60 border border-zinc-800 rounded-sm text-base md:text-lg leading-relaxed text-zinc-100 font-sans selection:bg-emerald-500/40 space-y-2">
+            {/* Social Post Content - Clickable Claims */}
+            <div className="p-6 bg-zinc-950/60 text-base md:text-lg leading-relaxed text-zinc-100 font-sans selection:bg-emerald-500/45 space-y-2 border-b border-zinc-800 whitespace-pre-line">
               {DOCUMENT_SEGMENTS.map((seg) => {
                 if (!seg.isClaim) {
                   return <span key={seg.id} className="text-zinc-400">{seg.text}</span>;
@@ -329,7 +349,7 @@ export default function Level1Page() {
                         : isSelected
                         ? "bg-emerald-950/80 border-b-2 border-emerald-500 text-emerald-200 font-medium"
                         : isQueried
-                        ? "bg-zinc-800/80 text-zinc-200"
+                        ? "bg-zinc-800/85 text-zinc-200"
                         : "hover:bg-zinc-800/90 hover:text-emerald-300 border-b border-dashed border-zinc-700"
                     }`}
                     title="Click claim to open Fact Checker Inspection Drawer"
@@ -340,9 +360,16 @@ export default function Level1Page() {
               })}
             </div>
 
-            <div className="p-3 bg-zinc-900/40 border border-zinc-850 rounded-sm text-xs text-zinc-400 flex items-center gap-2">
+            {/* Social Engagement Stats */}
+            <div className="px-6 py-4 bg-zinc-900/20 text-xs font-mono text-zinc-500 flex items-center gap-6 border-b border-zinc-800">
+              <span>❤️ 42.5K Likes</span>
+              <span>💬 8.2K Comments</span>
+              <span>🔁 1.4K Shares</span>
+            </div>
+
+            <div className="p-4 bg-zinc-900/40 text-xs text-zinc-400 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Click on any claim text above to open the <strong>Fact / Source Inspection Drawer</strong> and cross-reference registered databases.</span>
+              <span>Click on any underlined claim sentence in the post text to cross-reference registered databases.</span>
             </div>
           </div>
 
@@ -417,7 +444,7 @@ export default function Level1Page() {
                 <Terminal className="w-6 h-6 text-emerald-400" /> Case 001 Report
               </h2>
               <p className="text-sm text-zinc-300 mt-1.5 leading-relaxed font-sans">
-                Cross-reference claims in the Fact Checker Drawer and transmit your final report.
+                Inspect the viral post, cross-reference suspicious claims, and submit your final report.
               </p>
             </div>
 
@@ -442,10 +469,9 @@ export default function Level1Page() {
               </h3>
               <div className="grid grid-cols-1 gap-2.5">
                 {[
-                  { key: "Credible", label: "🟢 Credible / Supported by Evidence" },
-                  { key: "Needs Verification", label: "🟡 Needs Verification / Unsubstantiated" },
-                  { key: "Misleading", label: "🔴 Misleading / Fabricated Claims Detected" },
-                  { key: "Insufficient Evidence", label: "⚪ Insufficient Evidence to Decide" },
+                  { key: "Trustworthy", label: "🟢 Trustworthy / Verified Source Context" },
+                  { key: "Misleading", label: "🟡 Misleading / Contains Fabricated Claims" },
+                  { key: "AI-Generated", label: "🔴 AI-Generated / Contains Hallucinations" },
                 ].map((v) => (
                   <button
                     key={v.key}
@@ -487,10 +513,14 @@ export default function Level1Page() {
 
             <Button
               onClick={handleFinalSubmit}
-              disabled={!selectedVerdict}
-              className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 disabled:opacity-50 font-bold text-base md:text-lg shadow-lg"
+              disabled={!selectedVerdict || queriedClaimIds.length < 2}
+              className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 disabled:opacity-50 font-bold text-base md:text-lg shadow-lg flex items-center justify-center gap-2"
             >
-              Submit Case 001 Report 🚀
+              {queriedClaimIds.length < 2 ? (
+                <span>Lock: Check {2 - queriedClaimIds.length} More Claim{2 - queriedClaimIds.length > 1 ? 's' : ''} 🔒</span>
+              ) : (
+                <span>Submit Case 001 Report 🚀</span>
+              )}
             </Button>
           </motion.div>
         </div>

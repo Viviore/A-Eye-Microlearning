@@ -74,6 +74,36 @@ const VIDEO_ROUNDS = [
   }
 ];
 
+const ROUND_ANOMALIES = [
+  {
+    round: 1,
+    correctKey: "edge-bleed",
+    options: [
+      { key: "edge-bleed", label: "Edge Bleed & Fingertip Smudging (Object boundary warps under motion)" },
+      { key: "sat-warping", label: "Color Saturation Shift (Background shifts color balance)" },
+      { key: "audio-delay", label: "Audio-Video Desynchronization (Sound does not match visual frame)" },
+    ],
+  },
+  {
+    round: 2,
+    correctKey: "spectator-jitter",
+    options: [
+      { key: "contrast-flicker", label: "Contrast Flickering (Camera exposure jumps randomly)" },
+      { key: "spectator-jitter", label: "Spectator Jitter & Inertial Discontinuity (Background movement breaks physics under 0.5x Slow-Mo)" },
+      { key: "car-reflections", label: "Car Reflection Warping (Vehicle mirrors display missing track objects)" },
+    ],
+  },
+  {
+    round: 3,
+    correctKey: "pupil-mismatch",
+    options: [
+      { key: "pupil-mismatch", label: "Pupil Catchlight Refraction Mismatch (Eye light reflections do not align under Visual Boost)" },
+      { key: "finger-anomaly", label: "Extra Finger Anomaly (Subject hand renders 6 fingers)" },
+      { key: "background-text", label: "Background Text Garbling (LinkedIn logos in the back blur into script noise)" },
+    ],
+  },
+];
+
 export default function Level3Page() {
   const router = useRouter();
   const foundArtifacts = useGameStore((state) => state.level3FoundArtifacts);
@@ -100,6 +130,11 @@ export default function Level3Page() {
   const [timeLeft, setTimeLeft] = useState(currentRoundConfig.timeLimit);
   const [isTimeUp, setIsTimeUp] = useState(false);
 
+  // Forensic Tagging state
+  const [taggedAnomaly, setTaggedAnomaly] = useState(false);
+  const [selectedAnomalyOption, setSelectedAnomalyOption] = useState<string | null>(null);
+  const [tagFeedback, setTagFeedback] = useState<{ isCorrect: boolean; text: string } | null>(null);
+
   // Video tools state
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<1.0 | 0.5>(1.0);
@@ -124,6 +159,9 @@ export default function Level3Page() {
     setIsPlaying(false);
     setFlaggedVideo(null);
     setShowRoundExplainer(false);
+    setTaggedAnomaly(false);
+    setSelectedAnomalyOption(null);
+    setTagFeedback(null);
   }, [currentRoundIndex, currentRoundConfig]);
 
   const handleVideoErrorA = () => {
@@ -148,6 +186,9 @@ export default function Level3Page() {
     setGridOverlay(false);
     setFlaggedVideo(null);
     setShowRoundExplainer(false);
+    setTaggedAnomaly(false);
+    setSelectedAnomalyOption(null);
+    setTagFeedback(null);
   };
 
   const togglePlay = () => {
@@ -250,7 +291,7 @@ export default function Level3Page() {
 
   if (showResults) {
     const isTimeOut = selectedVerdict === "Time Expired";
-    const isCorrect = !isTimeOut && selectedVerdict === "Misleading";
+    const isCorrect = !isTimeOut && (selectedVerdict === "Video Source B is AI" || selectedVerdict === "Misleading");
 
     return (
       <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex items-center justify-center p-6 relative overflow-hidden font-sans">
@@ -450,6 +491,70 @@ export default function Level3Page() {
             </div>
           </div>
 
+          {/* Step 1: Anomaly Tagging Tool */}
+          <div className="p-5 bg-zinc-900 border border-zinc-800 rounded-sm space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+              <span className="text-xs font-bold font-heading uppercase tracking-wider text-zinc-100 flex items-center gap-1.5">
+                <Zap className="w-4 h-4 text-emerald-400" />
+                Step 1: Identify and Tag the Synthetic Anomaly
+              </span>
+              <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-sm font-bold ${
+                taggedAnomaly 
+                  ? "bg-emerald-500 text-zinc-950" 
+                  : "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+              }`}>
+                {taggedAnomaly ? "Evidence Logged" : "Evidence Missing"}
+              </span>
+            </div>
+
+            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+              Review the clips and select the specific visual or temporal anomaly present in this round:
+            </p>
+
+            <div className="grid grid-cols-1 gap-2">
+              {ROUND_ANOMALIES[currentRoundIndex].options.map((opt) => {
+                const isSelected = selectedAnomalyOption === opt.key;
+                const isCorrect = opt.key === ROUND_ANOMALIES[currentRoundIndex].correctKey;
+                return (
+                  <button
+                    key={opt.key}
+                    disabled={taggedAnomaly}
+                    onClick={() => {
+                      setSelectedAnomalyOption(opt.key);
+                      if (isCorrect) {
+                        setTaggedAnomaly(true);
+                        setTagFeedback({ isCorrect: true, text: "✅ Correct anomaly identified! Anomaly evidence has been tagged. You may now pick the synthetic video source." });
+                      } else {
+                        setTagFeedback({ isCorrect: false, text: "❌ Incorrect anomaly. Observe the motion, edges, and reflections closely. Adjust playback speed or visual overlays if needed." });
+                      }
+                    }}
+                    className={`p-3 border text-left text-xs transition-all rounded-sm font-sans ${
+                      taggedAnomaly && isCorrect
+                        ? "bg-emerald-950/40 border-emerald-500 text-emerald-300 font-bold"
+                        : isSelected
+                        ? isCorrect
+                          ? "bg-emerald-950/40 border-emerald-500 text-emerald-300 font-bold"
+                          : "bg-red-950/40 border-red-500 text-red-300 font-bold"
+                        : "bg-zinc-950 border-zinc-850 text-zinc-300 hover:border-zinc-700"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {tagFeedback && (
+              <div className={`p-3 text-xs rounded-sm border font-mono ${
+                tagFeedback.isCorrect 
+                  ? "bg-emerald-950/30 border-emerald-800/50 text-emerald-400" 
+                  : "bg-red-950/30 border-red-800/50 text-red-400 animate-pulse"
+              }`}>
+                {tagFeedback.text}
+              </div>
+            )}
+          </div>
+
           {/* Dual Video Players */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
             {/* Video A */}
@@ -463,49 +568,59 @@ export default function Level3Page() {
                   muted
                   playsInline
                   className={`w-full h-full object-cover transition-all duration-300 ${visualBoost ? 'contrast-[1.4] brightness-[1.1] saturate-[1.1]' : ''}`}
-                />
-                {gridOverlay && (
-                  <div className="absolute inset-0 pointer-events-none border border-emerald-500/20 bg-[linear-gradient(to_right,#10b9810f_1px,transparent_1px),linear-gradient(to_bottom,#10b9810f_1px,transparent_1px)] bg-[size:32px_32px]" />
-                )}
-                <div className="absolute bottom-2 left-2 bg-zinc-900/80 border border-zinc-800 px-2 py-0.5 rounded-sm text-[10px] text-zinc-300 font-mono">
-                  VIDEO_SOURCE_A // {currentRoundConfig.difficulty}
-                </div>
-              </div>
-              <button
-                onClick={() => handleSelectVideoEvidence("Video Source A")}
-                className="py-2.5 bg-zinc-950 border border-zinc-800 hover:border-emerald-500/60 text-zinc-300 font-mono text-xs uppercase rounded-sm transition-colors flex items-center justify-center gap-1.5"
-              >
-                Flag Evidence in Video A
-              </button>
-            </div>
+                 />
+                 {gridOverlay && (
+                   <div className="absolute inset-0 pointer-events-none border border-emerald-500/20 bg-[linear-gradient(to_right,#10b9810f_1px,transparent_1px),linear-gradient(to_bottom,#10b9810f_1px,transparent_1px)] bg-[size:32px_32px]" />
+                 )}
+                 <div className="absolute bottom-2 left-2 bg-zinc-900/80 border border-zinc-800 px-2 py-0.5 rounded-sm text-[10px] text-zinc-300 font-mono">
+                   VIDEO_SOURCE_A // {currentRoundConfig.difficulty}
+                 </div>
+               </div>
+               <button
+                 onClick={() => taggedAnomaly && handleSelectVideoEvidence("Video Source A")}
+                 disabled={!taggedAnomaly}
+                 className={`py-2.5 border font-mono text-xs uppercase rounded-sm transition-all flex items-center justify-center gap-1.5 ${
+                   !taggedAnomaly 
+                     ? "bg-zinc-950/40 border-zinc-900 text-zinc-650 cursor-not-allowed" 
+                     : "bg-zinc-950 border-zinc-800 hover:border-emerald-500/60 text-zinc-300 font-bold"
+                 }`}
+               >
+                 {!taggedAnomaly ? "🔒 Tag Anomaly First" : "Flag Video A as AI"}
+               </button>
+             </div>
 
-            {/* Video B */}
-            <div className="flex flex-col gap-2">
-              <div className="relative aspect-video w-full bg-zinc-950 border border-zinc-800 rounded-sm overflow-hidden group">
-                <video
-                  ref={videoRefB}
-                  src={videoSrcB}
-                  onError={handleVideoErrorB}
-                  loop
-                  muted
-                  playsInline
-                  className={`w-full h-full object-cover transition-all duration-300 ${visualBoost ? 'contrast-[1.4] brightness-[1.1] saturate-[1.1]' : ''}`}
-                />
-                {gridOverlay && (
-                  <div className="absolute inset-0 pointer-events-none border border-emerald-500/20 bg-[linear-gradient(to_right,#10b9810f_1px,transparent_1px),linear-gradient(to_bottom,#10b9810f_1px,transparent_1px)] bg-[size:32px_32px]" />
-                )}
-                <div className="absolute bottom-2 left-2 bg-zinc-900/80 border border-zinc-800 px-2 py-0.5 rounded-sm text-[10px] text-zinc-300 font-mono">
-                  VIDEO_SOURCE_B // {currentRoundConfig.difficulty}
-                </div>
-              </div>
-              <button
-                onClick={() => handleSelectVideoEvidence("Video Source B")}
-                className="py-2.5 bg-zinc-950 border border-zinc-800 hover:border-emerald-500/60 text-zinc-300 font-mono text-xs uppercase rounded-sm transition-colors flex items-center justify-center gap-1.5"
-              >
-                Flag Evidence in Video B
-              </button>
-            </div>
-          </div>
+             {/* Video B */}
+             <div className="flex flex-col gap-2">
+               <div className="relative aspect-video w-full bg-zinc-950 border border-zinc-800 rounded-sm overflow-hidden group">
+                 <video
+                   ref={videoRefB}
+                   src={videoSrcB}
+                   onError={handleVideoErrorB}
+                   loop
+                   muted
+                   playsInline
+                   className={`w-full h-full object-cover transition-all duration-300 ${visualBoost ? 'contrast-[1.4] brightness-[1.1] saturate-[1.1]' : ''}`}
+                 />
+                 {gridOverlay && (
+                   <div className="absolute inset-0 pointer-events-none border border-emerald-500/20 bg-[linear-gradient(to_right,#10b9810f_1px,transparent_1px),linear-gradient(to_bottom,#10b9810f_1px,transparent_1px)] bg-[size:32px_32px]" />
+                 )}
+                 <div className="absolute bottom-2 left-2 bg-zinc-900/80 border border-zinc-800 px-2 py-0.5 rounded-sm text-[10px] text-zinc-300 font-mono">
+                   VIDEO_SOURCE_B // {currentRoundConfig.difficulty}
+                 </div>
+               </div>
+               <button
+                 onClick={() => taggedAnomaly && handleSelectVideoEvidence("Video Source B")}
+                 disabled={!taggedAnomaly}
+                 className={`py-2.5 border font-mono text-xs uppercase rounded-sm transition-all flex items-center justify-center gap-1.5 ${
+                   !taggedAnomaly 
+                     ? "bg-zinc-950/40 border-zinc-900 text-zinc-650 cursor-not-allowed" 
+                     : "bg-zinc-950 border-zinc-800 hover:border-emerald-500/60 text-zinc-300 font-bold"
+                 }`}
+               >
+                 {!taggedAnomaly ? "🔒 Tag Anomaly First" : "Flag Video B as AI"}
+               </button>
+             </div>
+           </div>
 
           {/* Round Advance Bar */}
           {currentRoundIndex < VIDEO_ROUNDS.length - 1 && (
@@ -590,18 +705,21 @@ export default function Level3Page() {
                   return (
                     <button
                       key={v.key}
+                      disabled={!taggedAnomaly}
                       onClick={() => {
                         setSelectedVerdict(v.key as MILVerdict);
                         if (v.key.includes("Source B")) handleSelectVideoEvidence("Video Source B");
                         else if (v.key.includes("Source A")) handleSelectVideoEvidence("Video Source A");
                       }}
                       className={`p-4 border text-left text-sm md:text-base font-bold transition-all rounded-sm font-sans ${
-                        isSelected
+                        !taggedAnomaly
+                          ? "bg-zinc-950/40 border-zinc-900 text-zinc-650 cursor-not-allowed opacity-60"
+                          : isSelected
                           ? "bg-emerald-950/80 border-emerald-500 text-emerald-200 shadow-md shadow-emerald-950/40"
                           : "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100"
                       }`}
                     >
-                      {v.label}
+                      {!taggedAnomaly ? "🔒 " : ""}{v.label}
                     </button>
                   );
                 })}

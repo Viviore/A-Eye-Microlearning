@@ -27,26 +27,37 @@ interface HotspotConfig {
 
 const CASE_002_HOTSPOTS: HotspotConfig[] = [
   {
-    id: "warped-windows",
-    xPercent: 32,
-    yPercent: 22,
-    widthPercent: 18,
-    heightPercent: 24,
-    title: "Warped Window Geometry",
-    description: "The background building windows exhibit melted, non-parallel architectural lines.",
-    correctCategory: "Geometric Distortion",
-    explanation: "AI image diffusion models often struggle with linear architectural perspective in background structures.",
+    id: "ear-anomaly",
+    xPercent: 74,
+    yPercent: 44,
+    widthPercent: 12,
+    heightPercent: 16,
+    title: "Ear Geometry Anomaly",
+    description: "The ear structural cartilage looks melted and merges directly into the neck contour.",
+    correctCategory: "Anatomic Anomaly",
+    explanation: "AI generators often fail to capture complex three-dimensional anatomical shapes like ears, resulting in asymmetrical or incomplete cartilage structure.",
   },
   {
-    id: "garbled-signage",
-    xPercent: 68,
-    yPercent: 18,
-    widthPercent: 20,
-    heightPercent: 20,
+    id: "background-distortion",
+    xPercent: 15,
+    yPercent: 20,
+    widthPercent: 18,
+    heightPercent: 18,
+    title: "Background Distortion",
+    description: "The background details show melted lines, ghosting artifacts, and impossible perspective geometry.",
+    correctCategory: "Geometric Distortion",
+    explanation: "AI image diffusers focus heavily on the central subject, leaving the background details blurred, warped, or spatially inconsistent.",
+  },
+  {
+    id: "text-garbling",
+    xPercent: 42,
+    yPercent: 84,
+    widthPercent: 18,
+    heightPercent: 12,
     title: "Garbled Text Signage",
-    description: "The street sign contains unreadable pseudo-script characters that blur into geometric noise.",
+    description: "The logo lettering on the collar consists of distorted, unreadable gibberish characters.",
     correctCategory: "Text Garbling",
-    explanation: "AI generators produce text-like pixel clusters rather than rendered typography from real glyph sets.",
+    explanation: "AI text generators generate characters as pixel clusters rather than structured typography, making them appear garbled or deformed.",
   },
 ];
 
@@ -162,12 +173,12 @@ export default function Level2Page() {
 
   // Results Screen
   if (showResults) {
-    const isCorrect = selectedVerdict === "Misleading";
-
+    const isCorrect = selectedVerdict === "AI-Generated Avatar";
+ 
     return (
       <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex items-center justify-center p-6 relative overflow-hidden font-sans">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:64px_64px]" />
-
+ 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -185,11 +196,11 @@ export default function Level2Page() {
               </p>
             </div>
           </div>
-
+ 
           <div className="grid grid-cols-3 gap-4">
             <div className="p-4 bg-zinc-950/60 border border-zinc-800 rounded-sm">
               <div className="text-[10px] text-zinc-500 font-mono uppercase mb-1">Your Verdict</div>
-              <div className={`font-bold text-sm ${isCorrect ? "text-emerald-400" : "text-zinc-200"}`}>{selectedVerdict}</div>
+              <div className={`font-bold text-sm ${isCorrect ? "text-emerald-400" : "text-red-400"}`}>{selectedVerdict}</div>
             </div>
             <div className="p-4 bg-zinc-950/60 border border-zinc-800 rounded-sm">
               <div className="text-[10px] text-zinc-500 font-mono uppercase mb-1">Evidence Tagged</div>
@@ -200,23 +211,32 @@ export default function Level2Page() {
               <div className="font-bold text-emerald-400 font-mono text-base">{confidenceScore[0]}%</div>
             </div>
           </div>
-
+ 
           <div className="p-4 bg-zinc-950/80 border border-zinc-800 rounded-sm space-y-2">
             <h3 className="text-sm font-bold text-zinc-100 uppercase tracking-wide flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-emerald-400" /> Photo Forensics Takeaways
             </h3>
             <p className="text-zinc-400 leading-relaxed text-xs">
-              Using Forensic Lens heatmap outlines, you identified warped window geometry and garbled signage text. Tagging specific visual categories (*Geometric Distortion* & *Text Garbling*) verifies root causes behind diffusion generation errors.
+              Using Forensic Lens heatmap outlines, you identified an ear geometry anomaly, background line distortions, and garbled text markings. Analyzing these categories verifies the profile avatar as an AI-generated deepfake troll.
             </p>
           </div>
-
+ 
           <div className="flex justify-end gap-3 pt-2">
-            <Button
-              onClick={() => setShowContextCard(true)}
-              className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-emerald-500 hover:bg-emerald-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-emerald-700 font-bold"
-            >
-              Proceed to Case 003
-            </Button>
+            {isCorrect ? (
+              <Button
+                onClick={() => setShowContextCard(true)}
+                className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-emerald-500 hover:bg-emerald-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-emerald-700 font-bold"
+              >
+                Proceed to Case 003
+              </Button>
+            ) : (
+              <Button
+                onClick={handleRetry}
+                className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-red-500 hover:bg-red-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-red-700 font-bold"
+              >
+                Retry Case 002
+              </Button>
+            )}
           </div>
         </motion.div>
 
@@ -303,17 +323,55 @@ export default function Level2Page() {
             </div>
           </div>
 
-          {/* Interactive Inspection Canvas */}
-          <AdvancedInvestigationImage
-            src="https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&q=80&w=1200"
-            alt="Target Investigation Photograph"
-            hotspots={CASE_002_HOTSPOTS}
-            foundArtifacts={foundArtifacts}
-            onHotspotClick={handleHotspotClick}
-            contrastBoost={contrastBoost}
-            gridOverlay={gridOverlay}
-            scanMode={forensicLensMode}
-          />
+          {/* Interactive Inspection Canvas (Facebook Post Style Card) */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-sm shadow-2xl overflow-hidden">
+            {/* Facebook Post Header */}
+            <div className="p-4 md:p-6 border-b border-zinc-800 bg-zinc-900/40 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {/* Avatar Thumbnail */}
+                <div className="w-10 h-10 border border-zinc-800 bg-zinc-950 rounded-full overflow-hidden shrink-0">
+                  <img src="/level3_headshot.png" alt="Alex Mercer avatar" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-heading font-bold text-sm tracking-wide text-zinc-100">Alex Mercer</span>
+                    <span className="text-[10px] text-blue-400 bg-blue-950/60 border border-blue-900/60 px-1.5 py-0.5 rounded-sm font-mono font-bold uppercase">New Account</span>
+                  </div>
+                  <div className="text-xs text-zinc-500 font-mono">@AlexMercer2026 // Just now</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 text-zinc-400 text-xs font-mono bg-zinc-950/60 px-2.5 py-1 border border-zinc-800 rounded-sm">
+                <span>🌐 Facebook Network</span>
+              </div>
+            </div>
+
+            {/* Post Caption */}
+            <div className="p-4 bg-zinc-950/40 border-b border-zinc-800 text-xs md:text-sm text-zinc-200 font-sans">
+              Just uploaded my new official headshot! 📸 Can't wait for the new project launch next week! #FreshStart #TechLife
+            </div>
+
+            {/* Post Media (Inspector Canvas) */}
+            <div className="p-2 bg-zinc-950">
+              <AdvancedInvestigationImage
+                src="/level3_headshot.png"
+                alt="Target Profile Avatar Photograph"
+                hotspots={CASE_002_HOTSPOTS}
+                foundArtifacts={foundArtifacts}
+                onHotspotClick={handleHotspotClick}
+                contrastBoost={contrastBoost}
+                gridOverlay={gridOverlay}
+                scanMode={forensicLensMode}
+              />
+            </div>
+
+            {/* Social Engagement Stats */}
+            <div className="px-6 py-4 bg-zinc-900/20 text-xs font-mono text-zinc-500 flex items-center gap-6">
+              <span>👍 3 Likes</span>
+              <span>💬 0 Comments</span>
+              <span>🔁 0 Shares</span>
+            </div>
+          </div>
 
           <div className="p-4 bg-zinc-900/40 border border-zinc-800 text-zinc-300 rounded-sm text-xs md:text-sm leading-relaxed flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -371,10 +429,8 @@ export default function Level2Page() {
                     </h3>
                     <div className="grid grid-cols-1 gap-2.5">
                       {([
-                        { key: "Credible", label: "🟢 Credible / Supported by Evidence" },
-                        { key: "Needs Verification", label: "🟡 Needs Verification / Unsubstantiated" },
-                        { key: "Misleading", label: "🔴 Misleading / Contains Material Artifacts" },
-                        { key: "Insufficient Evidence", label: "⚪ Insufficient Evidence to Decide" },
+                        { key: "Real Person", label: "🟢 Real Person / Authentic Profile Photo" },
+                        { key: "AI-Generated Avatar", label: "🔴 AI-Generated Avatar / Contains Synthetic Anomalies" },
                       ] as Array<{ key: MILVerdict; label: string }>).map((v) => (
                         <button
                           key={v.key}

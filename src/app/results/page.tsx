@@ -23,9 +23,9 @@ export default function ResultsDashboardPage() {
   const c3Verdict = level3Verdict || sessions['case-003']?.verdict || null;
   const c3Conf = level3Confidence ?? sessions['case-003']?.confidence ?? null;
 
-  const isC1Correct = c1Verdict === "Misleading";
-  const isC2Correct = c2Verdict === "Misleading";
-  const isC3Correct = c3Verdict === "Misleading";
+  const isC1Correct = c1Verdict === "Misleading" || c1Verdict === "AI-Generated";
+  const isC2Correct = c2Verdict === "AI-Generated Avatar";
+  const isC3Correct = c3Verdict === "Video Source B is AI" || c3Verdict === "Misleading";
 
   const correctCount = [isC1Correct, isC2Correct, isC3Correct].filter(Boolean).length;
   const totalCases = 3;
