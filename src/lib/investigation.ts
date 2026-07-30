@@ -18,17 +18,3 @@ export interface InvestigationSession {
   verdict?: string | null;
   confidence?: number | null;
 }
-
-export type MILVerdict =
-  | 'Credible'
-  | 'Needs Verification'
-  | 'Misleading'
-  | 'Insufficient Evidence'
-  | 'Trustworthy'
-  | 'AI-Generated'
-  | 'Real Person'
-  | 'AI-Generated Avatar'
-  | 'Video Source A is AI'
-  | 'Video Source B is AI'
-  | 'Both Authentic'
-  | 'Time Expired';

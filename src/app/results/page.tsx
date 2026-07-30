@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Shield, Target, Activity, AlertTriangle, CheckCircle2, XCircle, ChevronRight, BarChart, FileText, Camera, Video, Sparkles, BookOpen } from "lucide-react";
+import { Shield, Target, Activity, AlertTriangle, CheckCircle2, XCircle, ChevronRight, BarChart, FileText, Camera, Video } from "lucide-react";
 
 export default function ResultsDashboardPage() {
   const {

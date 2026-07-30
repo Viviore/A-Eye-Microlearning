@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Search, Flag, ChevronRight, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, AlertCircle, FileCheck, MousePointer2 } from "lucide-react";
+import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Data Structure
@@ -235,7 +235,6 @@ export default function Level1Page() {
   const [hasOpenedSourceCheck, setHasOpenedSourceCheck] = useState(false);
   
   const [showVerdictModal, setShowVerdictModal] = useState(false);
-  const [selectedVerdict, setSelectedVerdict] = useState<"Real" | "Fake" | null>(null);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
@@ -252,7 +251,10 @@ export default function Level1Page() {
     "Read the verified sources carefully and cross-check them against the claims made in the post.",
     "See that highlighted sentence? It contradicts our verified facts! Click it to flag it as a clue.",
     "Great! Your flagged clues appear on the Evidence Board. Try to find the real clues, but watch out for decoys!",
-    "Once you have enough evidence and checked the sources, click 'File Verdict' to submit your report. Good luck!"
+    "Once you have enough evidence and checked the sources, click 'File Verdict' to submit your report. Good luck!",
+    "Now for the final step! First, select your strongest piece of evidence from the board.",
+    "Great! Now identify the specific manipulation tactic they used to trick people.",
+    "Awesome! We're ready. Click 'Submit Report' to finalize your verdict!"
   ];
 
   const tutorialMascots = [
@@ -262,7 +264,11 @@ export default function Level1Page() {
     "thinking_expression.png",
     "idea_expression.png",
     "confident_expression.png",
-    "idea_expression.png"
+    "idea_expression.png",
+    "determined_expression.png",
+    "thinking_expression.png",
+    "thinking_expression.png",
+    "confident_expression.png"
   ];
   
   useEffect(() => {
@@ -299,11 +305,22 @@ export default function Level1Page() {
     } else if (segment.isDecoy) {
       setFoundDecoys((prev) => [...prev, segment]);
     }
+
+    if (currentRoundIndex === 0 && tutorialStep === 5) {
+      setTutorialStep(6);
+      setTutorialCooldown(2);
+    }
   };
   
   const handleOpenSourceCheck = () => {
     setSourceCheckOpen(!sourceCheckOpen);
-    if (!sourceCheckOpen) setHasOpenedSourceCheck(true);
+    if (!sourceCheckOpen) {
+      setHasOpenedSourceCheck(true);
+      if (currentRoundIndex === 0 && tutorialStep === 3) {
+        setTutorialStep(4);
+        setTutorialCooldown(2);
+      }
+    }
   };
   
   const canFileVerdict = foundClues.length >= currentRound.cluesNeeded && hasOpenedSourceCheck;
@@ -317,8 +334,10 @@ export default function Level1Page() {
     if (evidence.tactic === selectedTactic) {
       setFeedback({
         isSuccess: true,
-        title: "Verdict Correct!",
-        message: "Great job! You correctly identified the fake post and the tactic used."
+        title: currentRoundIndex === 0 ? "TRAINING COMPLETE" : "Verdict Correct!",
+        message: currentRoundIndex === 0 
+          ? "Excellent work, recruit. You've successfully analyzed your first case. The training wheels are off now. Are you ready for the real assignments?"
+          : "Great job! You correctly identified the fake post and the tactic used."
       });
     } else {
       setFeedback({
@@ -338,7 +357,6 @@ export default function Level1Page() {
       setSourceCheckOpen(false);
       setHasOpenedSourceCheck(false);
       setShowVerdictModal(false);
-      setSelectedVerdict(null);
       setSelectedEvidenceId(null);
       setSelectedTactic(null);
       setFeedback(null);
@@ -350,7 +368,6 @@ export default function Level1Page() {
   
   const handleRetryRound = () => {
     setShowVerdictModal(false);
-    setSelectedVerdict(null);
     setSelectedEvidenceId(null);
     setSelectedTactic(null);
     setFeedback(null);
@@ -472,9 +489,9 @@ export default function Level1Page() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-6 p-3 bg-[#FFB800]/10 border-2 border-[#FFB800] wobbly-border flex items-start gap-2 text-sm"
+                className="mt-6 p-3 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] wobbly-border flex items-start gap-2 text-sm text-[#0F172A] -rotate-1 font-medium"
               >
-                <ShieldAlert className="w-5 h-5 text-[#FFB800] shrink-0 mt-0.5" />
+                <ShieldAlert className="w-5 h-5 text-[#0F172A] shrink-0 mt-0.5" />
                 <p><strong>Careful!</strong> You flagged something that looks suspicious but is actually true. That's a decoy. Focus on the core claims.</p>
               </motion.div>
             )}
@@ -539,7 +556,7 @@ export default function Level1Page() {
             </div>
             
             <div className={`mt-6 space-y-4 transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 3 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+              currentRoundIndex === 0 && tutorialStep === 3 ? "z-40" : "z-10"
             }`}
             style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
@@ -547,6 +564,8 @@ export default function Level1Page() {
                 onClick={handleOpenSourceCheck}
                 className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[3px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
                   sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
+                } ${
+                  currentRoundIndex === 0 && tutorialStep === 3 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
                 }`}
                 style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
@@ -576,12 +595,20 @@ export default function Level1Page() {
             </div>
             
             <div className={`mt-6 pt-6 border-t-[3px] border-dashed border-[#0F172A]/30 transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 7 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+              currentRoundIndex === 0 && tutorialStep === 7 ? "z-40" : "z-10"
             }`}>
               <Button
-                onClick={() => setShowVerdictModal(true)}
+                onClick={() => {
+                  setShowVerdictModal(true);
+                  if (currentRoundIndex === 0 && tutorialStep >= 7 && tutorialStep <= 10) {
+                    setTutorialStep(8);
+                    setTutorialCooldown(2);
+                  }
+                }}
                 disabled={!canFileVerdict}
-                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-white font-heading uppercase tracking-widest border-[3px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                className={`w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[3px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
+                  currentRoundIndex === 0 && tutorialStep === 7 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
+                }`}
                 style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
                 {canFileVerdict ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
@@ -617,8 +644,16 @@ export default function Level1Page() {
                         {foundClues.map(clue => (
                           <button
                             key={clue.id}
-                            onClick={() => setSelectedEvidenceId(clue.id)}
-                            className={`w-full p-3 border-[3px] text-left transition-all ${
+                            onClick={() => {
+                              setSelectedEvidenceId(clue.id);
+                              if (currentRoundIndex === 0 && tutorialStep === 8) {
+                                setTutorialStep(9);
+                                setTutorialCooldown(2);
+                              }
+                            }}
+                            className={`w-full p-3 border-[3px] text-left transition-all cursor-pointer ${
+                              currentRoundIndex === 0 && tutorialStep === 8 && !selectedEvidenceId ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.01]" : ""
+                            } ${
                               selectedEvidenceId === clue.id
                                 ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
                                 : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
@@ -636,22 +671,38 @@ export default function Level1Page() {
                       <div className="pt-4 border-t-[3px] border-dashed border-[#0F172A]/30 mt-4">
                         <h3 className="font-bold text-xl mb-3 font-heading">Step 2: Identify the manipulation tactic:</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {currentRound.tacticOptions.map(tactic => (
-                            <button
-                              key={tactic}
-                              onClick={() => setSelectedTactic(tactic)}
-                              onMouseEnter={() => setHoveredTactic(tactic)}
-                              onMouseLeave={() => setHoveredTactic(null)}
-                              className={`p-3 border-[3px] font-bold font-sans transition-all text-[#0F172A] ${
-                                selectedTactic === tactic
-                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
-                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                              }`}
-                              style={{ borderRadius: "15px 255px 15px 225px / 225px 15px 255px 15px" }}
-                            >
-                              {tactic}
-                            </button>
-                          ))}
+                          {currentRound.tacticOptions.map(tactic => {
+                            const evidence = foundClues.find(c => c.id === selectedEvidenceId);
+                            const isTutorialWrongTactic = currentRoundIndex === 0 && evidence && tactic !== evidence.tactic;
+                            
+                            return (
+                              <button
+                                key={tactic}
+                                disabled={isTutorialWrongTactic}
+                                onClick={() => {
+                                  setSelectedTactic(tactic);
+                                  if (currentRoundIndex === 0 && tutorialStep === 9) {
+                                    setTutorialStep(10);
+                                    setTutorialCooldown(2);
+                                  }
+                                }}
+                                onMouseEnter={() => setHoveredTactic(tactic)}
+                                onMouseLeave={() => setHoveredTactic(null)}
+                                className={`p-3 border-[3px] font-bold font-sans transition-all text-[#0F172A] ${
+                                  isTutorialWrongTactic ? "opacity-40 cursor-not-allowed bg-[#FAFAFA] border-dashed border-[#0F172A]/30" : "cursor-pointer"
+                                } ${
+                                  currentRoundIndex === 0 && tutorialStep === 9 && selectedEvidenceId && !selectedTactic && !isTutorialWrongTactic ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
+                                } ${
+                                  selectedTactic === tactic
+                                    ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
+                                    : !isTutorialWrongTactic ? "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]" : ""
+                                }`}
+                                style={{ borderRadius: "15px 255px 15px 225px / 225px 15px 255px 15px" }}
+                              >
+                                {tactic}
+                              </button>
+                            );
+                          })}
                         </div>
                         
                         <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
@@ -674,7 +725,9 @@ export default function Level1Page() {
                       <Button
                         onClick={handleSubmitVerdict}
                         disabled={!selectedEvidenceId || !selectedTactic}
-                        className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        className={`flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
+                          currentRoundIndex === 0 && tutorialStep === 10 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
+                        }`}
                         style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                       >
                         Submit Report
@@ -713,11 +766,13 @@ export default function Level1Page() {
                     {feedback.isSuccess ? (
                       <Button
                         onClick={handleNextRound}
-                        className="w-full h-16 bg-[#FFB800] text-white text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all"
+                        className={`w-full h-16 text-white text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all ${
+                          currentRoundIndex === 0 ? "bg-[#10B981] hover:bg-[#10B981]/90" : "bg-[#FFB800] hover:bg-[#FFB800]/90"
+                        }`}
                         style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                       >
                         {currentRoundIndex < TEXT_ROUNDS.length - 1 ? (
-                          <span className="flex items-center justify-center">Next Round <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
+                          <span className="flex items-center justify-center">{currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"} <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
                         ) : (
                           <span className="flex items-center justify-center">Complete Case 001 <Trophy className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
                         )}
@@ -740,15 +795,16 @@ export default function Level1Page() {
       </AnimatePresence>
 
       {/* Floating Tutorial Helper (Bottom Right) */}
+      {/* Tutorial Overlay */}
       <AnimatePresence mode="wait">
-        {currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length && !showVerdictModal && (
+        {currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length && (tutorialStep >= 8 ? showVerdictModal : !showVerdictModal) && !feedback && (
           <motion.div 
             key={tutorialStep <= 2 || tutorialStep === 5 ? "pos-right" : "pos-left"}
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             className={`fixed bottom-4 md:bottom-8 z-50 flex items-end gap-3 max-w-[95vw] md:max-w-2xl ${
-              tutorialStep <= 2 || tutorialStep === 5
+              tutorialStep <= 2 || tutorialStep === 5 || tutorialStep === 8 || tutorialStep === 9
                 ? "right-4 md:right-8 flex-row-reverse" 
                 : "left-4 md:left-8 flex-row"
             }`}
@@ -769,7 +825,7 @@ export default function Level1Page() {
             >
               {/* Pointer Triangle (Desktop) */}
               <div className={`absolute bottom-8 w-0 h-0 border-y-[12px] border-y-transparent border-r-[14px] border-r-[#0F172A] hidden sm:block transition-all duration-300 ${
-                tutorialStep <= 2 || tutorialStep === 5 ? "-right-[14px] rotate-180" : "-left-[14px]"
+                tutorialStep <= 2 || tutorialStep === 5 || tutorialStep === 8 || tutorialStep === 9 ? "-right-[14px] rotate-180" : "-left-[14px]"
               }`}>
                 <div className="absolute -left-[10px] -top-[9px] w-0 h-0 border-y-[9px] border-y-transparent border-r-[11px] border-r-white z-10" />
               </div>
@@ -792,25 +848,42 @@ export default function Level1Page() {
               </p>
               
               <div className="flex justify-between items-center border-t-[3px] border-dashed border-[#0F172A]/20 pt-3">
-                <span className="text-xs md:text-sm font-sans font-bold text-[#0F172A]/60 uppercase tracking-widest">
-                  Step {tutorialStep} / {tutorialDialogs.length}
-                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                  <span className="text-xs md:text-sm font-sans font-bold text-[#0F172A]/60 uppercase tracking-widest">
+                    Step {tutorialStep} / {tutorialDialogs.length}
+                  </span>
+                  <button 
+                    onClick={handleNextRound} 
+                    className="text-xs md:text-sm font-sans font-bold text-[#0F172A]/40 hover:text-[#0F172A] underline decoration-[#0F172A]/30 hover:decoration-[#0F172A] underline-offset-4 transition-colors uppercase tracking-widest text-left"
+                  >
+                    Skip Tutorial
+                  </button>
+                </div>
                 <Button 
                   onClick={() => setTutorialStep(prev => prev + 1)}
-                  disabled={tutorialCooldown > 0}
+                  disabled={tutorialCooldown > 0 || [3, 5, 7, 8, 9, 10].includes(tutorialStep)}
                   className="bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-base md:text-lg uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:bg-[#1D2A3C] disabled:text-white/50 disabled:border-solid disabled:shadow-none h-10 px-4 md:px-6"
                   style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                 >
-                  {tutorialCooldown > 0 
-                    ? `Wait ${tutorialCooldown}s` 
-                    : tutorialStep === tutorialDialogs.length ? "Got it!" : "Next"} 
-                  {tutorialCooldown === 0 && <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2" strokeWidth={2.5} />}
+                  {[3, 5, 7, 8, 9, 10].includes(tutorialStep) 
+                    ? "Action Required"
+                    : tutorialCooldown > 0 
+                      ? `Wait ${tutorialCooldown}s` 
+                      : tutorialStep === tutorialDialogs.length ? "Got it!" : "Next"} 
+                  {tutorialCooldown === 0 && ![3, 5, 7, 8, 9, 10].includes(tutorialStep) && <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2" strokeWidth={2.5} />}
                 </Button>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Tutorial z-index fix for Verdict Modal overlay */}
+      {currentRoundIndex === 0 && tutorialStep >= 8 && showVerdictModal && (
+        <style dangerouslySetInnerHTML={{__html: `
+          .fixed.inset-0.z-50 { z-index: 40 !important; }
+        `}} />
+      )}
 
     </main>
   );
