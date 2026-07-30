@@ -1,530 +1,775 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
-import { MILVerdict } from "@/lib/investigation";
-import { ContextCardModal } from "@/components/game/ContextCardModal";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Terminal, ShieldAlert, CheckCircle2, XCircle, Timer, FileText, Sparkles, AlertCircle, Edit3, Highlighter, Search, Database, Check, X, ChevronRight, HelpCircle, AlertTriangle } from "lucide-react";
-import Link from "next/link";
+import { Search, Flag, ChevronRight, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, AlertCircle, FileCheck, MousePointer2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-interface ClaimDocumentSegment {
+// Data Structure
+type TextSegment = {
   id: string;
   text: string;
-  isClaim: boolean;
-  claimTitle?: string;
-  sourceQuery?: string;
-  verificationResult?: {
-    status: "FABRICATED" | "UNVERIFIED" | "FACTUAL";
-    alertTitle: string;
-    alertDetail: string;
-  };
-}
+  isClue?: boolean;
+  isDecoy?: boolean;
+  explanation?: string;
+};
 
-const DOCUMENT_SEGMENTS: ClaimDocumentSegment[] = [
+type TextRound = {
+  id: number;
+  difficulty: "Tutorial" | "Easy" | "Medium" | "Hard";
+  badgeColor: string;
+  title: string;
+  postAuthor: string;
+  postHandle: string;
+  postTime: string;
+  segments: TextSegment[];
+  sourceCheckContent: React.ReactNode;
+  correctVerdict: "Real" | "Fake";
+  cluesNeeded: number;
+};
+
+const TEXT_ROUNDS: TextRound[] = [
   {
-    id: "seg_1",
-    text: "🚨 TRENDING TECH ALERT 🚨\n\nJust saw this viral post from tech page @FutureTechDaily:\n\n\"",
-    isClaim: false,
+    id: 0,
+    difficulty: "Tutorial",
+    badgeColor: "bg-[#00E5FF]/20 text-[#00E5FF] border-[#00E5FF]",
+    title: "Barangay Relief Goods",
+    postAuthor: "Concerned Citizen",
+    postHandle: "@truthseeker99",
+    postTime: "2 hrs ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 1, // Tutorial just needs 1 clue
+    segments: [
+      { id: "t-1", text: "ALERT! Our barangay is giving out FAKE relief goods to flood victims! " },
+      { 
+        id: "t-2", 
+        text: "A barangay official said the goods are 'expired and unsafe.' ", 
+        isClue: true, 
+        explanation: "Vague attribution: Which official? Real alerts name the source." 
+      },
+      { id: "t-3", text: "Share this now before more people get hurt!" }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Official Barangay Page:</strong> "No relief goods have been distributed yet. Distribution starts tomorrow."</p>
+        <p className="text-[#0F172A]"><strong>Local News:</strong> No reports of expired goods in this area.</p>
+      </div>
+    )
   },
   {
-    id: "claim_1",
-    text: "Dr. Aris Thorne from MIT just published a breakthrough study proving that new bioluminescent street clovers produce 5,000 lumens of continuous light.",
-    isClaim: true,
-    claimTitle: "Claim #1: Dr. Aris Thorne / 5,000 Lumens MIT Study",
-    sourceQuery: "Query MIT Directory & Academic Journal Database for 'Dr. Aris Thorne'",
-    verificationResult: {
-      status: "FABRICATED",
-      alertTitle: "❌ Database Alert: Person & Study Do Not Exist",
-      alertDetail: "MIT Directory query returned ZERO results for 'Dr. Aris Thorne'. Furthermore, physical optics limits plant luminescence output to <0.8% of a standard LED bulb.",
-    },
+    id: 1,
+    difficulty: "Easy",
+    badgeColor: "bg-green-100 text-green-700 border-green-700",
+    title: "Scam Scholarship Post",
+    postAuthor: "University Admissions Update",
+    postHandle: "@UniScholarshipsPh",
+    postTime: "4 hrs ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    segments: [
+      { 
+        id: "1-1", 
+        text: "ALERT! Ateneo de Manila University is opening 50 FREE scholarship slots for incoming students! ", 
+        isDecoy: true,
+        explanation: "The university name is real, but scammers often use real institutions to build trust."
+      },
+      { 
+        id: "1-2", 
+        text: "To secure your slot, applicants must first send a ₱500 'processing fee' to GCash number 09123456789. ", 
+        isClue: true,
+        explanation: "Real scholarships never ask for a processing fee via personal mobile wallets."
+      },
+      { 
+        id: "1-3", 
+        text: "Hurry and send your payment before tonight's deadline to guarantee your future! ", 
+        isClue: true,
+        explanation: "Artificial urgency ('tonight's deadline') is a classic scam tactic to rush victims."
+      },
+      { 
+        id: "1-4", 
+        text: "PM us your receipt. No official website link available at the moment.", 
+        isClue: true,
+        explanation: "Legitimate scholarships are always hosted on the official university domain, not via PM."
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Official University Website:</strong> "We do not ask for GCash processing fees. All scholarship applications are processed through our official portal."</p>
+        <p className="text-[#0F172A]"><strong>Scam Alert Database:</strong> Mobile number 09123456789 has been flagged multiple times for 'Advance Fee' fraud.</p>
+      </div>
+    )
   },
   {
-    id: "seg_2",
-    text: "\" According to their post, \"",
-    isClaim: false,
+    id: 2,
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+    title: "Fake Celebrity Endorsement",
+    postAuthor: "Health & Wellness Daily",
+    postHandle: "@HealthyLifePh",
+    postTime: "12 hrs ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    segments: [
+      { id: "2-1", text: "Have you tried this new miracle cure? " },
+      { 
+        id: "2-2", 
+        text: "Even Dingdong Dantes swears by it! ", 
+        isDecoy: true,
+        explanation: "The celebrity's name is correctly used, but their endorsement is entirely fabricated."
+      },
+      { 
+        id: "2-3", 
+        text: "\"I was struggling with high blood sugar until I found GlucoCure Max. It completely reversed my diabetes in 2 weeks!\" ", 
+        isClue: true,
+        explanation: "The quote is entirely fabricated and doesn't appear on any of his official channels."
+      },
+      { 
+        id: "2-4", 
+        text: "This FDA-approved herbal supplement is selling out fast. ", 
+        isClue: true,
+        explanation: "Checking the FDA database reveals this product is NOT registered."
+      },
+      { 
+        id: "2-5", 
+        text: "Buy it now exclusively at this unverified Shopify link: buy-gluco-max-now.shop.co", 
+        isClue: true,
+        explanation: "The link points to a sketchy, unverified storefront rather than an official brand page or pharmacy."
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Celebrity Official Page:</strong> "I am not endorsing any diabetes supplement. Please beware of fake ads using my name."</p>
+        <p className="text-[#0F172A]"><strong>FDA Philippines Database:</strong> 0 results found for "GlucoCure Max". Not a registered food or drug product.</p>
+      </div>
+    )
   },
   {
-    id: "claim_2",
-    text: "municipalities can replace all city streetlights with these clovers next month, cutting urban electricity expenditure to absolute zero!",
-    isClaim: true,
-    claimTitle: "Claim #2: Zero-Cost City Streetlight Replacement",
-    sourceQuery: "Cross-reference Municipal Infrastructure Grid Standards & Energy Audits",
-    verificationResult: {
-      status: "FABRICATED",
-      alertTitle: "❌ Infrastructure Alert: Physically Impossible Scale",
-      alertDetail: "No municipal permit or grid authority has approved plant light integration. Current transgenic plant strains require dark-adapted laboratory cameras to even detect light emission.",
-    },
-  },
-  {
-    id: "seg_3",
-    text: "\" While geneticists have successfully introduced luciferase genes into plant tissue for research, ",
-    isClaim: false,
-  },
-  {
-    id: "claim_3",
-    text: "the National Science Foundation issued a statement confirming that commercial deployment of streetlights remains unfeasible.",
-    isClaim: true,
-    claimTitle: "Claim #3: NSF Scientific Verification Statement",
-    sourceQuery: "Query National Science Foundation Public Release Registry",
-    verificationResult: {
-      status: "FACTUAL",
-      alertTitle: "✅ Source Verified: NSF Official Statement",
-      alertDetail: "The NSF public registry confirms laboratory luciferase research is genuine, but cautions against viral exaggerated commercial claims.",
-    },
-  },
+    id: 3,
+    difficulty: "Hard",
+    badgeColor: "bg-[#FFB800]/20 text-[#FFB800] border-[#FFB800]",
+    title: "Fake Official Advisory",
+    postAuthor: "Provincial Gov Updates",
+    postHandle: "@ProvGov_Updates",
+    postTime: "1 hr ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    segments: [
+      { 
+        id: "3-1", 
+        text: "Due to the incoming Super Typhoon, ", 
+        isDecoy: true,
+        explanation: "The typhoon itself is a real, ongoing weather event. Flagging the typhoon is wrong, only the suspension claim is fake."
+      },
+      { 
+        id: "3-2", 
+        text: "all classes (all levels) and government work in the province are SUSPENDED tomorrow. ", 
+        isClue: true,
+        explanation: "No matching post exists on the official government social media account."
+      },
+      {
+        id: "3-3",
+        text: "Per Memo No. 45-B, signed by the Mayor. ",
+        isClue: true,
+        explanation: "The memo number doesn't match official records (checkable via Source Check)."
+      },
+      {
+        id: "3-4",
+        text: "Stay safe and stay indoors! Share to inform others."
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Official Gov PIO Page:</strong> "No suspension of classes has been announced yet. We are monitoring the weather."</p>
+        <p className="text-[#0F172A]"><strong>Memo Database:</strong> Memo No. 45-B was issued last year for a completely different event.</p>
+      </div>
+    )
+  }
 ];
 
 export default function Level1Page() {
   const router = useRouter();
-  const foundArtifacts = useGameStore((state) => state.level1FoundArtifacts);
-  const discoverEvidence = useGameStore((state) => state.discoverEvidence);
-  const addFoundArtifact = useGameStore((state) => state.addLevel1Artifact);
-  const setVerdict = useGameStore((state) => state.setLevel1Verdict);
-  const setConfidence = useGameStore((state) => state.setLevel1Confidence);
   const completeLevel = useGameStore((state) => state.completeLevel);
-  const resetLevel1 = useGameStore((state) => state.resetLevel1);
+  
+  const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0);
+  const currentRound = TEXT_ROUNDS[currentRoundIndex];
+  
+  const [flaggedIds, setFlaggedIds] = useState<Set<string>>(new Set());
+  const [foundClues, setFoundClues] = useState<TextSegment[]>([]);
+  const [foundDecoys, setFoundDecoys] = useState<TextSegment[]>([]);
+  
+  const [sourceCheckOpen, setSourceCheckOpen] = useState(false);
+  const [hasOpenedSourceCheck, setHasOpenedSourceCheck] = useState(false);
+  
+  const [showVerdictModal, setShowVerdictModal] = useState(false);
+  const [selectedVerdict, setSelectedVerdict] = useState<"Real" | "Fake" | null>(null);
+  const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
+  
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
+  
+  const [tutorialStep, setTutorialStep] = useState(1);
+  const [tutorialCooldown, setTutorialCooldown] = useState(3);
+  
+  const tutorialDialogs = [
+    "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts.",
+    "Read the post on the left. If a sentence looks like a scam or fake news, click on it to flag it as evidence.",
+    "Your flagged clues will appear on the Evidence Board on the right. Try to find the real clues, but watch out for decoys!",
+    "Always click 'Open Source Check' to verify claims against real facts before making a decision.",
+    "Once you have enough evidence and checked the sources, click 'File Verdict' to submit your report. Good luck!"
+  ];
 
-  // Redaction Pen & Fact Checker Drawer State
-  const [selectedSegment, setSelectedSegment] = useState<ClaimDocumentSegment | null>(null);
-  const [queriedClaimIds, setQueriedClaimIds] = useState<string[]>([]);
-  const [redactedClaimIds, setRedactedClaimIds] = useState<string[]>([]);
-  const [score, setScore] = useState(0);
-
-  // Final Report & Certainty Calibration State
-  const [selectedVerdict, setSelectedVerdict] = useState<MILVerdict | "Time Expired" | null>(null);
-  const [confidenceScore, setConfidenceScore] = useState([80]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showResults, setShowResults] = useState(false);
-  const [showContextCard, setShowContextCard] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [isTimeUp, setIsTimeUp] = useState(false);
-
-  const totalFabricatedClaims = DOCUMENT_SEGMENTS.filter(s => s.isClaim && s.verificationResult?.status === "FABRICATED").length;
-
-  const handleRetry = () => {
-    resetLevel1();
-    setSelectedSegment(null);
-    setQueriedClaimIds([]);
-    setRedactedClaimIds([]);
-    setScore(0);
-    setTimeLeft(60);
-    setIsTimeUp(false);
-    setShowResults(false);
-    setSelectedVerdict(null);
-    setConfidenceScore([80]);
-  };
-
-  // Timer logic
+  const tutorialMascots = [
+    "confident_expression.png",
+    "determined_expression.png",
+    "confident_expression.png",
+    "thinking_expression.png",
+    "idea_expression.png"
+  ];
+  
   useEffect(() => {
-    if (showResults || isSubmitting) return;
-
-    if (timeLeft > 0) {
-      const timerId = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
+    if (currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length) {
+      setTutorialCooldown(3);
+      const interval = setInterval(() => {
+        setTutorialCooldown(prev => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
-      return () => clearTimeout(timerId);
-    } else if (timeLeft === 0 && !isTimeUp) {
-      setIsTimeUp(true);
+      return () => clearInterval(interval);
     }
-  }, [timeLeft, showResults, isSubmitting, isTimeUp]);
-
-  // Handle clicking a claim text segment
-  const handleSegmentClick = (segment: ClaimDocumentSegment) => {
-    if (!segment.isClaim) return;
-    setSelectedSegment(segment);
+  }, [tutorialStep, currentRoundIndex, tutorialDialogs.length]);
+  
+  const handleFlagSegment = (segment: TextSegment) => {
+    if (flaggedIds.has(segment.id)) return;
+    
+    setFlaggedIds((prev) => new Set(prev).add(segment.id));
+    
+    if (segment.isClue) {
+      setFoundClues((prev) => [...prev, segment]);
+    } else if (segment.isDecoy) {
+      setFoundDecoys((prev) => [...prev, segment]);
+    }
   };
-
-  // Execute Source Fact Check Query in Drawer
-  const handleExecuteQuery = (segment: ClaimDocumentSegment) => {
-    if (!queriedClaimIds.includes(segment.id)) {
-      setQueriedClaimIds([...queriedClaimIds, segment.id]);
-    }
-
-    if (segment.verificationResult?.status === "FABRICATED" && !redactedClaimIds.includes(segment.id)) {
-      const updatedRedactions = [...redactedClaimIds, segment.id];
-      setRedactedClaimIds(updatedRedactions);
-      setScore((prev) => prev + 250);
-
-      addFoundArtifact(segment.id);
-      discoverEvidence("case-001", {
-        id: segment.id,
-        title: segment.claimTitle || "Fabricated Claim",
-        description: segment.verificationResult.alertDetail,
-        category: "source_verification",
-        explanation: segment.verificationResult.alertDetail,
+  
+  const handleOpenSourceCheck = () => {
+    setSourceCheckOpen(!sourceCheckOpen);
+    if (!sourceCheckOpen) setHasOpenedSourceCheck(true);
+  };
+  
+  const canFileVerdict = foundClues.length >= currentRound.cluesNeeded && hasOpenedSourceCheck;
+  
+  const handleSubmitVerdict = () => {
+    if (!selectedVerdict || !selectedEvidenceId) return;
+    
+    const evidence = foundClues.find(c => c.id === selectedEvidenceId);
+    if (!evidence) return;
+    
+    if (selectedVerdict === currentRound.correctVerdict) {
+      setFeedback({
+        isSuccess: true,
+        title: "Verdict Correct!",
+        message: "Great job! You correctly identified the fake post and provided solid evidence to back it up."
+      });
+    } else {
+      setFeedback({
+        isSuccess: false,
+        title: "Incorrect Verdict",
+        message: "That wasn't quite right. Review your clues and try again. Don't fall for the decoys!"
       });
     }
   };
-
-  const handleFinalSubmit = () => {
-    if (!selectedVerdict) return;
-
-    setIsSubmitting(true);
-    setVerdict(selectedVerdict);
-    setConfidence(confidenceScore[0]);
-    completeLevel(1);
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setShowResults(true);
-    }, 2000);
+  
+  const handleNextRound = () => {
+    if (currentRoundIndex < TEXT_ROUNDS.length - 1) {
+      setCurrentRoundIndex(prev => prev + 1);
+      setFlaggedIds(new Set());
+      setFoundClues([]);
+      setFoundDecoys([]);
+      setSourceCheckOpen(false);
+      setHasOpenedSourceCheck(false);
+      setShowVerdictModal(false);
+      setSelectedVerdict(null);
+      setSelectedEvidenceId(null);
+      setFeedback(null);
+    } else {
+      completeLevel(1);
+      router.push('/level/2');
+    }
+  };
+  
+  const handleRetryRound = () => {
+    setShowVerdictModal(false);
+    setSelectedVerdict(null);
+    setSelectedEvidenceId(null);
+    setFeedback(null);
+    // Keep the clues but reset verdict!
   };
 
-  // Results Screen
-  if (showResults) {
-    const isCorrect = selectedVerdict === "Misleading" || selectedVerdict === "AI-Generated";
-
-    return (
-      <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex items-center justify-center p-6 relative overflow-hidden font-sans">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:64px_64px]" />
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="z-10 w-full max-w-2xl bg-zinc-900/90 backdrop-blur-md border border-zinc-800 p-8 md:p-12 shadow-2xl rounded-sm space-y-6"
-        >
-          <div className="flex items-center gap-3 border-b border-zinc-800 pb-6">
-            <CheckCircle2 className="w-12 h-12 text-emerald-400" />
-            <div>
-              <h2 className="text-3xl font-black font-heading tracking-widest uppercase">
-                Source Fact-Check Verified
-              </h2>
-              <p className="text-zinc-400 font-mono text-xs uppercase tracking-widest mt-1">
-                Fact Checker Audit Complete — Total Score: {score} PTS
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            <div className="p-4 bg-zinc-950/60 border border-zinc-800 rounded-sm">
-              <div className="text-[10px] text-zinc-500 font-mono uppercase mb-1">Your Verdict</div>
-              <div className={`font-bold text-sm ${isCorrect ? "text-emerald-400" : "text-zinc-200"}`}>{selectedVerdict}</div>
-            </div>
-            <div className="p-4 bg-zinc-950/60 border border-zinc-800 rounded-sm">
-              <div className="text-[10px] text-zinc-500 font-mono uppercase mb-1">Claims Cross-Referenced</div>
-              <div className="font-bold text-emerald-400 font-mono text-base">{redactedClaimIds.length} / {totalFabricatedClaims} Verified</div>
-            </div>
-            <div className="p-4 bg-zinc-950/60 border border-zinc-800 rounded-sm">
-              <div className="text-[10px] text-zinc-500 font-mono uppercase mb-1">Certainty Rating</div>
-              <div className="font-bold text-emerald-400 font-mono text-base">{confidenceScore[0]}%</div>
-            </div>
-          </div>
-
-          <div className="p-4 bg-zinc-950/80 border border-zinc-800 rounded-sm space-y-2">
-            <h3 className="text-sm font-bold text-zinc-100 uppercase tracking-wide flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-400" /> Fact-Checking Lesson
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-xs">
-              Instead of guessing based on writing style, you cross-referenced claims against institutional directories (MIT) and physics standards. Fabricated names like <em>"Dr. Aris Thorne"</em> and impossible metrics were caught through evidence verification!
-            </p>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-2">
-            {isCorrect ? (
-              <Button
-                onClick={() => setShowContextCard(true)}
-                className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-emerald-500 hover:bg-emerald-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-emerald-700 font-bold"
-              >
-                Proceed to Case 002
-              </Button>
-            ) : (
-              <Button
-                onClick={handleRetry}
-                className="h-12 px-6 text-sm font-heading tracking-widest uppercase bg-red-500 hover:bg-red-400 text-zinc-950 rounded-none border-b-4 border-r-4 border-red-700 font-bold"
-              >
-                Retry Case 001
-              </Button>
-            )}
-          </div>
-        </motion.div>
-
-        <ContextCardModal
-          isOpen={showContextCard}
-          title="Fact Checking & Source Verification"
-          context="Digital misinformation often fabricates authoritative names and studies. Cross-referencing claims against registered databases equips you to uncover synthetic hoaxes."
-          onProceed={() => router.push("/level/2")}
-        />
-      </main>
-    );
-  }
-
-  // Transmitting Screen
-  if (isSubmitting) {
-    return (
-      <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex items-center justify-center relative overflow-hidden font-sans">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:64px_64px]" />
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center z-10 p-12 max-w-lg w-full">
-          <div className="flex justify-center mb-8 relative">
-            <div className="absolute inset-0 bg-emerald-500/20 blur-2xl rounded-full" />
-            <ShieldAlert className="w-16 h-16 text-emerald-500 relative z-10" />
-          </div>
-          <h2 className="text-2xl font-bold mb-3 font-heading tracking-widest text-emerald-400 uppercase">
-            Transmitting Source Audit Report
-          </h2>
-          <p className="text-zinc-400 font-mono text-xs uppercase tracking-widest mb-12">
-            Verifying evidence cross-references...
-          </p>
-          <div className="w-full h-1 bg-zinc-900 overflow-hidden">
-            <motion.div className="h-full bg-emerald-500" initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 1.8, ease: "linear" }} />
-          </div>
-        </motion.div>
-      </main>
-    );
-  }
-
   return (
-    <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex justify-center p-4 md:p-8 relative overflow-hidden font-sans selection:bg-emerald-500/30 pb-32">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:64px_64px] pointer-events-none" />
-
-      <div className="w-full max-w-[1200px] z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-        {/* Left Column: Redaction Pen Document Workspace */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-
-          {/* Header Bar */}
+    <main 
+      className="min-h-full bg-[#FAFAFA] text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
+      style={{
+        backgroundImage: "radial-gradient(#1D2A3C 1.5px, transparent 1.5px)",
+        backgroundSize: "24px 24px"
+      }}
+    >
+      {/* Global Tutorial Backdrop removed so UI is not dimmed */}
+      
+      <div className="w-full max-w-[1200px] z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-20">
+        
+        {/* Left Column: Social Feed */}
+        <div className="lg:col-span-7 flex flex-col gap-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
             <div className="flex items-center gap-3">
-              <div className="px-3 py-1.5 border border-zinc-800 bg-zinc-900/60 backdrop-blur-md rounded-sm text-emerald-400 font-mono text-xs uppercase tracking-widest flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-emerald-400" />
-                <span>Case 001 // Redaction Pen & Fact Checker</span>
+              <div 
+                className="px-3 py-1.5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FAFAFA] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2"
+                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              >
+                <FileText className="w-4 h-4 text-[#FFB800]" />
+                <span>Case 001 // Text Feed</span>
               </div>
-              <span className="px-2.5 py-0.5 rounded-sm font-mono text-xs font-bold uppercase bg-emerald-500 text-zinc-950">
-                Score: {score} PTS
+              <span 
+                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] ${currentRound.badgeColor}`}
+                style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+              >
+                {currentRound.difficulty}
               </span>
             </div>
-
-            {/* Claims Found Counter */}
-            <div className="text-xs font-mono text-zinc-300 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-sm flex items-center gap-2">
-              <Database className="w-4 h-4 text-emerald-400" />
-              <span>Evidence Tagged: <strong>{redactedClaimIds.length} / {totalFabricatedClaims} Fabricated Claims</strong></span>
+            
+            <div className="text-sm font-bold font-mono uppercase text-[#0F172A]/60">
+              Round {currentRoundIndex + 1} / {TEXT_ROUNDS.length}
             </div>
           </div>
-
-          {/* Document Inspection Canvas */}
-          <div className="bg-zinc-905 border border-zinc-800 rounded-sm shadow-2xl overflow-hidden">
-            {/* Social Post Header */}
-            <div className="p-4 md:p-6 border-b border-zinc-800 bg-zinc-900/40 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold font-mono text-sm rounded-full shrink-0">
-                  FT
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-heading font-bold text-sm tracking-wide text-zinc-100">Future Tech Daily</span>
-                    <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded-sm font-mono font-bold uppercase">Influencer</span>
-                  </div>
-                  <div className="text-xs text-zinc-500 font-mono">@FutureTechDaily // Trending now</div>
-                </div>
-              </div>
-              
-              <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-950/60 px-2.5 py-1 border border-emerald-800/60 rounded-sm flex items-center gap-1">
-                <Highlighter className="w-3.5 h-3.5" /> Claim Highlighter Active
-              </span>
+          
+          <div 
+            className="bg-[#FFB800] p-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 mt-4 relative"
+            style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+          >
+            {/* Decorative Tack */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
             </div>
 
-            {/* Social Post Content - Clickable Claims */}
-            <div className="p-6 bg-zinc-950/60 text-base md:text-lg leading-relaxed text-zinc-100 font-sans selection:bg-emerald-500/45 space-y-2 border-b border-zinc-800 whitespace-pre-line">
-              {DOCUMENT_SEGMENTS.map((seg) => {
-                if (!seg.isClaim) {
-                  return <span key={seg.id} className="text-zinc-400">{seg.text}</span>;
-                }
-
-                const isQueried = queriedClaimIds.includes(seg.id);
-                const isRedacted = redactedClaimIds.includes(seg.id);
-                const isSelected = selectedSegment?.id === seg.id;
-
+            <h3 className="font-heading font-bold text-2xl mb-1 flex items-center gap-2 text-[#0F172A]">
+              <Search className="w-5 h-5 text-[#FFB800]" strokeWidth={2.5} /> Objective:
+            </h3>
+            <p className="text-[17px] text-[#0F172A]/90 font-medium font-sans leading-relaxed">
+              Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
+              Find at least <strong className="text-[#FFB800] font-bold underline decoration-wavy decoration-1 underline-offset-4">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong> to proceed.
+            </p>
+          </div>
+          
+          {/* Mock Social Post */}
+          <div 
+            className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] -rotate-1 ${
+              currentRoundIndex === 0 && tutorialStep === 2 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+            }`}
+            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+          >
+            <div className="flex items-center gap-4 mb-6 border-b-[3px] border-dashed border-[#0F172A]/30 pb-4">
+              <div 
+                className="w-14 h-14 bg-[#1D2A3C] border-[3px] border-[#0F172A] flex items-center justify-center -rotate-3"
+                style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+              >
+                <User className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} />
+              </div>
+              <div>
+                <h4 className="font-heading font-bold text-2xl leading-tight text-[#0F172A] tracking-wide">{currentRound.postAuthor}</h4>
+                <p className="text-[15px] font-sans font-bold text-[#0F172A]/60">{currentRound.postHandle} • {currentRound.postTime}</p>
+              </div>
+            </div>
+            
+            <div className="text-xl md:text-2xl font-sans leading-relaxed text-[#0F172A]">
+              {currentRound.segments.map((segment) => {
+                const isFlagged = flaggedIds.has(segment.id);
+                const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0;
                 return (
                   <span
-                    key={seg.id}
-                    onClick={() => handleSegmentClick(seg)}
-                    className={`cursor-pointer transition-all duration-200 rounded px-1.5 py-0.5 inline-block mx-0.5 ${
-                      isRedacted
-                        ? "bg-red-950/90 border-b-2 border-red-500 text-red-200 font-medium"
-                        : isSelected
-                        ? "bg-emerald-950/80 border-b-2 border-emerald-500 text-emerald-200 font-medium"
-                        : isQueried
-                        ? "bg-zinc-800/85 text-zinc-200"
-                        : "hover:bg-zinc-800/90 hover:text-emerald-300 border-b border-dashed border-zinc-700"
+                    key={segment.id}
+                    onClick={() => handleFlagSegment(segment)}
+                    className={`cursor-pointer transition-all px-1.5 py-0.5 inline-block mb-2 relative mx-0.5 ${
+                      isFlagged 
+                        ? (segment.isClue 
+                            ? "bg-[#FFB800] border-[3px] border-[#0F172A] font-bold shadow-[2px_2px_0px_0px_#0F172A] rotate-1" 
+                            : segment.isDecoy 
+                              ? "bg-[#FFB800]/20 border-b-[3px] border-[#FFB800] line-through opacity-70 -rotate-1"
+                              : "bg-[#1D2A3C] opacity-50 line-through decoration-[#0F172A]/40")
+                        : showTutorialPulse
+                          ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800] animate-pulse"
+                          : "hover:bg-[#FFB800]/50 hover:border-b-[3px] hover:border-dashed hover:border-[#0F172A]"
                     }`}
-                    title="Click claim to open Fact Checker Inspection Drawer"
+                    style={isFlagged && segment.isClue ? { borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" } : {}}
                   >
-                    {seg.text}
+                    {segment.text}
+                    {showTutorialPulse && (
+                      <motion.span 
+                        animate={{ x: [0, 8, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                        className="absolute top-1/2 -translate-y-1/2 -left-12 text-[#FFB800] pointer-events-none z-10"
+                      >
+                        <svg viewBox="0 0 40 40" className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5,25 Q20,10 35,20" />
+                          <polyline points="25,10 35,20 25,30" />
+                        </svg>
+                      </motion.span>
+                    )}
                   </span>
                 );
               })}
             </div>
-
-            {/* Social Engagement Stats */}
-            <div className="px-6 py-4 bg-zinc-900/20 text-xs font-mono text-zinc-500 flex items-center gap-6 border-b border-zinc-800">
-              <span>❤️ 42.5K Likes</span>
-              <span>💬 8.2K Comments</span>
-              <span>🔁 1.4K Shares</span>
-            </div>
-
-            <div className="p-4 bg-zinc-900/40 text-xs text-zinc-400 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Click on any underlined claim sentence in the post text to cross-reference registered databases.</span>
-            </div>
-          </div>
-
-          {/* Interactive Source Inspection Drawer */}
-          <AnimatePresence>
-            {selectedSegment && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
+            
+            {/* Decoy Warning */}
+            {foundDecoys.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 15 }}
-                className="bg-zinc-900 border border-zinc-800 p-6 rounded-sm shadow-2xl space-y-4"
+                className="mt-6 p-3 bg-[#FFB800]/10 border-2 border-[#FFB800] wobbly-border flex items-start gap-2 text-sm"
               >
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <div className="flex items-center gap-2 text-sm font-bold font-heading uppercase text-zinc-100">
-                    <Database className="w-4 h-4 text-emerald-400" />
-                    <span>Fact Checker Drawer // {selectedSegment.claimTitle}</span>
-                  </div>
-                  <button onClick={() => setSelectedSegment(null)} className="text-zinc-500 hover:text-zinc-300">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-sm space-y-2 text-xs md:text-sm text-zinc-200">
-                  <div className="font-mono text-xs text-zinc-400 uppercase">Target Claim Text:</div>
-                  <div className="italic text-zinc-300">"{selectedSegment.text}"</div>
-                </div>
-
-                {/* Query Button */}
-                {!queriedClaimIds.includes(selectedSegment.id) ? (
-                  <Button
-                    onClick={() => handleExecuteQuery(selectedSegment)}
-                    className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 font-bold text-sm flex items-center justify-center gap-2"
-                  >
-                    <Search className="w-4 h-4" /> Cross-Reference Claim against Registries
-                  </Button>
-                ) : (
-                  /* Verification Alert Output */
-                  <div className={`p-4 border rounded-sm space-y-2 text-xs md:text-sm ${
-                    selectedSegment.verificationResult?.status === "FABRICATED"
-                      ? "bg-red-950/70 border-red-500/70 text-red-200"
-                      : "bg-emerald-950/70 border-emerald-500/70 text-emerald-200"
-                  }`}>
-                    <div className="font-bold font-mono text-sm flex items-center gap-2">
-                      {selectedSegment.verificationResult?.alertTitle}
-                    </div>
-                    <p className="leading-relaxed font-sans text-xs">
-                      {selectedSegment.verificationResult?.alertDetail}
-                    </p>
-                  </div>
-                )}
+                <ShieldAlert className="w-5 h-5 text-[#FFB800] shrink-0 mt-0.5" />
+                <p><strong>Careful!</strong> You flagged something that looks suspicious but is actually true. That's a decoy. Focus on the core claims.</p>
               </motion.div>
             )}
-          </AnimatePresence>
+          </div>
+
 
         </div>
-
-        {/* Right Column: Case 001 Final Report Panel */}
-        <div className="lg:col-span-5 sticky top-8">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-zinc-900/60 border border-zinc-800 p-6 md:p-8 rounded-sm backdrop-blur-sm relative overflow-hidden space-y-6 shadow-2xl"
+        
+        {/* Right Column: Evidence Board & Source Check */}
+        <div className="lg:col-span-5 flex flex-col gap-6 sticky top-28">
+          
+          <div 
+            className="p-6 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative rotate-1"
+            style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
           >
-            {/* Timer UI */}
-            <div className={`absolute top-0 right-0 p-4 flex items-center gap-2 font-mono text-xl ${timeLeft <= 10 && !isTimeUp ? 'text-red-500 animate-pulse' : 'text-zinc-400'}`}>
-              <Timer className="w-5 h-5" />
-              {timeLeft > 0 ? `00:${timeLeft.toString().padStart(2, '0')}` : '00:00'}
-            </div>
+            {/* Tape Decoration */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#0F172A]/10 -rotate-2 backdrop-blur-sm z-20" />
 
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold font-heading uppercase tracking-wide text-zinc-100 flex items-center gap-2.5">
-                <Terminal className="w-6 h-6 text-emerald-400" /> Case 001 Report
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-3xl font-bold font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
+                <Flag className="w-7 h-7 text-[#FFB800]" strokeWidth={2.5} /> Evidence Board
               </h2>
-              <p className="text-sm text-zinc-300 mt-1.5 leading-relaxed font-sans">
-                Inspect the viral post, cross-reference suspicious claims, and submit your final report.
-              </p>
+              <span 
+                className="font-mono text-sm font-bold bg-[#0F172A] text-white px-3 py-1 shadow-[2px_2px_0px_0px_#FFB800]"
+                style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+              >
+                {foundClues.length} / {currentRound.cluesNeeded} Clues
+              </span>
             </div>
-
-            {/* Evidence Tagged Meter */}
-            <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-sm space-y-3">
-              <div className="flex justify-between items-center text-sm font-mono uppercase">
-                <span className="text-zinc-300 font-medium">Fabricated Claims Tagged</span>
-                <span className="text-emerald-400 font-bold text-base">{redactedClaimIds.length} / {totalFabricatedClaims} Verified</span>
-              </div>
-              <div className="w-full h-2.5 bg-zinc-900 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-emerald-500"
-                  animate={{ width: `${(redactedClaimIds.length / totalFabricatedClaims) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Verdict Options */}
-            <div className="space-y-3">
-              <h3 className="text-sm md:text-base font-bold text-zinc-100 uppercase tracking-wider">
-                1. Final Report Verdict
-              </h3>
-              <div className="grid grid-cols-1 gap-2.5">
-                {[
-                  { key: "Trustworthy", label: "🟢 Trustworthy / Verified Source Context" },
-                  { key: "Misleading", label: "🟡 Misleading / Contains Fabricated Claims" },
-                  { key: "AI-Generated", label: "🔴 AI-Generated / Contains Hallucinations" },
-                ].map((v) => (
-                  <button
-                    key={v.key}
-                    onClick={() => setSelectedVerdict(v.key as MILVerdict)}
-                    className={`p-4 border text-left text-sm md:text-base font-bold transition-all rounded-sm font-sans ${
-                      selectedVerdict === v.key
-                        ? "bg-emerald-950/80 border-emerald-500 text-emerald-200 shadow-md shadow-emerald-950/40"
-                        : "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100"
-                    }`}
-                  >
-                    {v.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Confidence Slider */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <h3 className="text-sm md:text-base font-bold text-zinc-100 uppercase tracking-wider">
-                  2. Certainty Calibration
-                </h3>
-                <span className="font-mono text-emerald-400 font-bold text-base md:text-lg">{confidenceScore[0]}%</span>
-              </div>
-              <Slider
-                defaultValue={[80]}
-                max={100}
-                step={5}
-                value={confidenceScore}
-                onValueChange={(val) => setConfidenceScore(Array.isArray(val) ? [...val] : [Number(val)])}
-                className="mb-2"
-              />
-              <div className="flex justify-between text-xs md:text-sm font-mono text-zinc-300 font-medium uppercase mt-2">
-                <span>🤔 Just Guessing (0%)</span>
-                <span>⚖️ Moderately Sure (50%)</span>
-                <span>🎯 100% Certain</span>
-              </div>
-            </div>
-
-            <Button
-              onClick={handleFinalSubmit}
-              disabled={!selectedVerdict || queriedClaimIds.length < 2}
-              className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 disabled:opacity-50 font-bold text-base md:text-lg shadow-lg flex items-center justify-center gap-2"
+            
+            <div className={`min-h-[150px] border-[3px] border-dashed border-[#0F172A]/30 p-4 space-y-3 bg-[radial-gradient(#0F172A33_1.5px,transparent_1.5px)] bg-[size:16px_16px] transition-all duration-500 relative ${
+              currentRoundIndex === 0 && tutorialStep === 3 ? "z-40 bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+            }`}
+            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
-              {queriedClaimIds.length < 2 ? (
-                <span>Lock: Check {2 - queriedClaimIds.length} More Claim{2 - queriedClaimIds.length > 1 ? 's' : ''} 🔒</span>
+              {foundClues.length === 0 ? (
+                <p className="text-center text-[#0F172A]/40 font-mono text-sm absolute inset-0 flex items-center justify-center">
+                  [ No clues flagged yet ]
+                </p>
               ) : (
-                <span>Submit Case 001 Report 🚀</span>
+                <AnimatePresence>
+                  {foundClues.map((clue, idx) => (
+                    <motion.div
+                      key={clue.id}
+                      initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+                      animate={{ opacity: 1, scale: 1, rotate: idx % 2 === 0 ? 1 : -1 }}
+                      className="bg-[#FFB800] p-3 border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] relative"
+                      style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                    >
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-[#FFB800]/20 rotate-3" />
+                      <p className="text-xs font-bold font-mono text-[#0F172A]/70 mb-1 uppercase tracking-widest">Found Clue:</p>
+                      <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">"{clue.text.substring(0, 50)}..."</p>
+                      {clue.explanation && (
+                        <p className="text-[15px] text-[#1D2A3C] font-sans font-bold mt-2 pt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
+                          {clue.explanation}
+                        </p>
+                      )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               )}
-            </Button>
-          </motion.div>
+            </div>
+            
+            <div className={`mt-6 space-y-4 transition-all duration-500 relative ${
+              currentRoundIndex === 0 && tutorialStep === 4 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+            }`}
+            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+            >
+              <Button
+                onClick={handleOpenSourceCheck}
+                className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[3px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
+                  sourceCheckOpen ? "bg-[#00E5FF] text-white hover:bg-[#00E5FF]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
+                }`}
+                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              >
+                <Search className="mr-2 w-5 h-5" strokeWidth={2.5} /> 
+                {sourceCheckOpen ? "Close Source Check" : "Open Source Check"}
+              </Button>
+              
+              <AnimatePresence>
+                {sourceCheckOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div 
+                      className="p-5 bg-white border-[3px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A]"
+                      style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                    >
+                      {currentRound.sourceCheckContent}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            
+            <div className={`mt-6 pt-6 border-t-[3px] border-dashed border-[#0F172A]/30 transition-all duration-500 relative ${
+              currentRoundIndex === 0 && tutorialStep === 5 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+            }`}>
+              <Button
+                onClick={() => setShowVerdictModal(true)}
+                disabled={!canFileVerdict}
+                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-[#0F172A]/50 disabled:border-dashed disabled:shadow-none text-white font-heading uppercase tracking-widest border-[3px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              >
+                {canFileVerdict ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
+      
+      {/* Verdict Modal */}
+      <AnimatePresence>
+        {showVerdictModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="p-6 md:p-10 max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative rotate-1"
+              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+            >
+              {!feedback ? (
+                <>
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-8 bg-[#0F172A]/10 -rotate-2 backdrop-blur-sm z-20" />
+                  
+                  <h2 className="text-4xl font-black font-heading text-[#0F172A] mb-6 border-b-[4px] border-dashed border-[#0F172A]/30 pb-4 uppercase tracking-wider text-center">
+                    Final Verdict Form
+                  </h2>
+                  
+                  <div className="space-y-8 font-sans">
+                    {/* Step 1: Real or Fake */}
+                    <div>
+                      <h3 className="font-bold text-2xl mb-4 font-heading">1. Is this post REAL or FAKE?</h3>
+                      <div className="grid grid-cols-2 gap-6">
+                        <button
+                          onClick={() => setSelectedVerdict("Real")}
+                          className={`p-5 border-[3px] font-heading text-2xl uppercase transition-all font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
+                            selectedVerdict === "Real" 
+                              ? "bg-[#FFB800] border-[#0F172A] text-[#0F172A]" 
+                              : "bg-white border-[#0F172A] text-[#0F172A]"
+                          }`}
+                          style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                        >
+                          Real
+                        </button>
+                        <button
+                          onClick={() => setSelectedVerdict("Fake")}
+                          className={`p-5 border-[3px] font-heading text-2xl uppercase transition-all font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
+                            selectedVerdict === "Fake" 
+                              ? "bg-[#FFB800] border-[#0F172A] text-white" 
+                              : "bg-white border-[#0F172A] text-[#0F172A]"
+                          }`}
+                          style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                        >
+                          Fake
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Step 2: Evidence */}
+                    <div>
+                      <h3 className="font-bold text-2xl mb-4 font-heading">2. Select your strongest piece of evidence:</h3>
+                      <div className="space-y-4">
+                        {foundClues.map(clue => (
+                          <button
+                            key={clue.id}
+                            onClick={() => setSelectedEvidenceId(clue.id)}
+                            className={`w-full p-4 border-[3px] text-left transition-all ${
+                              selectedEvidenceId === clue.id
+                                ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
+                                : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
+                            }`}
+                            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                          >
+                            <span className="text-lg font-bold block text-[#0F172A]">"{clue.text}"</span>
+                            <span className="text-[15px] text-[#1D2A3C] font-bold mt-2 block">{clue.explanation}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Submit */}
+                    {/* Submit */}
+                    <div className="flex gap-4 pt-6 mt-4 border-t-[3px] border-dashed border-[#0F172A]/30">
+                      <Button
+                        onClick={() => setShowVerdictModal(false)}
+                        className="flex-1 h-14 bg-[#1D2A3C] text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-[#00E5FF] hover:text-white transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleSubmitVerdict}
+                        disabled={!selectedVerdict || !selectedEvidenceId}
+                        className="flex-1 h-14 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-[#0F172A]/50 disabled:border-dashed disabled:shadow-none text-white border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                      >
+                        Submit Report
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8 space-y-6">
+                  <div className="flex justify-center">
+                    {feedback.isSuccess ? (
+                      <div 
+                        className="w-24 h-24 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A] rotate-2"
+                        style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                      >
+                        <CheckCircle2 className="w-12 h-12 text-[#FFB800]" strokeWidth={2.5} />
+                      </div>
+                    ) : (
+                      <div 
+                        className="w-24 h-24 bg-[#FFB800]/20 border-[4px] border-[#FFB800] flex items-center justify-center shadow-[6px_6px_0px_0px_#FFB800] -rotate-2"
+                        style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                      >
+                        <XCircle className="w-12 h-12 text-[#FFB800]" strokeWidth={2.5} />
+                      </div>
+                    )}
+                  </div>
+                  
+                  <h2 className={`text-5xl font-black font-heading ${feedback.isSuccess ? 'text-[#0F172A]' : 'text-[#FFB800]'}`}>
+                    {feedback.title}
+                  </h2>
+                  <p className="text-xl font-sans font-bold text-[#0F172A]/80 max-w-md mx-auto">
+                    {feedback.message}
+                  </p>
+                  
+                  <div className="pt-8">
+                    {feedback.isSuccess ? (
+                      <Button
+                        onClick={handleNextRound}
+                        className="w-full h-16 bg-[#FFB800] text-white text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all"
+                        style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                      >
+                        {currentRoundIndex < TEXT_ROUNDS.length - 1 ? (
+                          <span className="flex items-center justify-center">Next Round <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
+                        ) : (
+                          <span className="flex items-center justify-center">Complete Case 001 <Trophy className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
+                        )}
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={handleRetryRound}
+                        className="w-full h-16 bg-white text-[#0F172A] text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:bg-[#1D2A3C] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all"
+                        style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                      >
+                        <RotateCcw className="mr-3 w-7 h-7" strokeWidth={2.5} /> Retry Verdict
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Tutorial Helper (Bottom Right) */}
+      <AnimatePresence mode="wait">
+        {currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length && !showVerdictModal && (
+          <motion.div 
+            key={tutorialStep <= 2 ? "pos-right" : "pos-left"}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className={`fixed bottom-4 md:bottom-8 z-50 flex items-end gap-3 max-w-[95vw] md:max-w-2xl ${
+              tutorialStep <= 2 
+                ? "right-4 md:right-8 flex-row-reverse" 
+                : "left-4 md:left-8 flex-row"
+            }`}
+          >
+            {/* Mascot */}
+            <div className="shrink-0 z-10 hidden sm:block">
+              <img 
+                src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`} 
+                alt="A-Eye Agent" 
+                className={`w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-[4px_4px_0px_rgba(15,23,42,0.15)] transition-transform duration-500 ${tutorialStep > 2 ? "scale-x-[-1]" : ""}`}
+              />
+            </div>
+
+            {/* Speech Bubble */}
+            <div 
+              className="flex-1 bg-white border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] p-4 md:p-6 relative font-sans"
+              style={{ borderRadius: "25px 255px 25px 225px / 255px 25px 225px 25px" }}
+            >
+              {/* Pointer Triangle (Desktop) */}
+              <div className={`absolute bottom-8 w-0 h-0 border-y-[12px] border-y-transparent border-r-[14px] border-r-[#0F172A] hidden sm:block transition-all duration-300 ${
+                tutorialStep <= 2 ? "-right-[14px] rotate-180" : "-left-[14px]"
+              }`}>
+                <div className="absolute -left-[10px] -top-[9px] w-0 h-0 border-y-[9px] border-y-transparent border-r-[11px] border-r-white z-10" />
+              </div>
+              
+              <div className="sm:hidden flex items-center gap-3 mb-3 pb-3 border-b-2 border-dashed border-[#0F172A]/10">
+                <img 
+                  src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`} 
+                  alt="A-Eye Agent" 
+                  className={`w-10 h-10 object-contain transition-transform duration-500 ${tutorialStep > 2 ? "scale-x-[-1]" : ""}`}
+                />
+                <h3 className="font-heading font-bold text-lg text-[#0F172A]">A-Eye Agent</h3>
+              </div>
+
+              <h3 className="hidden sm:block font-heading font-bold text-xl md:text-2xl text-[#1D2A3C] mb-1 md:mb-2">
+                A-Eye Agent
+              </h3>
+              
+              <p className="text-base md:text-lg font-bold font-sans text-[#0F172A]/90 mb-4 leading-relaxed">
+                {tutorialDialogs[tutorialStep - 1]}
+              </p>
+              
+              <div className="flex justify-between items-center border-t-[3px] border-dashed border-[#0F172A]/20 pt-3">
+                <span className="text-xs md:text-sm font-sans font-bold text-[#0F172A]/60 uppercase tracking-widest">
+                  Step {tutorialStep} / {tutorialDialogs.length}
+                </span>
+                <Button 
+                  onClick={() => setTutorialStep(prev => prev + 1)}
+                  disabled={tutorialCooldown > 0}
+                  className="bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-base md:text-lg uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:bg-[#1D2A3C] disabled:text-white/50 disabled:border-solid disabled:shadow-none h-10 px-4 md:px-6"
+                  style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                >
+                  {tutorialCooldown > 0 
+                    ? `Wait ${tutorialCooldown}s` 
+                    : tutorialStep === tutorialDialogs.length ? "Got it!" : "Next"} 
+                  {tutorialCooldown === 0 && <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2" strokeWidth={2.5} />}
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </main>
   );
 }

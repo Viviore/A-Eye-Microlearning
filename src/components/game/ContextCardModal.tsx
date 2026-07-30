@@ -22,31 +22,31 @@ export const ContextCardModal: React.FC<ContextCardModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-zinc-950/80 backdrop-blur-md font-sans">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-[#FAFAFA]/90 backdrop-blur-md font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="z-10 w-full max-w-lg bg-zinc-900 border border-zinc-800 p-8 shadow-2xl rounded-sm space-y-6 relative overflow-hidden"
+          className="z-10 w-full max-w-lg glass-panel p-8 space-y-6 relative overflow-hidden"
         >
-          <div className="flex items-center gap-3 border-b border-zinc-800 pb-4">
-            <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-sm text-emerald-400">
+          <div className="flex items-center gap-3 border-b-2 border-dashed border-[#0F172A] pb-4">
+            <div className="p-2.5 bg-[#fafa33] border-2 border-[#0F172A] rounded-none text-[#FFB800] shadow-[2px_2px_0px_0px_#0F172A]">
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 block">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#FFB800] block font-bold">
                 MIL Takeaway // Context Card
               </span>
-              <h3 className="text-xl font-bold font-heading uppercase text-zinc-100">{title}</h3>
+              <h3 className="text-xl font-bold font-heading uppercase text-[#0F172A]">{title}</h3>
             </div>
           </div>
 
-          <p className="text-sm text-zinc-300 leading-relaxed">{context}</p>
+          <p className="text-base font-handwriting text-[#0F172A]/80 leading-relaxed">{context}</p>
 
           <div className="flex justify-end pt-2">
             <Button
               onClick={onProceed}
-              className="h-12 px-6 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 hover:border-emerald-600 active:translate-y-[2px] active:translate-x-[2px] transition-all duration-150"
+              className="h-12 px-6 bg-[#FFB800] hover:bg-[#FFB800]/90 text-white font-heading uppercase tracking-widest rounded-none border-2 border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all duration-150 font-bold"
             >
               Continue Investigation <ChevronRight className="ml-2 w-4 h-4" />
             </Button>

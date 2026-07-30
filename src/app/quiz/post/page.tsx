@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Shield, TrendingUp, RotateCcw } from "lucide-react";
+import { NotebookPen, TrendingUp, RotateCcw, Award } from "lucide-react";
 import confetti from "canvas-confetti";
 
 const POST_QUIZ_QUESTIONS = [
@@ -75,7 +75,7 @@ export default function PostAssessmentQuizPage() {
           particleCount: 150,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#10b981', '#3b82f6', '#f4f4f5']
+          colors: ['#FFB800', '#00E5FF', '#FFB800']
         });
       }
     }
@@ -91,48 +91,50 @@ export default function PostAssessmentQuizPage() {
 
   if (isFinished) {
     return (
-      <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex items-center justify-center p-6 relative overflow-hidden font-sans">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-zinc-950 to-zinc-950 pointer-events-none" />
-        
+      <main className="min-h-[100dvh] flex items-center justify-center p-6 relative overflow-hidden font-sans">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.95, rotate: -3 }}
+          animate={{ opacity: 1, scale: 1, rotate: 1 }}
           transition={{ duration: 0.6, type: "spring" }}
-          className="z-10 w-full max-w-2xl bg-zinc-900/80 backdrop-blur-md border border-zinc-800 p-8 md:p-12 shadow-2xl text-center"
+          className="z-10 w-full max-w-2xl bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] p-8 md:p-12 text-center relative"
+          style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
         >
+          {/* Decorative tape */}
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-black/10 -rotate-2 backdrop-blur-[2px] z-20" />
+          
           <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center">
-              <Shield className="w-10 h-10 text-emerald-400" />
+            <div className="w-20 h-20 bg-[#FFB800] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[2px_2px_0px_0px_#0F172A] -rotate-6" style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}>
+              <Award className="w-10 h-10 text-[#FFB800]" />
             </div>
           </div>
           
-          <h1 className="text-4xl font-black font-heading tracking-widest uppercase mb-2 text-zinc-100">
-            Mission Complete
+          <h1 className="text-5xl font-black font-heading tracking-wide mb-2 text-[#0F172A]">
+            Mission Complete!
           </h1>
-          <p className="text-zinc-400 font-mono text-sm tracking-widest uppercase mb-10">
+          <p className="text-[#00E5FF] font-heading text-xl font-bold mb-10">
             A-Eye Media Literacy Certificate
           </p>
 
           <div className="grid grid-cols-2 gap-6 mb-8">
-            <div className="p-6 bg-zinc-950/50 border border-zinc-800 rounded-sm">
-              <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest mb-2">Pre-Mission Assessment</div>
-              <div className="text-3xl font-black font-heading text-zinc-400">{preQuizScore}%</div>
+            <div className="p-6 bg-[#FAFAFA] border-[3px] border-dashed border-[#0F172A] rotate-1" style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}>
+              <div className="text-lg text-muted-foreground font-sans font-bold mb-2">Pre-Mission</div>
+              <div className="text-5xl font-black font-heading text-[#0F172A] opacity-50 line-through">{preQuizScore}%</div>
             </div>
-            <div className="p-6 bg-zinc-950/50 border border-zinc-800 rounded-sm">
-              <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest mb-2">Post-Mission Assessment</div>
-              <div className="text-3xl font-black font-heading text-zinc-100">{finalScore}%</div>
+            <div className="p-6 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] -rotate-1" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
+              <div className="text-lg text-[#00E5FF] font-sans font-bold mb-2">Final Score</div>
+              <div className="text-5xl font-black font-heading text-[#FFB800]">{finalScore}%</div>
             </div>
           </div>
 
-          <div className={`p-8 border rounded-sm mb-10 ${didImprove ? 'bg-emerald-950/20 border-emerald-900/50' : 'bg-zinc-900 border-zinc-800'}`}>
+          <div className={`p-8 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rounded-sm mb-10 ${didImprove ? 'bg-[#1D2A3C]' : 'bg-white'} rotate-1`} style={{ borderRadius: "15px 255px 15px 225px / 255px 15px 225px 15px" }}>
             <div className="flex items-center justify-center gap-3 mb-2">
-              {didImprove && <TrendingUp className="w-8 h-8 text-emerald-500" />}
-              <div className={`text-6xl font-black font-heading ${didImprove ? 'text-emerald-400' : 'text-zinc-100'}`}>
+              {didImprove && <TrendingUp className="w-8 h-8 text-[#FFB800]" />}
+              <div className={`text-6xl font-black font-heading ${didImprove ? 'text-[#FFB800]' : 'text-[#0F172A]'}`}>
                 {improvementDelta > 0 ? `+${improvementDelta}` : improvementDelta}%
               </div>
             </div>
-            <div className="text-sm font-mono text-zinc-400 uppercase tracking-widest">
-              Media Literacy Improvement Index
+            <div className="text-xl font-sans font-bold text-[#0F172A]">
+              Media Literacy Improvement
             </div>
           </div>
 
@@ -140,9 +142,9 @@ export default function PostAssessmentQuizPage() {
             <Link href="/" passHref>
               <Button 
                 onClick={handlePlayAgain}
-                className="h-12 px-8 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-heading uppercase tracking-widest rounded-none border border-zinc-700 transition-all duration-150 flex items-center gap-2"
+                className="btn-primary text-xl px-10 h-14"
               >
-                <RotateCcw className="w-4 h-4" /> Start New Simulation
+                <RotateCcw className="w-5 h-5 mr-2" /> Start New Simulation
               </Button>
             </Link>
           </div>
@@ -152,18 +154,18 @@ export default function PostAssessmentQuizPage() {
   }
 
   return (
-    <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 flex items-center justify-center p-6 relative overflow-hidden font-sans">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:64px_64px]" />
-      
-      <div className="z-10 w-full max-w-xl">
-        <div className="mb-8 flex justify-between items-center text-xs font-mono uppercase tracking-widest text-zinc-500">
-          <span>Post-Mission Assessment</span>
-          <span className="text-emerald-400">Question {currentQuestion + 1} / {POST_QUIZ_QUESTIONS.length}</span>
+    <main className="min-h-[100dvh] flex items-center justify-center p-6 relative overflow-hidden font-sans">
+      <div className="z-10 w-full max-w-2xl">
+        <div className="mb-8 flex justify-between items-center text-lg font-heading font-bold text-[#0F172A]">
+          <span className="flex items-center gap-2 px-3 py-1 bg-white border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] -rotate-1" style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}>
+            <NotebookPen className="w-5 h-5 text-[#FFB800]" /> Post-Mission
+          </span>
+          <span className="text-[#00E5FF] rotate-2">Question {currentQuestion + 1} / {POST_QUIZ_QUESTIONS.length}</span>
         </div>
 
-        <div className="w-full h-1 bg-zinc-900 mb-12">
+        <div className="w-full h-3 bg-white border-[2px] border-[#0F172A] mb-12 shadow-[2px_2px_0px_0px_#0F172A]" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
           <motion.div 
-            className="h-full bg-emerald-500"
+            className="h-full bg-[#FFB800] border-r-[2px] border-[#0F172A]"
             initial={{ width: `${(currentQuestion / POST_QUIZ_QUESTIONS.length) * 100}%` }}
             animate={{ width: `${((currentQuestion + 1) / POST_QUIZ_QUESTIONS.length) * 100}%` }}
           />
@@ -172,23 +174,33 @@ export default function PostAssessmentQuizPage() {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentQuestion}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: 20, rotate: 2 }}
+            animate={{ opacity: 1, x: 0, rotate: -1 }}
+            exit={{ opacity: 0, x: -20, rotate: -3 }}
             transition={{ duration: 0.3 }}
+            className="glass-panel p-8 md:p-12 relative"
           >
-            <h2 className="text-2xl font-bold font-heading leading-snug mb-8">
+            {/* Tape */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-black/10 rotate-3 backdrop-blur-[2px] z-20" />
+
+            <h2 className="text-3xl md:text-4xl font-bold font-heading leading-tight mb-10 text-[#0F172A]">
               {POST_QUIZ_QUESTIONS[currentQuestion].question}
             </h2>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {POST_QUIZ_QUESTIONS[currentQuestion].options.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => handleAnswer(index)}
-                  className="w-full text-left p-6 bg-zinc-900/50 border border-zinc-800 hover:border-emerald-500 hover:bg-emerald-950/20 rounded-sm transition-all duration-200 text-zinc-300 hover:text-emerald-400 font-medium"
+                  className="w-full text-left p-4 bg-white border-[3px] border-[#0F172A] hover:bg-[#FFB800] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#0F172A] shadow-[2px_2px_0px_0px_#0F172A] transition-all duration-200 text-lg md:text-xl font-sans text-[#0F172A]"
+                  style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                 >
-                  {option}
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full border-2 border-[#0F172A] flex items-center justify-center font-heading shrink-0 bg-white group-hover:text-[#FFB800]">
+                      {index + 1}
+                    </div>
+                    {option}
+                  </div>
                 </button>
               ))}
             </div>

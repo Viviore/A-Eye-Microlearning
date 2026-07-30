@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Orbitron, Space_Grotesk } from "next/font/google";
+import { Kalam, Patrick_Hand } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { RouteGuard } from "@/components/game/RouteGuard";
 
-const orbitron = Orbitron({
+const kalam = Kalam({
   variable: "--font-heading",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
+const patrickHand = Patrick_Hand({
   variable: "--font-sans",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -27,9 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${spaceGrotesk.variable} h-full antialiased dark`}
+      className={`${kalam.variable} ${patrickHand.variable} h-full antialiased`}
     >
-      <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-zinc-950 text-zinc-50">
+      <body suppressHydrationWarning className="min-h-full flex flex-col font-sans">
         <Header />
         <RouteGuard>
           <div className="flex-1">{children}</div>

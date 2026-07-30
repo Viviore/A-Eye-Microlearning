@@ -33,60 +33,63 @@ export function Header() {
       path: "/level/1",
       label: "Case 001",
       icon: FileText,
-      unlocked: isPreQuizDone,
+      unlocked: true,
       done: isC1Done,
     },
     {
       path: "/level/2",
       label: "Case 002",
       icon: Camera,
-      unlocked: isC1Done,
+      unlocked: true,
       done: isC2Done,
     },
     {
       path: "/level/3",
       label: "Case 003",
       icon: Video,
-      unlocked: isC2Done,
+      unlocked: true,
       done: isC3Done,
     },
     {
       path: "/results",
       label: "Results",
       icon: BarChart,
-      unlocked: isC3Done,
+      unlocked: true,
       done: isC3Done,
     },
     {
       path: "/quiz/post",
       label: "Post-Test",
       icon: CheckCircle2,
-      unlocked: isC3Done,
+      unlocked: true,
       done: false,
     },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full border-b-[3px] border-dashed border-[#0F172A] bg-[#FAFAFA]">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
         
         {/* Brand Mark */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="p-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-sm text-emerald-400 group-hover:border-emerald-500 transition-colors">
-            <Shield className="w-5 h-5" />
+        <Link href="/" className="flex items-center gap-3 group">
+          <div 
+            className="p-2 bg-[#FFB800] border-[3px] border-[#0F172A] text-white shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105"
+            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+          >
+            <Shield className="w-6 h-6" />
           </div>
           <div className="flex flex-col">
-            <span className="font-heading font-black tracking-widest text-zinc-100 uppercase text-sm group-hover:text-emerald-400 transition-colors">
+            <span className="font-heading font-bold tracking-wide text-[#0F172A] uppercase text-3xl group-hover:text-[#FFB800] transition-colors leading-none">
               A-EYE
             </span>
-            <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest -mt-1">
+            <span className="text-sm font-sans text-muted-foreground uppercase tracking-widest mt-0.5">
               MIL Simulator
             </span>
           </div>
         </Link>
 
         {/* Step-by-Step Locked Navigation */}
-        <nav className="flex items-center gap-1 md:gap-1.5 overflow-x-auto py-1">
+        <nav className="flex items-center gap-4 overflow-x-auto py-2">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -97,16 +100,17 @@ export function Header() {
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm text-xs font-mono transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-sans font-bold transition-all whitespace-nowrap border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
                     isActive
-                      ? "bg-emerald-950/60 border border-emerald-500/60 text-emerald-300 font-bold"
-                      : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 border border-transparent"
+                      ? "bg-[#FFB800] text-[#0F172A]"
+                      : "bg-white text-[#0F172A] hover:bg-[#FFB800] hover:text-white"
                   }`}
+                  style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-emerald-400" : "text-zinc-500"}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`} />
                   <span className="hidden sm:inline">{item.label}</span>
                   {item.done && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-0.5" title="Completed" />
+                    <span className={`font-bold ml-1 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`}>✓</span>
                   )}
                 </Link>
               );
@@ -115,10 +119,11 @@ export function Header() {
             return (
               <div
                 key={item.path}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm text-xs font-mono text-zinc-600 border border-zinc-900 cursor-not-allowed opacity-60 whitespace-nowrap"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-sans font-bold text-[#0F172A]/50 bg-[#1D2A3C] border-[3px] border-dashed border-[#0F172A]/50 cursor-not-allowed whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
                 title={`Locked: Complete previous step first`}
+                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
-                <Lock className="w-3 h-3 text-zinc-600" />
+                <Lock className="w-4 h-4 text-[#0F172A]/50" />
                 <span className="hidden sm:inline">{item.label}</span>
               </div>
             );

@@ -23,41 +23,6 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!isMounted) return;
-
-    let requiredStep = "";
-    let targetFallback = "";
-
-    if (pathname === "/level/1" && !isPreQuizDone) {
-      requiredStep = "Pre-Assessment Quiz";
-      targetFallback = "/quiz/pre";
-    } else if (pathname === "/level/2" && !isC1Done) {
-      requiredStep = "Case 001: Text Investigation";
-      targetFallback = isPreQuizDone ? "/level/1" : "/quiz/pre";
-    } else if (pathname === "/level/3" && !isC2Done) {
-      requiredStep = "Case 002: Photo Investigation";
-      targetFallback = isC1Done ? "/level/2" : isPreQuizDone ? "/level/1" : "/quiz/pre";
-    } else if (pathname === "/results" && !isC3Done) {
-      requiredStep = "Case 003: Video Investigation";
-      targetFallback = isC2Done ? "/level/3" : isC1Done ? "/level/2" : "/level/1";
-    } else if (pathname === "/quiz/post" && !isC3Done) {
-      requiredStep = "Case 003: Video Investigation";
-      targetFallback = isC2Done ? "/level/3" : isC1Done ? "/level/2" : "/level/1";
-    }
-
-    if (targetFallback) {
-      setIsRedirecting(true);
-      setRedirectTarget(requiredStep);
-      const timer = setTimeout(() => {
-        router.push(targetFallback);
-      }, 1500);
-      return () => clearTimeout(timer);
-    } else {
-      setIsRedirecting(false);
-    }
-  }, [pathname, isMounted, isPreQuizDone, isC1Done, isC2Done, isC3Done, router]);
-
   if (!isMounted) {
     return <>{children}</>;
   }
