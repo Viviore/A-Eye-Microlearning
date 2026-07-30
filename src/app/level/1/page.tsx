@@ -14,6 +14,7 @@ type TextSegment = {
   isClue?: boolean;
   isDecoy?: boolean;
   explanation?: string;
+  tactic?: string;
 };
 
 type TextRound = {
@@ -28,26 +29,29 @@ type TextRound = {
   sourceCheckContent: React.ReactNode;
   correctVerdict: "Real" | "Fake";
   cluesNeeded: number;
+  tacticOptions: string[];
 };
 
 const TEXT_ROUNDS: TextRound[] = [
   {
     id: 0,
     difficulty: "Tutorial",
-    badgeColor: "bg-[#00E5FF]/20 text-[#00E5FF] border-[#00E5FF]",
+    badgeColor: "bg-[#0F172A]/10 text-[#0F172A] border-[#0F172A]",
     title: "Barangay Relief Goods",
     postAuthor: "Concerned Citizen",
     postHandle: "@truthseeker99",
     postTime: "2 hrs ago",
     correctVerdict: "Fake",
     cluesNeeded: 1, // Tutorial just needs 1 clue
+    tacticOptions: ["Vague Attribution", "Artificial Urgency", "Phishing Link"],
     segments: [
       { id: "t-1", text: "ALERT! Our barangay is giving out FAKE relief goods to flood victims! " },
       { 
         id: "t-2", 
-        text: "A barangay official said the goods are 'expired and unsafe.' ", 
+        text: "An unnamed barangay official stated that the distributed items were 'expired and unsafe for consumption.' ", 
         isClue: true, 
-        explanation: "Vague attribution: Which official? Real alerts name the source." 
+        explanation: "Vague attribution: Which official? Real alerts name the source.",
+        tactic: "Vague Attribution"
       },
       { id: "t-3", text: "Share this now before more people get hurt!" }
     ],
@@ -69,6 +73,7 @@ const TEXT_ROUNDS: TextRound[] = [
     postTime: "4 hrs ago",
     correctVerdict: "Fake",
     cluesNeeded: 2,
+    tacticOptions: ["Advance Fee Fraud", "Artificial Urgency", "Unofficial Domain", "Vague Attribution"],
     segments: [
       { 
         id: "1-1", 
@@ -80,19 +85,22 @@ const TEXT_ROUNDS: TextRound[] = [
         id: "1-2", 
         text: "To secure your slot, applicants must first send a ₱500 'processing fee' to GCash number 09123456789. ", 
         isClue: true,
-        explanation: "Real scholarships never ask for a processing fee via personal mobile wallets."
+        explanation: "Real scholarships never ask for a processing fee via personal mobile wallets.",
+        tactic: "Advance Fee Fraud"
       },
       { 
         id: "1-3", 
         text: "Hurry and send your payment before tonight's deadline to guarantee your future! ", 
         isClue: true,
-        explanation: "Artificial urgency ('tonight's deadline') is a classic scam tactic to rush victims."
+        explanation: "Artificial urgency ('tonight's deadline') is a classic scam tactic to rush victims.",
+        tactic: "Artificial Urgency"
       },
       { 
         id: "1-4", 
         text: "PM us your receipt. No official website link available at the moment.", 
         isClue: true,
-        explanation: "Legitimate scholarships are always hosted on the official university domain, not via PM."
+        explanation: "Legitimate scholarships are always hosted on the official university domain, not via PM.",
+        tactic: "Unofficial Domain"
       }
     ],
     sourceCheckContent: (
@@ -113,6 +121,7 @@ const TEXT_ROUNDS: TextRound[] = [
     postTime: "12 hrs ago",
     correctVerdict: "Fake",
     cluesNeeded: 2,
+    tacticOptions: ["Fabricated Quote", "Unregistered Product", "Suspicious Storefront", "Artificial Urgency"],
     segments: [
       { id: "2-1", text: "Have you tried this new miracle cure? " },
       { 
@@ -125,19 +134,22 @@ const TEXT_ROUNDS: TextRound[] = [
         id: "2-3", 
         text: "\"I was struggling with high blood sugar until I found GlucoCure Max. It completely reversed my diabetes in 2 weeks!\" ", 
         isClue: true,
-        explanation: "The quote is entirely fabricated and doesn't appear on any of his official channels."
+        explanation: "The quote is entirely fabricated and doesn't appear on any of his official channels.",
+        tactic: "Fabricated Quote"
       },
       { 
         id: "2-4", 
         text: "This FDA-approved herbal supplement is selling out fast. ", 
         isClue: true,
-        explanation: "Checking the FDA database reveals this product is NOT registered."
+        explanation: "Checking the FDA database reveals this product is NOT registered.",
+        tactic: "Unregistered Product"
       },
       { 
         id: "2-5", 
         text: "Buy it now exclusively at this unverified Shopify link: buy-gluco-max-now.shop.co", 
         isClue: true,
-        explanation: "The link points to a sketchy, unverified storefront rather than an official brand page or pharmacy."
+        explanation: "The link points to a sketchy, unverified storefront rather than an official brand page or pharmacy.",
+        tactic: "Suspicious Storefront"
       }
     ],
     sourceCheckContent: (
@@ -158,6 +170,7 @@ const TEXT_ROUNDS: TextRound[] = [
     postTime: "1 hr ago",
     correctVerdict: "Fake",
     cluesNeeded: 2,
+    tacticOptions: ["Unverified Claim", "Fabricated Memo", "Advance Fee Fraud", "Fabricated Quote"],
     segments: [
       { 
         id: "3-1", 
@@ -169,13 +182,15 @@ const TEXT_ROUNDS: TextRound[] = [
         id: "3-2", 
         text: "all classes (all levels) and government work in the province are SUSPENDED tomorrow. ", 
         isClue: true,
-        explanation: "No matching post exists on the official government social media account."
+        explanation: "No matching post exists on the official government social media account.",
+        tactic: "Unverified Claim"
       },
       {
         id: "3-3",
         text: "Per Memo No. 45-B, signed by the Mayor. ",
         isClue: true,
-        explanation: "The memo number doesn't match official records (checkable via Source Check)."
+        explanation: "The memo number doesn't match official records (checkable via Source Check).",
+        tactic: "Fabricated Memo"
       },
       {
         id: "3-4",
@@ -191,6 +206,19 @@ const TEXT_ROUNDS: TextRound[] = [
     )
   }
 ];
+
+const TACTIC_DESCRIPTIONS: Record<string, string> = {
+  "Vague Attribution": "Citing unnamed or generic sources (e.g. 'an official') to avoid verification.",
+  "Artificial Urgency": "Creating fake time pressure (e.g. 'hurry', 'ends tonight') to rush decisions.",
+  "Phishing Link": "Using deceptive URLs that look official but steal your information.",
+  "Advance Fee Fraud": "Asking for an upfront payment or processing fee for a 'free' reward.",
+  "Unofficial Domain": "Directing users to sketchy, non-official websites or personal messages.",
+  "Fabricated Quote": "Inventing fake statements and attributing them to celebrities or authority figures.",
+  "Unregistered Product": "Selling items claiming health benefits without FDA approval or registration.",
+  "Suspicious Storefront": "Using unverified, temporary e-commerce sites to sell dubious products.",
+  "Unverified Claim": "Making bold, official-sounding statements without any supporting evidence.",
+  "Fabricated Memo": "Referencing fake official documents or memo numbers to appear legitimate."
+};
 
 export default function Level1Page() {
   const router = useRouter();
@@ -209,6 +237,8 @@ export default function Level1Page() {
   const [showVerdictModal, setShowVerdictModal] = useState(false);
   const [selectedVerdict, setSelectedVerdict] = useState<"Real" | "Fake" | null>(null);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
+  const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
+  const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
   
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
   
@@ -217,17 +247,21 @@ export default function Level1Page() {
   
   const tutorialDialogs = [
     "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts.",
-    "Read the post on the left. If a sentence looks like a scam or fake news, click on it to flag it as evidence.",
-    "Your flagged clues will appear on the Evidence Board on the right. Try to find the real clues, but watch out for decoys!",
-    "Always click 'Open Source Check' to verify claims against real facts before making a decision.",
+    "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.",
+    "Always gather facts first! Click 'Open Source Check' on the right to see verified information.",
+    "Read the verified sources carefully and cross-check them against the claims made in the post.",
+    "See that highlighted sentence? It contradicts our verified facts! Click it to flag it as a clue.",
+    "Great! Your flagged clues appear on the Evidence Board. Try to find the real clues, but watch out for decoys!",
     "Once you have enough evidence and checked the sources, click 'File Verdict' to submit your report. Good luck!"
   ];
 
   const tutorialMascots = [
     "confident_expression.png",
     "determined_expression.png",
-    "confident_expression.png",
     "thinking_expression.png",
+    "thinking_expression.png",
+    "idea_expression.png",
+    "confident_expression.png",
     "idea_expression.png"
   ];
   
@@ -247,7 +281,15 @@ export default function Level1Page() {
     }
   }, [tutorialStep, currentRoundIndex, tutorialDialogs.length]);
   
+  useEffect(() => {
+    if (currentRoundIndex === 0 && tutorialStep === 4) {
+      setSourceCheckOpen(true);
+      setHasOpenedSourceCheck(true);
+    }
+  }, [tutorialStep, currentRoundIndex]);
+  
   const handleFlagSegment = (segment: TextSegment) => {
+    if (currentRoundIndex === 0 && tutorialStep < 5) return;
     if (flaggedIds.has(segment.id)) return;
     
     setFlaggedIds((prev) => new Set(prev).add(segment.id));
@@ -267,22 +309,22 @@ export default function Level1Page() {
   const canFileVerdict = foundClues.length >= currentRound.cluesNeeded && hasOpenedSourceCheck;
   
   const handleSubmitVerdict = () => {
-    if (!selectedVerdict || !selectedEvidenceId) return;
+    if (!selectedEvidenceId || !selectedTactic) return;
     
     const evidence = foundClues.find(c => c.id === selectedEvidenceId);
     if (!evidence) return;
     
-    if (selectedVerdict === currentRound.correctVerdict) {
+    if (evidence.tactic === selectedTactic) {
       setFeedback({
         isSuccess: true,
         title: "Verdict Correct!",
-        message: "Great job! You correctly identified the fake post and provided solid evidence to back it up."
+        message: "Great job! You correctly identified the fake post and the tactic used."
       });
     } else {
       setFeedback({
         isSuccess: false,
-        title: "Incorrect Verdict",
-        message: "That wasn't quite right. Review your clues and try again. Don't fall for the decoys!"
+        title: "Analysis Failed",
+        message: "That's not quite the right manipulation tactic for this evidence. Review the quote and try again."
       });
     }
   };
@@ -298,6 +340,7 @@ export default function Level1Page() {
       setShowVerdictModal(false);
       setSelectedVerdict(null);
       setSelectedEvidenceId(null);
+      setSelectedTactic(null);
       setFeedback(null);
     } else {
       completeLevel(1);
@@ -309,6 +352,7 @@ export default function Level1Page() {
     setShowVerdictModal(false);
     setSelectedVerdict(null);
     setSelectedEvidenceId(null);
+    setSelectedTactic(null);
     setFeedback(null);
     // Keep the clues but reset verdict!
   };
@@ -344,9 +388,6 @@ export default function Level1Page() {
               </span>
             </div>
             
-            <div className="text-sm font-bold font-mono uppercase text-[#0F172A]/60">
-              Round {currentRoundIndex + 1} / {TEXT_ROUNDS.length}
-            </div>
           </div>
           
           <div 
@@ -390,7 +431,7 @@ export default function Level1Page() {
             <div className="text-xl md:text-2xl font-sans leading-relaxed text-[#0F172A]">
               {currentRound.segments.map((segment) => {
                 const isFlagged = flaggedIds.has(segment.id);
-                const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0;
+                const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0 && tutorialStep === 5;
                 return (
                   <span
                     key={segment.id}
@@ -399,12 +440,12 @@ export default function Level1Page() {
                       isFlagged 
                         ? (segment.isClue 
                             ? "bg-[#FFB800] border-[3px] border-[#0F172A] font-bold shadow-[2px_2px_0px_0px_#0F172A] rotate-1" 
-                            : segment.isDecoy 
-                              ? "bg-[#FFB800]/20 border-b-[3px] border-[#FFB800] line-through opacity-70 -rotate-1"
-                              : "bg-[#1D2A3C] opacity-50 line-through decoration-[#0F172A]/40")
+                              : "text-red-500 line-through decoration-red-500 decoration-2 opacity-80 -rotate-1")
                         : showTutorialPulse
-                          ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800] animate-pulse"
-                          : "hover:bg-[#FFB800]/50 hover:border-b-[3px] hover:border-dashed hover:border-[#0F172A]"
+                          ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800]"
+                          : (currentRoundIndex === 0 && tutorialStep < 5)
+                            ? ""
+                            : "hover:bg-[#FFB800]/50 hover:border-b-[3px] hover:border-dashed hover:border-[#0F172A]"
                     }`}
                     style={isFlagged && segment.isClue ? { borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" } : {}}
                   >
@@ -465,7 +506,7 @@ export default function Level1Page() {
             </div>
             
             <div className={`min-h-[150px] border-[3px] border-dashed border-[#0F172A]/30 p-4 space-y-3 bg-[radial-gradient(#0F172A33_1.5px,transparent_1.5px)] bg-[size:16px_16px] transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 3 ? "z-40 bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+              currentRoundIndex === 0 && tutorialStep === 6 ? "z-40 bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
             }`}
             style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
@@ -498,14 +539,14 @@ export default function Level1Page() {
             </div>
             
             <div className={`mt-6 space-y-4 transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 4 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+              currentRoundIndex === 0 && tutorialStep === 3 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
             }`}
             style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
               <Button
                 onClick={handleOpenSourceCheck}
                 className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[3px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
-                  sourceCheckOpen ? "bg-[#00E5FF] text-white hover:bg-[#00E5FF]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
+                  sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
                 }`}
                 style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
@@ -519,10 +560,12 @@ export default function Level1Page() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
+                    className={currentRoundIndex === 0 && tutorialStep === 4 ? "overflow-visible" : "overflow-hidden"}
                   >
                     <div 
-                      className="p-5 bg-white border-[3px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A]"
+                      className={`p-5 bg-white border-[3px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative ${
+                        currentRoundIndex === 0 && tutorialStep === 4 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+                      }`}
                       style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                     >
                       {currentRound.sourceCheckContent}
@@ -533,12 +576,12 @@ export default function Level1Page() {
             </div>
             
             <div className={`mt-6 pt-6 border-t-[3px] border-dashed border-[#0F172A]/30 transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 5 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+              currentRoundIndex === 0 && tutorialStep === 7 ? "z-40 bg-white p-2 -m-2 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
             }`}>
               <Button
                 onClick={() => setShowVerdictModal(true)}
                 disabled={!canFileVerdict}
-                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-[#0F172A]/50 disabled:border-dashed disabled:shadow-none text-white font-heading uppercase tracking-widest border-[3px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-white font-heading uppercase tracking-widest border-[3px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
                 style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
                 {canFileVerdict ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
@@ -556,83 +599,82 @@ export default function Level1Page() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="p-6 md:p-10 max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative rotate-1"
+              className="p-5 md:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative rotate-1"
               style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
               {!feedback ? (
                 <>
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-8 bg-[#0F172A]/10 -rotate-2 backdrop-blur-sm z-20" />
                   
-                  <h2 className="text-4xl font-black font-heading text-[#0F172A] mb-6 border-b-[4px] border-dashed border-[#0F172A]/30 pb-4 uppercase tracking-wider text-center">
+                  <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
                     Final Verdict Form
                   </h2>
                   
-                  <div className="space-y-8 font-sans">
-                    {/* Step 1: Real or Fake */}
+                  <div className="space-y-4 font-sans">
                     <div>
-                      <h3 className="font-bold text-2xl mb-4 font-heading">1. Is this post REAL or FAKE?</h3>
-                      <div className="grid grid-cols-2 gap-6">
-                        <button
-                          onClick={() => setSelectedVerdict("Real")}
-                          className={`p-5 border-[3px] font-heading text-2xl uppercase transition-all font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
-                            selectedVerdict === "Real" 
-                              ? "bg-[#FFB800] border-[#0F172A] text-[#0F172A]" 
-                              : "bg-white border-[#0F172A] text-[#0F172A]"
-                          }`}
-                          style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
-                        >
-                          Real
-                        </button>
-                        <button
-                          onClick={() => setSelectedVerdict("Fake")}
-                          className={`p-5 border-[3px] font-heading text-2xl uppercase transition-all font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
-                            selectedVerdict === "Fake" 
-                              ? "bg-[#FFB800] border-[#0F172A] text-white" 
-                              : "bg-white border-[#0F172A] text-[#0F172A]"
-                          }`}
-                          style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
-                        >
-                          Fake
-                        </button>
-                      </div>
-                    </div>
-                    
-                    {/* Step 2: Evidence */}
-                    <div>
-                      <h3 className="font-bold text-2xl mb-4 font-heading">2. Select your strongest piece of evidence:</h3>
+                      <h3 className="font-bold text-xl mb-3 font-heading">Step 1: Select your strongest piece of evidence:</h3>
                       <div className="space-y-4">
                         {foundClues.map(clue => (
                           <button
                             key={clue.id}
                             onClick={() => setSelectedEvidenceId(clue.id)}
-                            className={`w-full p-4 border-[3px] text-left transition-all ${
+                            className={`w-full p-3 border-[3px] text-left transition-all ${
                               selectedEvidenceId === clue.id
                                 ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
                                 : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
                             }`}
                             style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                           >
-                            <span className="text-lg font-bold block text-[#0F172A]">"{clue.text}"</span>
-                            <span className="text-[15px] text-[#1D2A3C] font-bold mt-2 block">{clue.explanation}</span>
+                            <span className="text-lg font-bold block text-[#0F172A]">"{clue.text.trim()}"</span>
                           </button>
                         ))}
                       </div>
                     </div>
                     
+                    {/* Step 2: Tactic */}
+                    {selectedEvidenceId && (
+                      <div className="pt-4 border-t-[3px] border-dashed border-[#0F172A]/30 mt-4">
+                        <h3 className="font-bold text-xl mb-3 font-heading">Step 2: Identify the manipulation tactic:</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {currentRound.tacticOptions.map(tactic => (
+                            <button
+                              key={tactic}
+                              onClick={() => setSelectedTactic(tactic)}
+                              onMouseEnter={() => setHoveredTactic(tactic)}
+                              onMouseLeave={() => setHoveredTactic(null)}
+                              className={`p-3 border-[3px] font-bold font-sans transition-all text-[#0F172A] ${
+                                selectedTactic === tactic
+                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
+                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
+                              }`}
+                              style={{ borderRadius: "15px 255px 15px 225px / 225px 15px 255px 15px" }}
+                            >
+                              {tactic}
+                            </button>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
+                          {hoveredTactic 
+                            ? TACTIC_DESCRIPTIONS[hoveredTactic] 
+                            : "Hover over a tactic to see its definition."}
+                        </div>
+                      </div>
+                    )}
+                    
                     {/* Submit */}
-                    {/* Submit */}
-                    <div className="flex gap-4 pt-6 mt-4 border-t-[3px] border-dashed border-[#0F172A]/30">
+                    <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
                       <Button
                         onClick={() => setShowVerdictModal(false)}
-                        className="flex-1 h-14 bg-[#1D2A3C] text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-[#00E5FF] hover:text-white transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        className="flex-1 h-12 bg-white text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-[#FFB800] hover:text-[#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
                         style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                       >
                         Cancel
                       </Button>
                       <Button
                         onClick={handleSubmitVerdict}
-                        disabled={!selectedVerdict || !selectedEvidenceId}
-                        className="flex-1 h-14 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-[#0F172A]/50 disabled:border-dashed disabled:shadow-none text-white border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        disabled={!selectedEvidenceId || !selectedTactic}
+                        className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
                         style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                       >
                         Submit Report
@@ -701,12 +743,12 @@ export default function Level1Page() {
       <AnimatePresence mode="wait">
         {currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length && !showVerdictModal && (
           <motion.div 
-            key={tutorialStep <= 2 ? "pos-right" : "pos-left"}
+            key={tutorialStep <= 2 || tutorialStep === 5 ? "pos-right" : "pos-left"}
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             className={`fixed bottom-4 md:bottom-8 z-50 flex items-end gap-3 max-w-[95vw] md:max-w-2xl ${
-              tutorialStep <= 2 
+              tutorialStep <= 2 || tutorialStep === 5
                 ? "right-4 md:right-8 flex-row-reverse" 
                 : "left-4 md:left-8 flex-row"
             }`}
@@ -716,7 +758,7 @@ export default function Level1Page() {
               <img 
                 src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`} 
                 alt="A-Eye Agent" 
-                className={`w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-[4px_4px_0px_rgba(15,23,42,0.15)] transition-transform duration-500 ${tutorialStep > 2 ? "scale-x-[-1]" : ""}`}
+                className={`w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-[4px_4px_0px_rgba(15,23,42,0.15)] transition-transform duration-500 ${tutorialStep > 2 && tutorialStep !== 5 ? "scale-x-[-1]" : ""}`}
               />
             </div>
 
@@ -727,7 +769,7 @@ export default function Level1Page() {
             >
               {/* Pointer Triangle (Desktop) */}
               <div className={`absolute bottom-8 w-0 h-0 border-y-[12px] border-y-transparent border-r-[14px] border-r-[#0F172A] hidden sm:block transition-all duration-300 ${
-                tutorialStep <= 2 ? "-right-[14px] rotate-180" : "-left-[14px]"
+                tutorialStep <= 2 || tutorialStep === 5 ? "-right-[14px] rotate-180" : "-left-[14px]"
               }`}>
                 <div className="absolute -left-[10px] -top-[9px] w-0 h-0 border-y-[9px] border-y-transparent border-r-[11px] border-r-white z-10" />
               </div>
@@ -736,7 +778,7 @@ export default function Level1Page() {
                 <img 
                   src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`} 
                   alt="A-Eye Agent" 
-                  className={`w-10 h-10 object-contain transition-transform duration-500 ${tutorialStep > 2 ? "scale-x-[-1]" : ""}`}
+                  className={`w-10 h-10 object-contain transition-transform duration-500 ${tutorialStep > 2 && tutorialStep !== 5 ? "scale-x-[-1]" : ""}`}
                 />
                 <h3 className="font-heading font-bold text-lg text-[#0F172A]">A-Eye Agent</h3>
               </div>

@@ -42,7 +42,7 @@ export default function HowToPlay() {
       {/* Decorative Background Elements */}
       <div className="absolute top-20 right-10 opacity-30 pointer-events-none rotate-12">
         <svg width="150" height="150" viewBox="0 0 100 100" fill="none">
-          <path d="M10,10 L90,10 L10,30 L90,30" stroke="#00E5FF" strokeWidth="2" strokeDasharray="5,5" />
+          <path d="M10,10 L90,10 L10,30 L90,30" stroke="#0F172A" strokeWidth="2" strokeDasharray="5,5" />
         </svg>
       </div>
 
@@ -69,7 +69,7 @@ export default function HowToPlay() {
               Investigation <br />
               <span className="text-[#FFB800]">Protocol</span>
               {/* Hand-drawn underline */}
-              <svg className="absolute -bottom-4 left-0 w-full h-6 text-[#00E5FF]" viewBox="0 0 200 20" preserveAspectRatio="none">
+              <svg className="absolute -bottom-4 left-0 w-full h-6 text-[#FFB800]" viewBox="0 0 200 20" preserveAspectRatio="none">
                 <path d="M0,10 Q50,20 100,5 T200,10" fill="none" stroke="currentColor" strokeWidth="4" />
               </svg>
             </motion.h1>
@@ -106,7 +106,7 @@ export default function HowToPlay() {
                 >
                   <step.icon className="w-6 h-6" />
                 </div>
-                <div className="font-heading text-xl text-[#00E5FF] font-bold border-b-2 border-dashed border-[#00E5FF] px-2 rotate-6">
+                <div className="font-heading text-xl text-[#0F172A] font-bold border-b-2 border-dashed border-[#0F172A] px-2 rotate-6">
                   0{index + 1}
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function HowToPlay() {
           </Link>
 
           {/* Squiggly arrow pointing to CTA */}
-          <div className="absolute left-64 top-4 hidden md:block rotate-[15deg] text-[#00E5FF]">
+          <div className="absolute left-64 top-4 hidden md:block rotate-[15deg] text-[#0F172A]">
              <svg width="80" height="40" viewBox="0 0 100 50">
                <path d="M10,25 Q30,10 50,25 T90,25" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
                <path d="M75,10 L90,25 L70,35" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />

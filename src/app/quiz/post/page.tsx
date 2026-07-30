@@ -75,7 +75,7 @@ export default function PostAssessmentQuizPage() {
           particleCount: 150,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#FFB800', '#00E5FF', '#FFB800']
+          colors: ['#FFB800', '#0F172A', '#FAFAFA']
         });
       }
     }
@@ -111,7 +111,7 @@ export default function PostAssessmentQuizPage() {
           <h1 className="text-5xl font-black font-heading tracking-wide mb-2 text-[#0F172A]">
             Mission Complete!
           </h1>
-          <p className="text-[#00E5FF] font-heading text-xl font-bold mb-10">
+          <p className="text-[#0F172A] font-heading text-xl font-bold mb-10">
             A-Eye Media Literacy Certificate
           </p>
 
@@ -121,8 +121,8 @@ export default function PostAssessmentQuizPage() {
               <div className="text-5xl font-black font-heading text-[#0F172A] opacity-50 line-through">{preQuizScore}%</div>
             </div>
             <div className="p-6 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] -rotate-1" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
-              <div className="text-lg text-[#00E5FF] font-sans font-bold mb-2">Final Score</div>
-              <div className="text-5xl font-black font-heading text-[#FFB800]">{finalScore}%</div>
+              <div className="text-lg text-[#0F172A] font-sans font-bold mb-2">Final Score</div>
+              <div className="text-5xl font-black font-heading text-white">{finalScore}%</div>
             </div>
           </div>
 
@@ -160,7 +160,7 @@ export default function PostAssessmentQuizPage() {
           <span className="flex items-center gap-2 px-3 py-1 bg-white border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] -rotate-1" style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}>
             <NotebookPen className="w-5 h-5 text-[#FFB800]" /> Post-Mission
           </span>
-          <span className="text-[#00E5FF] rotate-2">Question {currentQuestion + 1} / {POST_QUIZ_QUESTIONS.length}</span>
+          <span className="text-[#0F172A] rotate-2">Question {currentQuestion + 1} / {POST_QUIZ_QUESTIONS.length}</span>
         </div>
 
         <div className="w-full h-3 bg-white border-[2px] border-[#0F172A] mb-12 shadow-[2px_2px_0px_0px_#0F172A]" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
@@ -192,7 +192,7 @@ export default function PostAssessmentQuizPage() {
                 <button
                   key={index}
                   onClick={() => handleAnswer(index)}
-                  className="w-full text-left p-4 bg-white border-[3px] border-[#0F172A] hover:bg-[#FFB800] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#0F172A] shadow-[2px_2px_0px_0px_#0F172A] transition-all duration-200 text-lg md:text-xl font-sans text-[#0F172A]"
+                  className="w-full cursor-pointer text-left p-4 bg-white border-[3px] border-[#0F172A] hover:bg-[#FFB800] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#0F172A] shadow-[2px_2px_0px_0px_#0F172A] transition-all duration-200 text-lg md:text-xl font-sans text-[#0F172A]"
                   style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                 >
                   <div className="flex items-center gap-4">

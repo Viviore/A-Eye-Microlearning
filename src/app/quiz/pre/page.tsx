@@ -85,7 +85,7 @@ export default function PreAssessmentQuiz() {
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-sm z-20" />
           
           <div className="flex justify-center mb-8 relative">
-            <ShieldCheck className="w-16 h-16 text-[#00E5FF] stroke-[2] relative z-10" />
+            <ShieldCheck className="w-16 h-16 text-[#0F172A] stroke-[2] relative z-10" />
           </div>
           <h2 className="text-4xl font-bold mb-3 font-heading tracking-wide text-[#0F172A]">
             Assessment Logged!
@@ -113,10 +113,10 @@ export default function PreAssessmentQuiz() {
       <div className="z-10 w-full max-w-2xl">
         <div className="mb-12 flex items-center justify-between">
           <div className="flex items-center gap-2 px-3 py-1 bg-white border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] text-[#0F172A] font-heading font-bold rotate-1" style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}>
-            <NotebookPen className="w-4 h-4 text-[#00E5FF]" />
+            <NotebookPen className="w-4 h-4 text-[#FFB800]" />
             <span>Sys.Test // Baseline</span>
           </div>
-          <div className="text-[#00E5FF] font-heading font-bold text-xl -rotate-2">
+          <div className="text-[#0F172A] font-heading font-bold text-xl -rotate-2">
             0{currentStep + 1} / 0{quizQuestions.length}
           </div>
         </div>
@@ -140,7 +140,9 @@ export default function PreAssessmentQuiz() {
             className="glass-panel p-8 md:p-12 relative"
           >
             {/* Thumbtack */}
-            <div className="absolute -top-3 left-8 w-5 h-5 bg-[#00E5FF] rounded-full border-2 border-[#0F172A] shadow-[1px_1px_0px_#0F172A]" />
+            <div className="absolute top-[-14px] left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-10">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-60" />
+            </div>
             
             <h2 className="text-3xl md:text-4xl font-bold mb-10 leading-tight font-heading text-[#0F172A]">
               {question.question}
@@ -153,7 +155,7 @@ export default function PreAssessmentQuiz() {
                   <button
                     key={index}
                     onClick={() => setSelectedAnswer(index)}
-                    className={`w-full text-left p-4 flex items-center gap-4 transition-all duration-200 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] ${
+                    className={`w-full cursor-pointer text-left p-4 flex items-center gap-4 transition-all duration-200 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] ${
                       isSelected
                         ? "bg-[#FFB800] scale-[1.02] shadow-[4px_4px_0px_0px_#0F172A]"
                         : "bg-white hover:bg-[#FAFAFA] hover:translate-x-1"

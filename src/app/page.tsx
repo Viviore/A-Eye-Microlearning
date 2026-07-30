@@ -49,8 +49,8 @@ export default function Home() {
               <span className="block">INVESTIGATION</span>
               
               {/* Hand-drawn underline */}
-              <svg className="absolute -bottom-4 left-0 w-3/4 h-6 text-[#00E5FF]" viewBox="0 0 200 20" preserveAspectRatio="none">
-                <path d="M0,10 Q50,20 100,5 T200,10" fill="none" stroke="currentColor" strokeWidth="4" />
+              <svg className="absolute -bottom-4 left-0 w-full h-6 text-[#FFB800]" viewBox="0 0 200 20" preserveAspectRatio="none">
+                <path d="M4,10 Q50,20 100,5 T196,10" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
               </svg>
             </motion.h1>
 
@@ -58,7 +58,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-xl md:text-2xl text-muted-foreground max-w-[40ch] leading-relaxed mb-12 font-sans font-medium"
+              className="text-xl md:text-2xl text-[#0F172A] max-w-[40ch] leading-relaxed mb-12 font-sans font-semibold"
             >
               Inspect simulated social feeds, identify generated artifacts, and verify the truth in this digital forensics training simulation.
             </motion.p>
@@ -77,17 +77,9 @@ export default function Home() {
                 >
                   <Play className="mr-3 w-6 h-6" />
                   Start Training
-                  <ArrowRight className="ml-3 w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                 </Button>
               </Link>
               
-              {/* Hand-drawn arrow pointing to button */}
-              <div className="absolute -right-20 top-4 hidden md:block rotate-12 text-[#FFB800]">
-                <svg width="60" height="40" viewBox="0 0 100 50">
-                  <path d="M10,40 Q40,10 90,25" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                  <path d="M75,10 L90,25 L70,35" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                </svg>
-              </div>
             </motion.div>
           </div>
 
@@ -105,7 +97,7 @@ export default function Home() {
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-black/10 -rotate-3 backdrop-blur-sm z-20" />
               
               <div className="flex justify-between items-start z-10 relative">
-                <Search className="w-16 h-16 text-[#00E5FF] stroke-[1.5]" />
+                <Search className="w-16 h-16 text-[#0F172A] stroke-[1.5]" />
                 <div className="text-right font-heading text-xl text-[#FFB800] font-bold border-2 border-[#FFB800] px-3 py-1 rotate-6 rounded-sm bg-white">
                   TOP SECRET
                 </div>
@@ -119,13 +111,20 @@ export default function Home() {
                 />
               </div>
 
-              <div className="z-10 bg-[#FFB800] p-4 border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] -rotate-2 relative">
-                <div className="absolute -top-2 left-4 w-4 h-4 bg-[#FFB800] rounded-full shadow-sm border border-[#0F172A]" />
-                <h3 className="font-heading text-2xl font-bold mb-2">Checklist:</h3>
-                <ul className="font-sans text-lg space-y-2">
-                  <li className="flex items-center gap-2"><span className="text-[#FFB800]">✓</span> Verify the source</li>
-                  <li className="flex items-center gap-2"><span className="text-[#FFB800]">✓</span> Inspect metadata</li>
-                  <li className="flex items-center gap-2"><span className="text-[#FFB800]">✓</span> Look for artifacts</li>
+              <div 
+                className="z-10 bg-[#FFB800] px-6 py-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 relative mt-auto flex-none"
+                style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+              >
+                {/* Thumbtack */}
+                <div className="absolute top-[-14px] left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+                  <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-60" />
+                </div>
+                
+                <h3 className="font-heading text-2xl font-bold mb-2 text-[#0F172A]">Checklist:</h3>
+                <ul className="font-sans text-lg space-y-2 text-[#0F172A]">
+                  <li className="flex items-center gap-2"><span className="font-bold">✓</span> Verify the source</li>
+                  <li className="flex items-center gap-2"><span className="font-bold">✓</span> Inspect metadata</li>
+                  <li className="flex items-center gap-2"><span className="font-bold">✓</span> Look for artifacts</li>
                 </ul>
               </div>
 
