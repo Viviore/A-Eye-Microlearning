@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Shield, FileText, Camera, Video, BarChart, Home, Lock, CheckCircle2, HelpCircle } from "lucide-react";
+import { Shield, FileText, Camera, Video, BarChart, Home, Lock, CheckCircle2, HelpCircle, Menu, X } from "lucide-react";
 import { useGameStore } from "@/store/gameStore";
 
 export function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { preQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict } = useGameStore();
 
@@ -68,7 +70,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b-[3px] border-dashed border-[#0F172A] bg-[#FAFAFA]">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-3 xl:h-20 xl:py-0 flex items-center justify-between relative">
         
         {/* Brand Mark */}
         <Link href="/" className="flex items-center gap-3 group">
@@ -88,8 +90,21 @@ export function Header() {
           </div>
         </Link>
 
-        {/* Step-by-Step Locked Navigation */}
-        <nav className="flex items-center gap-4 overflow-x-auto py-2">
+        {/* Mobile Hamburger Button */}
+        <button 
+          className="xl:hidden p-2 text-[#0F172A] border-[3px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors"
+          style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        {/* Navigation */}
+        <nav className={`${
+          isMobileMenuOpen 
+            ? "flex absolute top-full left-0 right-0 bg-[#FAFAFA] border-b-[3px] border-dashed border-[#0F172A] p-4 shadow-xl z-50 flex-col items-stretch" 
+            : "hidden"
+        } xl:flex xl:static xl:flex-row xl:bg-transparent xl:border-none xl:p-0 xl:shadow-none xl:items-center gap-3 xl:gap-4`}>
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -100,15 +115,16 @@ export function Header() {
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-sans font-bold transition-all whitespace-nowrap border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center justify-center xl:justify-start gap-2 px-4 py-3 xl:py-2 text-sm font-sans font-bold transition-all whitespace-nowrap border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
                     isActive
                       ? "bg-[#FFB800] text-[#0F172A]"
                       : "bg-white text-[#0F172A] hover:bg-[#FFB800] hover:text-white"
                   }`}
                   style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`} />
-                  <span className="hidden sm:inline">{item.label}</span>
+                  <Icon className={`w-5 h-5 xl:w-4 xl:h-4 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`} />
+                  <span className="text-base xl:text-sm">{item.label}</span>
                   {item.done && (
                     <span className={`font-bold ml-1 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`}>✓</span>
                   )}
@@ -119,12 +135,12 @@ export function Header() {
             return (
               <div
                 key={item.path}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-sans font-bold text-[#0F172A]/50 bg-[#1D2A3C] border-[3px] border-dashed border-[#0F172A]/50 cursor-not-allowed whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
+                className="flex items-center justify-center xl:justify-start gap-2 px-4 py-3 xl:py-2 text-sm font-sans font-bold text-[#0F172A]/50 bg-[#1D2A3C] border-[3px] border-dashed border-[#0F172A]/50 cursor-not-allowed whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
                 title={`Locked: Complete previous step first`}
                 style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
-                <Lock className="w-4 h-4 text-[#0F172A]/50" />
-                <span className="hidden sm:inline">{item.label}</span>
+                <Lock className="w-5 h-5 xl:w-4 xl:h-4 text-[#0F172A]/50" />
+                <span className="text-base xl:text-sm">{item.label}</span>
               </div>
             );
           })}

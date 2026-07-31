@@ -21,15 +21,25 @@ Like Case 003, this case has 1 tutorial round + 3 scored levels. Unlike Case 003
 
 **Tutorial Flow (Barangay Relief Goods post):**
 In-game post text: "ALERT! Our barangay is giving out FAKE relief goods to flood victims! A barangay official said the goods are 'expired and unsafe.' Share this now before more people get hurt!"
-1. Show the post.
-2. Point out one suspicious line as an example.
-3. Player clicks to "flag" it.
-4. The game explains why that line looks suspicious.
-5. This tutorial round doesn't count as one of the 3 levels.
 
-**Tools (used across all levels):**
-- Flag tool — click on a line of text to mark it as suspicious.
-- Source Check panel — a fake mini search the player can open to compare the post's claims against what's actually true.
+The tutorial is fully guided by the A-Eye Agent mascot with a dynamic 10-step process:
+1. **Introduction:** Mascot introduces the player to their role.
+2. **Observation:** The main social media post is highlighted.
+3. **Source Check:** The player is guided to open the Source Check panel.
+4. **Verification:** Mascot explains how to compare the post's claims against official records.
+5. **Flagging:** A specific suspicious quote is highlighted for the player to flag.
+6. **Evidence Board:** The flagged clue appears on the right-hand Evidence Board.
+7. **Verdict Initiation:** Player is guided to click the "File Verdict" button once enough evidence is collected.
+8. **Evidence Selection (Modal):** Inside the verdict modal, the player selects their strongest piece of evidence.
+9. **Tactic Identification:** Player matches the selected evidence to a specific manipulation tactic (e.g., "Fabricated Quote").
+10. **Report Submission:** Player submits the final report for grading.
+This tutorial round doesn't count as one of the 3 scored levels.
+
+**Tools & Mechanics (used across all levels):**
+- **Flag tool** — Click on a line of text in the post to mark it as suspicious. Flagged items move to the Evidence Board.
+- **Source Check panel** — A simulated database the player opens to compare the post's claims against verified facts.
+- **Evidence Board** — Tracks all flagged clues (and decoys) on the right side of the screen.
+- **Verdict Modal** — A two-step filing system where players must first select their supporting evidence, then correctly identify the manipulation tactic used, before passing judgment.
 
 ---
 

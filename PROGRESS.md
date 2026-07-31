@@ -23,7 +23,9 @@
 - [x] Post-Assessment Quiz + improvement index
 
 ## CORE LOOP COMPLETE!
-- [x] Level 1-3: Global Countdown Timer (Phase 2)## Priority 2 — build after P1 works end to end
+- [x] Level 1-3: Global Countdown Timer (Phase 2)
+
+## Priority 2 — build after P1 works end to end
 - [ ] Level 3: Mixed real/AI feed
 - [ ] Level 3: Investigation tools (zoom, brightness, grid, magnifier)
 - [ ] Level 3: Verdict (Authentic / AI Generated / Insufficient Evidence) + confidence
@@ -34,6 +36,13 @@
 - [ ] Achievement/badge system
 - [ ] Confidence calibration telemetry
 - [ ] Certificate generation (shareable)
+
+## UI & Polish Updates (Completed)
+- [x] Tutorial Chat: Dynamic width to prevent full-screen stretching on large screens.
+- [x] Tutorial Chat: Dynamic repositioning (left/right) based on currently highlighted element.
+- [x] Mascot Animation: Framer Motion 3D spin/flip effect when mascot expression changes.
+- [x] Mascot Orientation: Mascot flips to the outer edge of the screen and dynamically updates pointer direction.
+- [x] Verdict Modal: Fixed checkmark icon visibility (dark blue icon on yellow background).
 
 ## Not started / long-term (post-hackathon)
 - [ ] Multilingual localization
