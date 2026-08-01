@@ -175,6 +175,7 @@ Teach the player to spot the classic tells of an AI-generated image — things l
 2. Guide the player to flag that spot.
 3. The game explains what gave it away.
 4. Player finds 2 more mistakes on their own.
+5. Report Submission: Player selects their strongest evidence, confirms, and submits — no separate verdict pick, since the answer is always "AI-Generated."
 
 **Tools:**
 - Zoom tool.
@@ -188,10 +189,11 @@ Player zooms into parts of the photo, detective-style, looking for classic AI-ge
 **Decoy (1–2 spots that look like AI mistakes but aren't):**
 - A part of the photo with an odd shadow, blur, or lighting quirk that looks like an artifact, but is actually just a normal camera or compression issue — a natural imperfection, not a sign of AI generation.
 
-**Success Conditions:**
-- Player must find at least 2 visual clues (not counting the tutorial's guided example — that one is free and doesn't count toward this total).
+**Verdict & Scoring:**
+- Once the player finds at least 2 of the 3 real clues (not counting the tutorial example) and has used the Magnifier at least once, "File Verdict" unlocks.
+- Verdict Modal: Player selects their strongest supporting evidence, then confirms — locked in. No Real/AI-Generated choice, since there's nothing to choose between.
+- Correct evidence = 100%. Weak/decoy evidence picked = 50% (lucky pass, they still "caught" it was fake but with shaky proof). Not finding enough real clues at all = doesn't unlock verdict yet, same gate rule as before.
 - Flagging a decoy does not block progress or count against the clue threshold, but flagging 2+ decoys should lower the player's score.
-- Verdict choices: Real / AI-Generated.
 
 **Flow:**
 ```
@@ -213,8 +215,8 @@ Player zooms into parts of the photo, detective-style, looking for classic AI-ge
             ▼
       ┌─────┴─────┐
       │  2+ real    │
-      │  clues       │
-      │  found?      │
+      │  clues &     │
+      │  Magnifier?  │
       └─────┬─────┘
         No  │  Yes
      ◄──────┘   │
@@ -222,12 +224,6 @@ Player zooms into parts of the photo, detective-style, looking for classic AI-ge
    playing) ┌─────────────────┐
             │ "File Verdict"    │
             │  unlocks          │
-            └────────┬──────────┘
-                      ▼
-            ┌─────────────────┐
-            │ Pick verdict:     │
-            │ Real /            │
-            │ AI-Generated      │
             └────────┬──────────┘
                       ▼
             ┌─────────────────┐
@@ -241,16 +237,16 @@ Player zooms into parts of the photo, detective-style, looking for classic AI-ge
             └────────┬──────────┘
                       ▼
               ┌───────┴───────┐
-              │ Correct verdict?│
+              │ Picked real     │
+              │ evidence?       │
               └───────┬───────┘
           No  │               │  Yes
    ┌──────────┘               └──────────┐
    ▼                                       ▼
 ┌─────────────┐                 ┌─────────────────┐
-│ Show why      │                 │ Score based on    │
-│ wrong, replay │                 │ verdict+evidence   │
-│ case (partial │                 │ table, then         │
-│ reset)        │                 │ Reflection/Debrief  │
+│ Score 50%     │                 │ Score 100%        │
+│ (lucky pass), │                 │ (correct), then   │
+│ then debrief  │                 │ Reflection/Debrief│
 └─────────────┘                 └─────────────────┘
 ```
 

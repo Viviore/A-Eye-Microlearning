@@ -709,7 +709,7 @@ export default function Level1Page() {
                     {/* Step 2: Tactic */}
                     {selectedEvidenceId && (
                       <div className="pt-4 border-t-[3px] border-dashed border-[#0F172A]/30 mt-4">
-                        <h3 className="font-bold text-xl mb-3 font-heading">Step 2: Identify the manipulation tactic:</h3>
+                        <h3 className="font-bold text-xl mb-3 font-heading">Step 2: How It Was Faked</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {currentRound.tacticOptions.map(tactic => {
                             const evidence = foundClues.find(c => c.id === selectedEvidenceId);
