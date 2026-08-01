@@ -94,7 +94,9 @@ export default function Home() {
             >
               
               {/* Tape at the top */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-black/10 -rotate-3 backdrop-blur-sm z-20" />
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+                <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+              </div>
               
               <div className="flex justify-between items-start z-10 relative">
                 <Search className="w-16 h-16 text-[#0F172A] stroke-[1.5]" />

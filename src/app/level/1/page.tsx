@@ -542,7 +542,9 @@ export default function Level1Page() {
             style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
           >
             {/* Tape Decoration */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#0F172A]/10 -rotate-2 backdrop-blur-sm z-20" />
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+            </div>
 
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-3xl font-bold font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
@@ -575,7 +577,9 @@ export default function Level1Page() {
                       className="bg-[#FFB800] p-3 border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] relative"
                       style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                     >
-                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-[#FFB800]/20 rotate-3" />
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+                        <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+                      </div>
                       <p className="text-xs font-bold font-mono text-[#0F172A]/70 mb-1 uppercase tracking-widest">Found Clue:</p>
                       <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">"{clue.text.substring(0, 50)}..."</p>
                       {clue.explanation && (
@@ -671,7 +675,9 @@ export default function Level1Page() {
             >
               {!feedback ? (
                 <>
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-8 bg-[#0F172A]/10 -rotate-2 backdrop-blur-sm z-20" />
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+                    <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+                  </div>
                   
                   <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
                     Final Verdict Form

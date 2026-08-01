@@ -100,7 +100,9 @@ export default function PostAssessmentQuizPage() {
           style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
         >
           {/* Decorative tape */}
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-black/10 -rotate-2 backdrop-blur-[2px] z-20" />
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+            <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+          </div>
           
           <div className="flex justify-center mb-6">
             <div className="w-20 h-20 bg-[#FFB800] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[2px_2px_0px_0px_#0F172A] -rotate-6" style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}>
@@ -181,7 +183,9 @@ export default function PostAssessmentQuizPage() {
             className="glass-panel p-8 md:p-12 relative"
           >
             {/* Tape */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-black/10 rotate-3 backdrop-blur-[2px] z-20" />
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+            </div>
 
             <h2 className="text-3xl md:text-4xl font-bold font-heading leading-tight mb-10 text-[#0F172A]">
               {POST_QUIZ_QUESTIONS[currentQuestion].question}

@@ -16,6 +16,7 @@ import {
   User,
   FileText,
   ShieldAlert,
+  Lightbulb,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -104,7 +105,7 @@ const IMAGE_ROUNDS: ImageRound[] = [
     id: "round-3",
     isTutorial: false,
     imageSrc: "/photos/set2/receipt.png",
-    cluesNeeded: 1,
+    cluesNeeded: 2,
     postAuthorName: "Eagle Eye Investigates",
     postHandle: "@EagleEye_Inv • 2 hrs ago",
     postText:
@@ -112,14 +113,59 @@ const IMAGE_ROUNDS: ImageRound[] = [
     clues: [
       {
         id: "v-7",
-        title: "Photoshopped Text",
-        x: 35,
-        y: 85,
-        width: 40,
-        height: 10,
+        title: "Mismatched Font",
+        x: 64,
+        y: 38,
+        width: 8,
+        height: 4,
         explanation:
-          "The text 'USD 6Q.Z7' makes no sense for a monetary amount, and looking closely reveals mismatched fonts and compression artifacts around the letters, indicating it was edited in.",
+          "The price for 'Dolor Sit' uses a completely different font weight and letter shape compared to the rest of the receipt, indicating it was edited in.",
         tactic: "Photoshopped Composite",
+      },
+      {
+        id: "v-8",
+        title: "Unscannable Barcode",
+        x: 27,
+        y: 78,
+        width: 46,
+        height: 16,
+        explanation:
+          "The barcode has uneven lines, inconsistent spacing, and doesn't form a real scannable pattern, typical of AI generation or poor image manipulation.",
+        tactic: "AI Image Generation",
+      },
+    ],
+  },
+  {
+    id: "round-4",
+    isTutorial: false,
+    imageSrc: "/photos/set3/id.png",
+    cluesNeeded: 2,
+    postAuthorName: "Corporate Watchdog",
+    postHandle: "@CorpWhistle • 1 hr ago",
+    postText:
+      "Leaked ID badge of the new 'consultant' who just got full access to the server room. Does this guy even exist? 🧐 The picture looks completely fake. #SecurityBreach",
+    clues: [
+      {
+        id: "v-9",
+        title: "Hairline Glitch",
+        x: 57,
+        y: 16,
+        width: 9,
+        height: 9,
+        explanation:
+          "There is a very subtle, slightly jagged and smudged area along the top right hairline (viewer's right) where the hair texture looks digitally reconstructed rather than naturally grown.",
+        tactic: "AI Image Generation",
+      },
+      {
+        id: "v-10",
+        title: "Flesh-Embedded Tie",
+        x: 37,
+        y: 68,
+        width: 26,
+        height: 15,
+        explanation:
+          "In a bizarre and horrifying AI artifact, a piece of the tie knot appears to be literally embedded in and growing out of the skin folds of the man's neck. Additionally, the skin transitions into the shirt collar with an unnatural, pixelated seam. This happens when the AI fundamentally misunderstands the spatial boundaries and physical interaction between flesh, fabric, and clothing accessories.",
+        tactic: "AI Image Generation",
       },
     ],
   },
@@ -167,12 +213,43 @@ const tutorialMascots = [
   "thinking_expression.png",
 ];
 
+const DETECTIVE_TIPS = [
+  "Don't believe a screenshot of a post. Anyone can fake a social media screenshot in minutes. Always look for a link to the real thing.",
+  "Do a quick image search on Google. You might find out the 'breaking news' photo is actually from a movie set five years ago.",
+  "If an image makes you instantly furious or terrified, pause. Fake news is designed to trigger your emotions so you share it without thinking.",
+  "Use your common sense. If a photo claims it's a winter protest but people are wearing shorts, something is wrong.",
+  "Check the background. Store names, street signs, and license plates can quickly reveal if a photo isn't where it claims to be.",
+  "Watch the shadows. If someone says a picture was taken at noon but the shadows are super long, they might be lying.",
+  "If a story sounds too crazy to be true, check if any major news channels are reporting it. Don't trust just one random blog.",
+  "Beware of zoomed-in or cropped photos. What’s hiding just outside the frame can completely change the story.",
+  "A real picture can still be a lie. The easiest way to trick people is to take an old, real photo and put a fake caption on it.",
+  "Ask yourself: 'Why did the photographer only show me this?' Think about what the person taking the photo wants you to believe.",
+  "Look for other angles. A massive public event should have hundreds of photos from different people, not just one blurry shot.",
+  "Check reflections in windows or puddles. They can accidentally show the real background or the person taking the photo.",
+  "Don't trust meme quotes. If a famous person's face is next to a shocking quote, it's probably fake. Try to find a video of them saying it.",
+  "Look at the buildings. Do the streetlights or architecture actually match the country the photo claims to be in?",
+  "Be skeptical of 'secret insider leaks'. Real whistleblowers usually go to journalists who can verify their story.",
+  "If a photo perfectly confirms everything you already believe, be extra careful. Fake news often targets what we want to be true.",
+  "Read the comments before sharing. Often, someone else has already debunked a fake image and posted proof.",
+  "Just because a picture has a watermark doesn't mean it's official. Anyone can slap a news logo on a fake photo.",
+  "Watch out for deepfakes. If a video looks a bit blurry around the edges of a face or their voice sounds robotic, question it.",
+  "Trust your gut. If something about a photo just looks 'off' or artificial, take a minute to verify it before passing it along."
+];
+
 export default function Level2Page() {
   const router = useRouter();
   const { completeLevel } = useGameStore();
 
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const currentRound = IMAGE_ROUNDS[currentRoundIndex];
+
+  const [currentTip, setCurrentTip] = useState<string>("");
+
+  useEffect(() => {
+    setCurrentTip(
+      DETECTIVE_TIPS[Math.floor(Math.random() * DETECTIVE_TIPS.length)]
+    );
+  }, [currentRoundIndex]);
 
   const [tutorialStep, setTutorialStep] = useState(1);
   const [tutorialCooldown, setTutorialCooldown] = useState(0);
@@ -413,11 +490,12 @@ export default function Level2Page() {
           {/* Mock Social Post (Photo) */}
           <div
             id="tutorial-post"
-              className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] -rotate-1 ${
-                currentRound.isTutorial && (tutorialStep === 3 || tutorialStep === 4)
-                  ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]"
-                  : "z-10"
-              }`}
+            className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] -rotate-1 ${
+              currentRound.isTutorial &&
+              (tutorialStep === 3 || tutorialStep === 4)
+                ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]"
+                : "z-10"
+            }`}
             style={{
               borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px",
             }}
@@ -492,36 +570,72 @@ export default function Level2Page() {
               ))}
 
               {/* Magnifier Lens */}
-              {magnifier.show && (!currentRound.isTutorial || tutorialStep >= 3) && (
-                <div
-                  className="absolute pointer-events-none z-30 border-[4px] border-white shadow-[0_0_0_2000px_rgba(0,0,0,0.5),0_10px_20px_rgba(0,0,0,0.5)] rounded-full bg-no-repeat overflow-hidden transition-[background-position] duration-75 ease-out"
-                  style={{
-                    width: "250px",
-                    height: "250px",
-                    left: `${magnifier.x}px`,
-                    top: `${magnifier.y}px`,
-                    transform: "translate(-50%, -50%)",
-                    backgroundImage: `url('${currentRound.imageSrc}')`,
-                    backgroundSize:
-                      magnifier.imgWidth > 0
-                        ? `${magnifier.imgWidth * 3}px ${magnifier.imgHeight * 3}px`
-                        : "300%",
-                    backgroundPosition: `${magnifier.xPercent}% ${magnifier.yPercent}%`,
-                  }}
-                >
-                  <div className="absolute inset-0 ring-inset ring-2 ring-black/20 rounded-full" />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white/50">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
+              {magnifier.show &&
+                (!currentRound.isTutorial || tutorialStep >= 3) && (
+                  <div
+                    className="absolute pointer-events-none z-30 border-[4px] border-white shadow-[0_0_0_2000px_rgba(0,0,0,0.5),0_10px_20px_rgba(0,0,0,0.5)] rounded-full overflow-hidden"
+                    style={{
+                      width: "250px",
+                      height: "250px",
+                      left: `${magnifier.x}px`,
+                      top: `${magnifier.y}px`,
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    <div
+                      className="absolute top-0 left-0 transition-transform duration-75 ease-out"
+                      style={{
+                        width:
+                          magnifier.imgWidth > 0
+                            ? `${magnifier.imgWidth * 3}px`
+                            : "300%",
+                        height:
+                          magnifier.imgHeight > 0
+                            ? `${magnifier.imgHeight * 3}px`
+                            : "300%",
+                        transform: `translate(calc(${250 * (magnifier.xPercent / 100)}px - ${magnifier.xPercent}%), calc(${250 * (magnifier.yPercent / 100)}px - ${magnifier.yPercent}%))`,
+                      }}
                     >
-                      <path d="M12 5v14M5 12h14" />
-                    </svg>
+                      <img
+                        src={currentRound.imageSrc}
+                        alt=""
+                        className="w-full h-full block"
+                      />
+                      {currentRound.clues.map((clue, idx) => (
+                        <div
+                          key={clue.id}
+                          className={`absolute transition-all z-10 ${
+                            flaggedIds.has(clue.id)
+                              ? "border-[9px] border-[#FFB800] bg-[#FFB800]/30 rotate-1"
+                              : ""
+                          }`}
+                          style={{
+                            left: `${clue.x}%`,
+                            top: `${clue.y}%`,
+                            width: `${clue.width}%`,
+                            height: `${clue.height}%`,
+                            borderRadius: flaggedIds.has(clue.id)
+                              ? idx % 2 === 0
+                                ? "255px 15px 225px 15px / 15px 225px 15px 255px"
+                                : "15px 255px 15px 225px / 225px 15px 255px 15px"
+                              : "0",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div className="absolute inset-0 ring-inset ring-2 ring-black/20 rounded-full z-20" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white/50 z-20">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
 
             {/* Decoy Warning */}
@@ -550,7 +664,9 @@ export default function Level2Page() {
               borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px",
             }}
           >
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#0F172A]/10 -rotate-2 backdrop-blur-sm z-20" />
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+            </div>
 
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-3xl font-bold font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
@@ -605,9 +721,9 @@ export default function Level2Page() {
                           "15px 225px 15px 255px / 225px 15px 255px 15px",
                       }}
                     >
-                      <div
-                        className={`absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 ${clue.isDecoy ? "bg-red-500/20" : "bg-white/30"} rotate-3`}
-                      />
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+                        <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+                      </div>
                       <div className="flex items-start gap-2">
                         {clue.isDecoy ? (
                           <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -643,7 +759,8 @@ export default function Level2Page() {
                     ? "bg-[#FFB800] text-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A]"
                     : "bg-gray-200 text-gray-500 border-dashed shadow-none hover:translate-x-0 hover:translate-y-0"
                 } ${
-                  currentRound.isTutorial && tutorialStep === 7 &&
+                  currentRound.isTutorial &&
+                  tutorialStep === 7 &&
                   foundClues.length >= currentRound.cluesNeeded
                     ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]"
                     : ""
@@ -655,6 +772,25 @@ export default function Level2Page() {
                 File Verdict
               </Button>
             </div>
+          </div>
+
+          {/* Detective's Handbook / Tip of the Day */}
+          <div
+            className="p-5 md:p-6 bg-[#FEF3C7] border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] relative -rotate-1 transition-all hover:-translate-y-1 hover:shadow-[6px_8px_0px_0px_#0F172A]"
+            style={{
+              borderRadius: "255px 15px 225px 15px / 15px 255px 15px 225px",
+            }}
+          >
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+            </div>
+            <h3 className="text-xl font-bold font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A] mb-3 border-b-2 border-dashed border-[#0F172A]/20 pb-2">
+              <Lightbulb className="w-6 h-6 text-[#F59E0B]" strokeWidth={2.5} />
+              Real-World Verification
+            </h3>
+            <p className="text-sm md:text-base font-sans font-medium text-[#0F172A]/80 leading-relaxed italic min-h-[4rem]">
+              {currentTip ? `"${currentTip}"` : "..."}
+            </p>
           </div>
         </div>
       </div>
@@ -828,7 +964,9 @@ export default function Level2Page() {
             >
               {!feedback ? (
                 <>
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-8 bg-[#0F172A]/10 -rotate-2 backdrop-blur-sm z-20" />
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+                    <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+                  </div>
 
                   <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
                     Final Verdict Form
@@ -845,7 +983,9 @@ export default function Level2Page() {
                             key={clue.id}
                             onClick={() => setSelectedEvidenceId(clue.id)}
                             className={`w-full p-3 border-[3px] text-left transition-all cursor-pointer ${
-                              currentRound.isTutorial && tutorialStep === 8 && !selectedEvidenceId
+                              currentRound.isTutorial &&
+                              tutorialStep === 8 &&
+                              !selectedEvidenceId
                                 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.01]"
                                 : ""
                             } ${
@@ -897,7 +1037,8 @@ export default function Level2Page() {
                                     ? "opacity-40 cursor-not-allowed bg-[#FAFAFA] border-dashed border-[#0F172A]/30"
                                     : "cursor-pointer"
                                 } ${
-                                  currentRound.isTutorial && tutorialStep === 9 &&
+                                  currentRound.isTutorial &&
+                                  tutorialStep === 9 &&
                                   selectedEvidenceId &&
                                   !selectedTactic &&
                                   !isTutorialWrongTactic
@@ -971,26 +1112,27 @@ export default function Level2Page() {
                         />
                       </div>
                     ) : (
-                      <div
-                        className="w-24 h-24 bg-[#FFB800]/20 border-[4px] border-[#FFB800] flex items-center justify-center shadow-[6px_6px_0px_0px_#FFB800] -rotate-2"
-                        style={{
-                          borderRadius:
-                            "15px 225px 15px 255px / 15px 225px 15px 255px",
-                        }}
-                      >
-                        <XCircle
-                          className="w-12 h-12 text-[#FFB800]"
-                          strokeWidth={2.5}
+                      <div className="relative inline-block w-24 h-24 mb-2">
+                        <div 
+                          className="absolute inset-0 bg-[#F59E0B] rounded-sm transform translate-x-1.5 translate-y-1.5 rotate-3"
                         />
+                        <div 
+                          className="absolute inset-0 bg-[#FEF3C7] border-[4px] border-[#F59E0B] rounded-sm flex items-center justify-center transform -rotate-1"
+                        >
+                          <XCircle
+                            className="w-12 h-12 text-[#F59E0B]"
+                            strokeWidth={3}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
                   <h2
-                    className={`text-5xl font-black font-heading uppercase tracking-wider ${feedback.isSuccess ? "text-[#0F172A]" : "text-[#FFB800]"}`}
+                    className={`text-5xl font-black font-heading tracking-wider ${feedback.isSuccess ? "uppercase text-[#0F172A]" : "text-[#F59E0B]"}`}
                   >
                     {feedback.title}
                   </h2>
-                  <p className="text-xl font-sans font-bold text-[#0F172A]/80 max-w-md mx-auto">
+                  <p className={`text-xl font-bold max-w-md mx-auto ${feedback.isSuccess ? "font-sans text-[#0F172A]/80" : "font-heading text-[#334155] leading-relaxed"}`}>
                     {feedback.message}
                   </p>
 
@@ -1025,7 +1167,7 @@ export default function Level2Page() {
                     ) : (
                       <Button
                         onClick={handleRetryRound}
-                        className="w-full h-16 bg-white text-[#0F172A] text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:bg-[#1D2A3C] hover:text-white hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all"
+                        className="w-full h-16 bg-white text-[#0F172A] text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:bg-gray-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all"
                         style={{
                           borderRadius:
                             "15px 225px 15px 255px / 225px 15px 255px 15px",
