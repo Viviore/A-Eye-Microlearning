@@ -37,7 +37,7 @@ const TEXT_ROUNDS: TextRound[] = [
     id: 0,
     difficulty: "Tutorial",
     badgeColor: "bg-[#0F172A]/10 text-[#0F172A] border-[#0F172A]",
-    title: "Barangay Relief Goods",
+    title: "Community Relief Goods",
     postAuthor: "Concerned Citizen",
     postHandle: "@truthseeker99",
     postTime: "2 hrs ago",
@@ -45,10 +45,10 @@ const TEXT_ROUNDS: TextRound[] = [
     cluesNeeded: 1,
     tacticOptions: ["Vague Attribution", "Artificial Urgency", "Phishing Link"],
     segments: [
-      { id: "t-1", text: "ALERT! Our barangay is giving out FAKE relief goods to flood victims! " },
+      { id: "t-1", text: "ALERT! Our city council is giving out FAKE relief goods to flood victims! " },
       { 
         id: "t-2", 
-        text: "An unnamed barangay official stated that the distributed items were 'expired and unsafe for consumption.' ", 
+        text: "An unnamed city official stated that the distributed items were 'expired and unsafe for consumption.' ", 
         isClue: true, 
         explanation: "Vague attribution: Which official? Real alerts name the source.",
         tactic: "Vague Attribution"
@@ -58,15 +58,15 @@ const TEXT_ROUNDS: TextRound[] = [
     sourceCheckContent: (
       <div className="space-y-3 font-sans">
         <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
-        <p className="text-[#0F172A]"><strong>Official Barangay Page:</strong> "No relief goods have been distributed yet. Distribution starts tomorrow."</p>
+        <p className="text-[#0F172A]"><strong>Official City Council Page:</strong> "No relief goods have been distributed yet. Distribution starts tomorrow."</p>
         <p className="text-[#0F172A]"><strong>Local News:</strong> No reports of expired goods in this area.</p>
       </div>
     )
   },
   {
     id: 1,
-    difficulty: "Easy",
-    badgeColor: "bg-green-100 text-green-700 border-green-700",
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
     title: "Scam Scholarship Post",
     postAuthor: "University Admissions Update",
     postHandle: "@UniScholarshipsPh",
@@ -77,13 +77,13 @@ const TEXT_ROUNDS: TextRound[] = [
     segments: [
       { 
         id: "1-1", 
-        text: "ALERT! Ateneo de Manila University is opening 50 FREE scholarship slots for incoming students! ", 
+        text: "ALERT! National State University is opening 50 FREE scholarship slots for incoming students! ", 
         isDecoy: true,
         explanation: "The university name is real, but scammers often use real institutions to build trust."
       },
       { 
         id: "1-2", 
-        text: "To secure your slot, applicants must first send a ₱500 'processing fee' to GCash number 09123456789. ", 
+        text: "To secure your slot, applicants must first send a $50 'processing fee' to CashApp tag $UniScholarships. ", 
         isClue: true,
         explanation: "Real scholarships never ask for a processing fee via personal mobile wallets.",
         tactic: "Advance Fee Fraud"
@@ -97,17 +97,14 @@ const TEXT_ROUNDS: TextRound[] = [
       },
       { 
         id: "1-4", 
-        text: "PM us your receipt. No official website link available at the moment.", 
-        isClue: true,
-        explanation: "Legitimate scholarships are always hosted on the official university domain, not via PM.",
-        tactic: "Unofficial Domain"
+        text: "PM us your receipt. No official website link available at the moment."
       }
     ],
     sourceCheckContent: (
       <div className="space-y-3 font-sans">
         <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
-        <p className="text-[#0F172A]"><strong>Official University Website:</strong> "We do not ask for GCash processing fees. All scholarship applications are processed through our official portal."</p>
-        <p className="text-[#0F172A]"><strong>Scam Alert Database:</strong> Mobile number 09123456789 has been flagged multiple times for 'Advance Fee' fraud.</p>
+        <p className="text-[#0F172A]"><strong>Official University Website:</strong> "We do not ask for CashApp processing fees. All scholarship applications are processed through our official portal."</p>
+        <p className="text-[#0F172A]"><strong>Scam Alert Database:</strong> CashApp tag $UniScholarships has been flagged multiple times for 'Advance Fee' fraud.</p>
       </div>
     )
   },
@@ -126,7 +123,7 @@ const TEXT_ROUNDS: TextRound[] = [
       { id: "2-1", text: "Have you tried this new miracle cure? " },
       { 
         id: "2-2", 
-        text: "Even Dingdong Dantes swears by it! ", 
+        text: "Even a famous actor swears by it! ", 
         isDecoy: true,
         explanation: "The celebrity's name is correctly used, but their endorsement is entirely fabricated."
       },
@@ -146,27 +143,24 @@ const TEXT_ROUNDS: TextRound[] = [
       },
       { 
         id: "2-5", 
-        text: "Buy it now exclusively at this unverified Shopify link: buy-gluco-max-now.shop.co", 
-        isClue: true,
-        explanation: "The link points to a sketchy, unverified storefront rather than an official brand page or pharmacy.",
-        tactic: "Suspicious Storefront"
+        text: "Buy it now exclusively at this unverified Shopify link: buy-gluco-max-now.shop.co"
       }
     ],
     sourceCheckContent: (
       <div className="space-y-3 font-sans">
         <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
         <p className="text-[#0F172A]"><strong>Celebrity Official Page:</strong> "I am not endorsing any diabetes supplement. Please beware of fake ads using my name."</p>
-        <p className="text-[#0F172A]"><strong>FDA Philippines Database:</strong> 0 results found for "GlucoCure Max". Not a registered food or drug product.</p>
+        <p className="text-[#0F172A]"><strong>National Health Database:</strong> 0 results found for "GlucoCure Max". Not a registered food or drug product.</p>
       </div>
     )
   },
   {
     id: 3,
-    difficulty: "Hard",
-    badgeColor: "bg-[#FFB800]/20 text-[#FFB800] border-[#FFB800]",
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
     title: "Fake Official Advisory",
-    postAuthor: "Provincial Gov Updates",
-    postHandle: "@ProvGov_Updates",
+    postAuthor: "Regional Gov Updates",
+    postHandle: "@RegionalGov_Updates",
     postTime: "1 hr ago",
     correctVerdict: "Fake",
     cluesNeeded: 2,
@@ -180,7 +174,7 @@ const TEXT_ROUNDS: TextRound[] = [
       },
       { 
         id: "3-2", 
-        text: "all classes (all levels) and government work in the province are SUSPENDED tomorrow. ", 
+        text: "all classes (all levels) and government work in the region are SUSPENDED tomorrow. ", 
         isClue: true,
         explanation: "No matching post exists on the official government social media account.",
         tactic: "Unverified Claim"
@@ -204,6 +198,261 @@ const TEXT_ROUNDS: TextRound[] = [
         <p className="text-[#0F172A]"><strong>Memo Database:</strong> Memo No. 45-B was issued last year for a completely different event.</p>
       </div>
     )
+  },
+  {
+    id: 4,
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+    title: "Fake Job Offer",
+    postAuthor: "HR Recruitment PH",
+    postHandle: "@JobsPH_Official",
+    postTime: "30 mins ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    tacticOptions: ["Advance Fee Fraud", "Unofficial Domain", "Too Good to Be True", "Phishing Link"],
+    segments: [
+      { id: "4-1", text: "WORK FROM HOME: Earn $500 to $1,000 daily by just watching YouTube videos! " },
+      { 
+        id: "4-2", 
+        text: "We are hiring 100 people today for immediate start. No experience needed! ", 
+        isDecoy: true,
+        explanation: "While 'no experience needed' is common, the ridiculous pay rate for watching videos is the real red flag."
+      },
+      { 
+        id: "4-3", 
+        text: "To get your starting kit and portal access, pay the $25 training fee via CashApp. ", 
+        isClue: true,
+        explanation: "Legitimate employers will never ask you to pay a fee to start working.",
+        tactic: "Advance Fee Fraud"
+      },
+      { 
+        id: "4-4", 
+        text: "Apply now at http://bit.ly/yt-jobs-2024", 
+        isClue: true,
+        explanation: "Real companies use official domains for job applications, not URL shorteners.",
+        tactic: "Unofficial Domain"
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Labor Dept Advisory:</strong> "Beware of online job offers asking for training fees or equipment fees. This is a common scam."</p>
+        <p className="text-[#0F172A]"><strong>Scam Alert:</strong> Shortened links in job offers are highly suspicious and often lead to phishing sites.</p>
+      </div>
+    )
+  },
+  {
+    id: 5,
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+    title: "Fake Bank Alert",
+    postAuthor: "Security Alerts",
+    postHandle: "@GlobalBank_Security",
+    postTime: "Just now",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    tacticOptions: ["Impersonation", "Artificial Urgency", "Phishing Link", "Vague Attribution"],
+    segments: [
+      { id: "5-1", text: "SECURITY ALERT for all Global Bank Account Holders. " },
+      { 
+        id: "5-2", 
+        text: "Your account has been temporarily locked due to suspicious login attempts from overseas. ", 
+        isDecoy: true,
+        explanation: "Banks do lock accounts for suspicious activity, but the method of notification here is fake."
+      },
+      { 
+        id: "5-3", 
+        text: "You must verify your identity within 24 hours or your account will be permanently closed. ", 
+        isClue: true,
+        explanation: "Banks do not threaten permanent closure within 24 hours via a social media post or SMS.",
+        tactic: "Artificial Urgency"
+      },
+      { 
+        id: "5-4", 
+        text: "Click here to unlock your account: www.globalbank-security-unlock.com", 
+        isClue: true,
+        explanation: "This is a fake domain. Official Global Bank alerts direct you to the official app or globalbank.com.",
+        tactic: "Phishing Link"
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Official Bank Advisory:</strong> "We will never ask you to click a link to unlock your account or verify your identity."</p>
+        <p className="text-[#0F172A]"><strong>Domain Check:</strong> 'globalbank-security-unlock.com' was registered 2 days ago.</p>
+      </div>
+    )
+  },
+  {
+    id: 6,
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+    title: "Fake Giveaway",
+    postAuthor: "MrBeast Giveaways",
+    postHandle: "@MrBeast_Global_Giveaways",
+    postTime: "5 hrs ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    tacticOptions: ["Advance Fee Fraud", "Impersonation", "Phishing Link", "Artificial Urgency"],
+    segments: [
+      { id: "6-1", text: "I am giving away $10,000 to the first 500 people who share this post! " },
+      { 
+        id: "6-2", 
+        text: "Congratulations to our previous winners who already received their cash! ", 
+        isDecoy: true,
+        explanation: "Scammers often use fake testimonials or fake previous winners to build trust."
+      },
+      { 
+        id: "6-3", 
+        text: "Message our admin 'Jimmy' directly to claim your prize. ", 
+        isClue: true,
+        explanation: "Real giveaways do not require you to message a random admin account.",
+        tactic: "Impersonation"
+      },
+      { 
+        id: "6-4", 
+        text: "Winners must pay a small $30 transfer fee to receive the $10,000. ", 
+        isClue: true,
+        explanation: "A legitimate giveaway will never ask the winner to pay a fee to receive their prize.",
+        tactic: "Advance Fee Fraud"
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>MrBeast Official:</strong> "I do not have a separate regional giveaway page. My only official giveaways are on my main verified accounts."</p>
+        <p className="text-[#0F172A]"><strong>Scam Alert:</strong> Requiring a 'transfer fee' or 'tax fee' is the defining characteristic of an advance-fee scam.</p>
+      </div>
+    )
+  },
+  {
+    id: 7,
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+    title: "Fake Investment Scam",
+    postAuthor: "Crypto Wealth Coach",
+    postHandle: "@CryptoCoach_Max",
+    postTime: "1 day ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    tacticOptions: ["Unverified Claim", "Too Good to Be True", "Unregistered Product", "Artificial Urgency"],
+    segments: [
+      { 
+        id: "7-1", 
+        text: "Bitcoin is crashing, but my students are making millions in passive income! ", 
+        isDecoy: true,
+        explanation: "The market context might be true, but it's being used to sell a scam."
+      },
+      { 
+        id: "7-2", 
+        text: "Our new AI trading bot guarantees a 500% return on your investment in just 3 days. ", 
+        isClue: true,
+        explanation: "No legitimate investment can guarantee a 500% return in 3 days. This is mathematically impossible without massive risk.",
+        tactic: "Too Good to Be True"
+      },
+      { 
+        id: "7-3", 
+        text: "Fully licensed and approved by the SEC and National Bank. ", 
+        isClue: true,
+        explanation: "Checking the SEC database reveals this entity is NOT registered or licensed to solicit investments.",
+        tactic: "Unverified Claim"
+      },
+      { 
+        id: "7-4", 
+        text: "Only 5 slots left for the VIP tier! DM me 'INVEST' now." 
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>SEC Advisory:</strong> "The entity 'Crypto Wealth Coach' is NOT registered with the Commission and is NOT authorized to solicit investments from the public."</p>
+        <p className="text-[#0F172A]"><strong>Financial Experts:</strong> Guaranteed high returns in a short period are the primary red flag of a Ponzi scheme.</p>
+      </div>
+    )
+  },
+  {
+    id: 8,
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+    title: "Fake Charity Appeal",
+    postAuthor: "Help Baby Angel",
+    postHandle: "@BabyAngelFund",
+    postTime: "2 days ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    tacticOptions: ["Emotional Manipulation", "Vague Attribution", "Suspicious Storefront", "Unofficial Domain"],
+    segments: [
+      { id: "8-1", text: "Please help! Baby Angel needs an emergency liver transplant within 48 hours or she won't survive. " },
+      { 
+        id: "8-2", 
+        text: "The hospital bill is already at $200,000 and the doctors are threatening to stop treatment. ", 
+        isClue: true,
+        explanation: "Hospitals in most regions cannot legally deny emergency life-saving treatment due to inability to pay (Emergency Medical Act).",
+        tactic: "Emotional Manipulation"
+      },
+      { 
+        id: "8-3", 
+        text: "We are begging for your kind hearts. Please send any amount to this CashApp: $HelpBabyAngel (Name: J. Cruz). ", 
+        isClue: true,
+        explanation: "The name on the CashApp account does not match the parents' names and the photo is stolen from a 2018 news article in another country.",
+        tactic: "Vague Attribution"
+      },
+      { 
+        id: "8-4", 
+        text: "God bless everyone who shares and donates! ",
+        isDecoy: true,
+        explanation: "Scammers use religious or moral appeals to lower people's critical thinking."
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Reverse Image Search:</strong> The photo of the baby was taken from a news article in Brazil from 2018.</p>
+        <p className="text-[#0F172A]"><strong>Hospital Statement:</strong> "We do not have a patient named 'Baby Angel' currently admitted in our pediatric ICU."</p>
+      </div>
+    )
+  },
+  {
+    id: 9,
+    difficulty: "Medium",
+    badgeColor: "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+    title: "Fake Flight Promo",
+    postAuthor: "Oceanic Airlines Promos",
+    postHandle: "@Oceanic_SeatSale",
+    postTime: "3 hrs ago",
+    correctVerdict: "Fake",
+    cluesNeeded: 2,
+    tacticOptions: ["Impersonation", "Artificial Urgency", "Phishing Link", "Unverified Claim"],
+    segments: [
+      { id: "9-1", text: "$1 FLIGHT ALERT! ✈️ " },
+      { 
+        id: "9-2", 
+        text: "Celebrate our anniversary with $1 base fares to ANY domestic destination! ", 
+        isDecoy: true,
+        explanation: "Piso fares are real promotions, making this scam highly believable."
+      },
+      { 
+        id: "9-3", 
+        text: "This secret promo is only available through our partner travel agency link, not the main website. ", 
+        isClue: true,
+        explanation: "Airlines host their major sales directly on their official website or app to drive traffic, not exclusively through unknown partners.",
+        tactic: "Impersonation"
+      },
+      { 
+        id: "9-4", 
+        text: "Book within the next 2 hours before seats run out! Click here: www.1dollar-oceanic-flights-2024.net", 
+        isClue: true,
+        explanation: "The link points to an unofficial domain designed to steal credit card details.",
+        tactic: "Phishing Link"
+      }
+    ],
+    sourceCheckContent: (
+      <div className="space-y-3 font-sans">
+        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+        <p className="text-[#0F172A]"><strong>Official Airline Page:</strong> "All our official seat sales are announced and booked exclusively through oceanicairlines.com. Beware of fake pages."</p>
+        <p className="text-[#0F172A]"><strong>Domain Check:</strong> The domain '1dollar-oceanic-flights-2024.net' is not owned by the airline.</p>
+      </div>
+    )
   }
 ];
 
@@ -217,7 +466,10 @@ const TACTIC_DESCRIPTIONS: Record<string, string> = {
   "Unregistered Product": "Selling items claiming health benefits without FDA approval or registration.",
   "Suspicious Storefront": "Using unverified, temporary e-commerce sites to sell dubious products.",
   "Unverified Claim": "Making bold, official-sounding statements without any supporting evidence.",
-  "Fabricated Memo": "Referencing fake official documents or memo numbers to appear legitimate."
+  "Fabricated Memo": "Referencing fake official documents or memo numbers to appear legitimate.",
+  "Impersonation": "Pretending to be a trusted entity like a bank, company, or government agency.",
+  "Too Good to Be True": "Offering extravagant rewards for minimal effort.",
+  "Emotional Manipulation": "Exploiting fear, pity, or tragedy to bypass critical thinking."
 };
 
 export default function Level1Page() {
@@ -225,7 +477,24 @@ export default function Level1Page() {
   const completeLevel = useGameStore((state) => state.completeLevel);
   
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0);
-  const currentRound = TEXT_ROUNDS[currentRoundIndex];
+  
+  const [sessionRounds, setSessionRounds] = useState<TextRound[]>([]);
+
+  useEffect(() => {
+    // Only randomize non-tutorial rounds
+    const nonTutorial = TEXT_ROUNDS.filter(r => r.difficulty !== "Tutorial");
+    const shuffled = nonTutorial.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 5); // Pick 5 random
+    const tutorial = TEXT_ROUNDS.find(r => r.difficulty === "Tutorial");
+    
+    if (tutorial) {
+      setSessionRounds([tutorial, ...selected]);
+    } else {
+      setSessionRounds(selected);
+    }
+  }, []);
+
+  const currentRound = sessionRounds[currentRoundIndex] || TEXT_ROUNDS[currentRoundIndex];
   
   const [flaggedIds, setFlaggedIds] = useState<Set<string>>(new Set());
   const [foundClues, setFoundClues] = useState<TextSegment[]>([]);
@@ -434,7 +703,7 @@ export default function Level1Page() {
                 className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] ${currentRound.badgeColor}`}
                 style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
               >
-                {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${TEXT_ROUNDS.length - 1}`}
+                {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${sessionRounds.length - 1}`}
               </span>
             </div>
             
@@ -602,7 +871,8 @@ export default function Level1Page() {
             >
               <Button
                 onClick={handleOpenSourceCheck}
-                className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[3px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
+                disabled={currentRoundIndex === 0 && tutorialStep < 3}
+                className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[3px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed ${
                   sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
                 } ${
                   currentRoundIndex === 0 && tutorialStep === 3 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
@@ -817,7 +1087,7 @@ export default function Level1Page() {
                         }`}
                         style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                       >
-                        {currentRoundIndex < TEXT_ROUNDS.length - 1 ? (
+                        {currentRoundIndex < sessionRounds.length - 1 ? (
                           <span className="flex items-center justify-center">{currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"} <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
                         ) : (
                           <span className="flex items-center justify-center">Complete Case 001 <Trophy className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
