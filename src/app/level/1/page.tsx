@@ -477,6 +477,7 @@ export default function Level1Page() {
   const completeLevel = useGameStore((state) => state.completeLevel);
   
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
   
   const [sessionRounds, setSessionRounds] = useState<TextRound[]>([]);
 
@@ -606,6 +607,9 @@ export default function Level1Page() {
       setFoundClues((prev) => [...prev, segment]);
     } else if (segment.isDecoy) {
       setFoundDecoys((prev) => [...prev, segment]);
+      if (currentRoundIndex !== 0) {
+        setScore(prev => prev - 20);
+      }
     }
 
     if (currentRoundIndex === 0 && tutorialStep === 5) {
@@ -634,6 +638,9 @@ export default function Level1Page() {
     if (!evidence) return;
     
     if (evidence.tactic === selectedTactic) {
+      if (currentRoundIndex !== 0) {
+        setScore(prev => prev + 100);
+      }
       setFeedback({
         isSuccess: true,
         title: currentRoundIndex === 0 ? "TRAINING COMPLETE" : "Verdict Correct!",
@@ -642,10 +649,13 @@ export default function Level1Page() {
           : "Great job! You correctly identified the fake post and the tactic used."
       });
     } else {
+      if (currentRoundIndex !== 0) {
+        setScore(prev => prev - 10); // Deduct 10 points for wrong verdict (retry penalty)
+      }
       setFeedback({
         isSuccess: false,
         title: "Analysis Failed",
-        message: "That's not quite the right manipulation tactic for this evidence. Review the quote and try again."
+        message: "That's not quite the right manipulation tactic for this evidence. Review the quote and try again. (-10 Points)"
       });
     }
   };
@@ -705,6 +715,9 @@ export default function Level1Page() {
               >
                 {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${sessionRounds.length - 1}`}
               </span>
+            </div>
+            <div className="font-heading font-black text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
+              Score: <span className="text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">{score}</span>
             </div>
             
           </div>
