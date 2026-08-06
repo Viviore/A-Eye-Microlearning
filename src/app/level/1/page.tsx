@@ -6,7 +6,39 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { TEXT_ROUNDS, TACTIC_DESCRIPTIONS, TextSegment, TextRound } from "@/data/case001";
+import case001Data from "@/data/case001.json";
+
+export type TextSegment = {
+  id: string;
+  text: string;
+  isClue?: boolean;
+  isDecoy?: boolean;
+  explanation?: string;
+  tactic?: string;
+};
+
+export type VerifiedSource = {
+  name: string;
+  text: string;
+};
+
+export type TextRound = {
+  id: number;
+  difficulty: "Tutorial" | "Easy" | "Medium" | "Hard";
+  badgeColor: string;
+  title: string;
+  postAuthor: string;
+  postHandle: string;
+  postTime: string;
+  segments: TextSegment[];
+  verifiedSources: VerifiedSource[];
+  correctVerdict: "Real" | "Fake";
+  cluesNeeded: number;
+  tacticOptions: string[];
+};
+
+const TEXT_ROUNDS: TextRound[] = case001Data.TEXT_ROUNDS as TextRound[];
+const TACTIC_DESCRIPTIONS: Record<string, string> = case001Data.TACTIC_DESCRIPTIONS as Record<string, string>;
 
 export default function Level1Page() {
   const router = useRouter();
@@ -286,26 +318,29 @@ export default function Level1Page() {
                 {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${sessionRounds.length - 1}`}
               </span>
             </div>
-            <div className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
-              <span>Score: <span className="text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">{currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}</span></span>
-              
-              <AnimatePresence>
-                {showScoreAnimation && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10, scale: 0.5 }}
-                    animate={{ opacity: 1, y: -25, scale: 1.2 }}
-                    exit={{ opacity: 0, y: -40 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                    className={`absolute -right-16 top-0 font-black ${
-                      scoreChange > 0 
-                        ? "text-[#FFB800] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]" 
-                        : "text-[#FF3366] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]"
-                    }`}
-                  >
-                    {scoreChange > 0 ? `+${scoreChange}` : scoreChange}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
+              <span>Score: </span>
+              <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
+                {currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
+                
+                <AnimatePresence>
+                  {showScoreAnimation && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, y: -30, scale: 1.2 }}
+                      exit={{ opacity: 0, y: -45, scale: 0.8 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className={`absolute left-1/2 -translate-x-1/2 top-0 pointer-events-none font-black whitespace-nowrap ${
+                        scoreChange > 0 
+                          ? "text-[#FFB800] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]" 
+                          : "text-[#FF3366] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]"
+                      }`}
+                    >
+                      {scoreChange > 0 ? `+${scoreChange}` : scoreChange}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </span>
             </div>
             
           </div>
@@ -498,7 +533,12 @@ export default function Level1Page() {
                       }`}
                       style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                     >
-                      {currentRound.sourceCheckContent}
+                      <div className="space-y-3 font-sans">
+                        <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
+                        {currentRound.verifiedSources && currentRound.verifiedSources.map((source: any, i: number) => (
+                          <p key={i} className="text-[#0F172A]"><strong>{source.name}:</strong> {source.text}</p>
+                        ))}
+                      </div>
                     </div>
                   </motion.div>
                 )}

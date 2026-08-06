@@ -10,7 +10,7 @@ Core mechanical rules for all 3 cases. See A-Eye_cases.md for full story/evidenc
 
 ### Format
 
-1 free tutorial round (not counted as a round) + 5 scored rounds, randomized order. No difficulty ramp — all rounds are equal difficulty.
+1 free tutorial round (not counted as a round) + 10 playable rounds in the pool (5 rounds require 1 clue, 5 rounds require 2 clues). The game randomly selects 5 rounds per session, randomized order. No difficulty ramp — all rounds are equal difficulty.
 - **No reappearance**: The game tracks played rounds. If you replay or restart, it filters out cases you have already seen (until the unplayed pool drops below 5, at which point it resets).
 
 ### Tools
@@ -21,7 +21,7 @@ Core mechanical rules for all 3 cases. See A-Eye_cases.md for full story/evidenc
 
 ### Gate to unlock "File Verdict"
 
-- Flag at least 2 of the 3 real clues (tutorial's example doesn't count).
+- Flag the required number of clues for the round (either 1 or 2 real clues, depending on the case).
 - Source Check is optional (opening it is no longer required to progress).
 - Flagging a decoy shows an in-context warning and applies a -10 point penalty, but doesn't block progress.
 
@@ -75,12 +75,12 @@ Correct tactic?
 ### Implementation Checklist
 
 - [x] 1 free tutorial round, not counted toward the 5 scored rounds
-- [x] 5 scored rounds, randomized order, no difficulty ramp
+- [x] 10 playable rounds in the pool (5 with 1 clue, 5 with 2 clues), 5 shown per session
 - [x] Prevent randomization reappearance on restart (keep history of played rounds)
 - [x] Flag tool on text lines
 - [x] Source Check panel (toggle open/closed)
 - [x] Evidence Board with short explanations per flagged clue
-- [x] Gate: 2+ real clues flagged (Source Check is optional)
+- [x] Gate: Required clues flagged (1 or 2 depending on round) (Source Check is optional)
 - [x] Decoy click → in-context warning shown, applies -10 deduction immediately
 - [x] Verdict Flow is tactic-ID only — no Real/Fake step, no evidence-select step
 - [x] 4 tactic options per round, 1 correct + 3 distinct non-overlapping distractors

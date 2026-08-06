@@ -312,7 +312,7 @@
         "id": "v-23",
         "title": "Duplicate Laptop Key",
         "x": 1.5,
-        "y": 69.5,
+        "y": 78,
         "width": 15,
         "height": 10,
         "explanation": "Two adjacent keyboard keys incorrectly display the exact same letter/symbol, while the neighboring key is completely missing.",
@@ -321,10 +321,10 @@
       {
         "id": "v-24",
         "title": "Deformed Cup Rim",
-        "x": 65,
-        "y": 24,
-        "width": 19,
-        "height": 10,
+        "x": 62,
+        "y": 31,
+        "width": 25,
+        "height": 13,
         "explanation": "The rim of the coffee cup is strangely deformed, a subtle geometric mistake typical of AI image generators.",
         "tactic": "AI Image Generation"
       }
