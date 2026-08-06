@@ -73,14 +73,13 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b-[3px] border-dashed border-[#0F172A] bg-[#FAFAFA]">
+    <header className="sticky top-0 z-40 w-full border-b-[4px] border-dashed border-[#0F172A] bg-white">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-3 xl:h-20 xl:py-0 flex items-center justify-between relative">
         
         {/* Brand Mark */}
         <Link href="/" className="flex items-center gap-3 group">
           <div 
-            className="p-2 bg-[#FFB800] border-[3px] border-[#0F172A] text-white shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105"
-            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+            className="p-2 bg-[#FFB800] border-[4px] border-[#0F172A] text-white shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105"
           >
             <Shield className="w-6 h-6" />
           </div>
@@ -96,8 +95,7 @@ export function Header() {
 
         {/* Mobile Hamburger Button */}
         <button 
-          className="xl:hidden p-2 text-[#0F172A] border-[3px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors"
-          style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+          className="xl:hidden p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -106,7 +104,7 @@ export function Header() {
         {/* Navigation */}
         <nav className={`${
           isMobileMenuOpen 
-            ? "flex absolute top-full left-0 right-0 bg-[#FAFAFA] border-b-[3px] border-dashed border-[#0F172A] p-4 shadow-xl z-50 flex-col items-stretch" 
+            ? "flex absolute top-full left-0 right-0 bg-white border-b-[4px] border-dashed border-[#0F172A] p-4 shadow-xl z-50 flex-col items-stretch" 
             : "hidden"
         } xl:flex xl:static xl:flex-row xl:bg-transparent xl:border-none xl:p-0 xl:shadow-none xl:items-center gap-3 xl:gap-4`}>
           {navItems.map((item) => {
@@ -120,12 +118,11 @@ export function Header() {
                   key={item.path}
                   href={item.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center justify-center xl:justify-start gap-2 px-4 py-3 xl:py-2 text-sm font-sans font-bold transition-all whitespace-nowrap border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
+                  className={`flex items-center justify-center xl:justify-start gap-2 px-4 py-3 xl:py-2 text-sm font-sans font-bold transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
                     isActive
                       ? "bg-[#FFB800] text-[#0F172A]"
                       : "bg-white text-[#0F172A] hover:bg-[#FFB800] hover:text-white"
                   }`}
-                  style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                 >
                   <Icon className={`w-5 h-5 xl:w-4 xl:h-4 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`} />
                   <span className="text-base xl:text-sm">{item.label}</span>
@@ -139,9 +136,8 @@ export function Header() {
             return (
               <div
                 key={item.path}
-                className="flex items-center justify-center xl:justify-start gap-2 px-4 py-3 xl:py-2 text-sm font-sans font-bold text-[#0F172A]/50 bg-[#1D2A3C] border-[3px] border-dashed border-[#0F172A]/50 cursor-not-allowed whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
+                className="flex items-center justify-center xl:justify-start gap-2 px-4 py-3 xl:py-2 text-sm font-sans font-bold text-[#0F172A]/50 bg-gray-100 border-[4px] border-dashed border-[#0F172A]/50 cursor-not-allowed whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
                 title={`Locked: Complete previous step first`}
-                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
                 <Lock className="w-5 h-5 xl:w-4 xl:h-4 text-[#0F172A]/50" />
                 <span className="text-base xl:text-sm">{item.label}</span>

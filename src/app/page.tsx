@@ -10,37 +10,12 @@ export default function Home() {
   return (
     <>
       <LandingNavbar />
-      <main className="min-h-screen relative overflow-x-hidden font-sans flex flex-col bg-[#FAFAFA] pt-20">
+      <main className="min-h-screen relative overflow-x-hidden font-sans flex flex-col bg-white pt-20">
       
-      {/* Decorative Scribbles in Background */}
-      <div className="absolute top-10 left-10 opacity-20 pointer-events-none rotate-12 z-0">
-        <svg width="200" height="200" viewBox="0 0 100 100" fill="none">
-          <path d="M10,50 Q40,10 90,50 T10,90" stroke="#0F172A" strokeWidth="2" strokeDasharray="5,5" />
-        </svg>
-      </div>
-      <div className="absolute top-[80vh] right-20 opacity-20 pointer-events-none -rotate-12 z-0 hidden lg:block">
-        <svg width="150" height="150" viewBox="0 0 100 100" fill="none">
-          <circle cx="50" cy="50" r="40" stroke="#FFB800" strokeWidth="3" strokeDasharray="8,4" />
-          <path d="M30,30 L70,70 M70,30 L30,70" stroke="#FFB800" strokeWidth="3" />
-        </svg>
-      </div>
-      <div className="absolute top-[140vh] left-[5%] opacity-10 pointer-events-none rotate-45 z-0 hidden lg:block">
-        <svg width="300" height="300" viewBox="0 0 100 100" fill="none">
-          <path d="M20,20 L80,20 L80,80 L20,80 Z" stroke="#0F172A" strokeWidth="1" strokeDasharray="2,8" />
-          <path d="M30,30 L70,30 L70,70 L30,70 Z" stroke="#0F172A" strokeWidth="1" strokeDasharray="2,8" />
-        </svg>
-      </div>
-      <div className="absolute top-[220vh] right-[10%] opacity-20 pointer-events-none -rotate-6 z-0">
-        <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
-          <path d="M50,10 L50,90 M10,50 L90,50" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
-        </svg>
-      </div>
-      <div className="absolute top-[280vh] left-[15%] opacity-15 pointer-events-none rotate-12 z-0">
-        <svg width="180" height="180" viewBox="0 0 100 100" fill="none">
-          <path d="M10,20 Q50,80 90,20" stroke="#FFB800" strokeWidth="4" fill="none" strokeLinecap="round" />
-          <circle cx="90" cy="20" r="4" fill="#FFB800" />
-        </svg>
-      </div>
+      {/* Brutalist Background Elements */}
+      <div className="absolute top-20 right-10 w-32 h-32 bg-[#FFB800] border-[4px] border-[#0F172A] z-0 hidden md:block translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute top-60 left-10 w-16 h-16 bg-[#0F172A] z-0 hidden lg:block rotate-45"></div>
+      <div className="absolute top-[30vh] right-[20vw] w-8 h-8 border-[4px] border-[#0F172A] z-0 hidden md:block rounded-full bg-white"></div>
 
       {/* HERO SECTION */}
       <section id="hero" className="max-w-[1400px] w-full mx-auto px-6 py-12 md:py-24 min-h-[90vh] flex flex-col justify-center relative z-10">
@@ -50,13 +25,12 @@ export default function Home() {
           <div className="lg:col-span-7 flex flex-col items-start text-left pt-12 md:pt-0">
             
             <motion.div
-              initial={{ opacity: 0, y: 20, rotate: -5, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, rotate: -2, scale: 1 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-2 mb-8 bg-[#FFB800] text-[#0F172A] font-heading text-lg font-bold border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] rounded-sm"
-              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              className="inline-flex items-center gap-2 px-4 py-2 mb-8 bg-[#FFB800] text-[#0F172A] font-heading text-lg font-bold border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rounded-none uppercase"
             >
-              <NotebookPen className="w-5 h-5 text-[#FFB800]" />
+              <NotebookPen className="w-5 h-5 text-[#0F172A]" />
               <span>CASE FILE: OPEN</span>
             </motion.div>
 
@@ -66,17 +40,8 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] font-black tracking-tighter leading-[0.9] text-[#0F172A] font-heading mb-8 relative"
             >
-              <span className="block text-[#FFB800]">A-EYE</span>
-              <span className="block">INVESTIGATION</span>
-              
-              {/* Hand-drawn underline */}
-              <motion.svg 
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
-                className="absolute -bottom-4 left-0 w-full h-6 text-[#FFB800] overflow-visible" viewBox="0 0 200 20" preserveAspectRatio="none">
-                <motion.path d="M4,10 Q50,15 100,10 T196,10" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-              </motion.svg>
+              <span className="block text-[#FFB800] drop-shadow-[4px_4px_0px_#0F172A]">A-EYE</span>
+              <span className="block text-white drop-shadow-[4px_4px_0px_#0F172A]">INVESTIGATION</span>
             </motion.h1>
 
             <motion.p
@@ -97,8 +62,7 @@ export default function Home() {
               <Link href="/how-to-play" passHref>
                 <Button 
                   size="lg" 
-                  className="h-16 px-10 text-xl font-heading tracking-wide bg-[#ffffff] hover:bg-[#FFB800] hover:text-white text-[#0F172A] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 group"
-                  style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                  className="bg-white hover:bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] h-16 px-10 text-xl font-heading font-black tracking-wider uppercase transition-all group"
                 >
                   <Play className="mr-3 w-6 h-6" />
                   Start Training
@@ -110,18 +74,18 @@ export default function Home() {
           {/* Right Column: Visual / Graphic Element */}
           <div className="lg:col-span-5 relative hidden lg:block">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, rotate: 2 }}
-              animate={{ opacity: 1, scale: 1, rotate: 3 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="aspect-[4/5] bg-white border-[3px] border-[#0F172A] p-8 flex flex-col justify-between relative group shadow-[8px_8px_0px_0px_#0F172A]"
-              style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+              className="aspect-[4/5] bg-white border-[4px] border-[#0F172A] flex flex-col justify-between relative group shadow-[12px_12px_0px_0px_#0F172A]"
             >
-              {/* Tape at the top */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-                <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+              <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-3 flex gap-2 w-full">
+                <div className="w-4 h-4 rounded-full border-[2px] border-[#0F172A] bg-white"></div>
+                <div className="w-4 h-4 rounded-full border-[2px] border-[#0F172A] bg-white"></div>
+                <div className="w-4 h-4 rounded-full border-[2px] border-[#0F172A] bg-white"></div>
               </div>
               
-              <div className="flex justify-between items-start z-10 relative">
+              <div className="flex justify-between items-start z-10 relative px-8 pt-8">
                 <Search className="w-16 h-16 text-[#0F172A] stroke-[1.5]" />
                 <motion.div 
                   initial={{ scale: 0, rotate: 0 }}
@@ -142,18 +106,13 @@ export default function Home() {
                 <img 
                   src="/character_mascot/character_pose.png" 
                   alt="A-Eye Mascot" 
-                  className="w-[85%] h-[85%] object-contain drop-shadow-[4px_4px_0px_#0F172A]" 
+                  className="w-[85%] h-[85%] object-contain filter drop-shadow-[8px_8px_0px_#0F172A]" 
                 />
               </motion.div>
 
               <div 
-                className="z-10 bg-[#FFB800] px-6 py-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 relative mt-auto flex-none"
-                style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+                className="z-10 bg-[#FFB800] px-6 py-5 border-t-[4px] border-[#0F172A] relative mt-auto flex-none"
               >
-                {/* Thumbtack */}
-                <div className="absolute top-[-14px] left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-                  <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-60" />
-                </div>
                 
                 <h3 className="font-heading text-2xl font-bold mb-2 text-[#0F172A]">Checklist:</h3>
                 <ul className="font-sans text-lg space-y-2 text-[#0F172A]">
@@ -198,68 +157,87 @@ export default function Home() {
             {/* Feature 1 */}
             <motion.div 
               variants={{
-                hidden: { opacity: 0, y: 40, rotate: 0 },
-                visible: { opacity: 1, y: 0, rotate: 1, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
+                hidden: { opacity: 0, y: 40 },
+                visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              whileHover={{ scale: 1.03, y: -5, rotate: 0 }}
-              whileTap={{ scale: 0.97 }}
-              className="bg-white text-[#0F172A] p-8 border-[3px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] cursor-default"
-              style={{ borderRadius: "15px 255px 225px 15px / 255px 15px 15px 225px" }}
+              className="bg-white text-[#0F172A] border-[4px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] flex flex-col hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#FFB800] transition-all"
             >
-              <div className="w-16 h-16 bg-[#FFB800] rounded-full flex items-center justify-center mb-6 border-2 border-[#0F172A]">
-                <FileText className="w-8 h-8 text-[#0F172A]" />
+              <div className="border-b-[4px] border-[#FFB800] bg-[#FFB800] p-2 flex gap-1.5">
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
               </div>
-              <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 001: Text Forensics</h3>
-              <p className="font-sans text-lg leading-relaxed">
-                Analyze suspicious social feeds, flag deceptive claims, and cross-reference them against verified sources. Learn to spot the tactics behind disinformation.
-              </p>
+              <div className="p-8 relative overflow-hidden">
+                <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
+                <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+                  <FileText className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 001: Text Forensics</h3>
+                <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
+                  Analyze suspicious social feeds, flag deceptive claims, and cross-reference them against verified sources. Learn to spot the tactics behind disinformation.
+                </p>
+              </div>
             </motion.div>
 
             {/* Feature 2 */}
             <motion.div 
               variants={{
-                hidden: { opacity: 0, y: 40, rotate: 0 },
-                visible: { opacity: 1, y: 0, rotate: -1, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
+                hidden: { opacity: 0, y: 40 },
+                visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              whileHover={{ scale: 1.03, y: -5, rotate: 0 }}
-              whileTap={{ scale: 0.97 }}
-              className="bg-white text-[#0F172A] p-8 border-[3px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] mt-4 md:mt-0 cursor-default"
-              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              className="bg-white text-[#0F172A] border-[4px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] flex flex-col mt-4 md:mt-0 hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#FFB800] transition-all"
             >
-              <div className="w-16 h-16 bg-[#FFB800] rounded-full flex items-center justify-center mb-6 border-2 border-[#0F172A]">
-                <Camera className="w-8 h-8 text-[#0F172A]" />
+              <div className="border-b-[4px] border-[#FFB800] bg-[#FFB800] p-2 flex gap-1.5">
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
               </div>
-              <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 002: Image Analysis</h3>
-              <p className="font-sans text-lg leading-relaxed">
-                Use the digital magnifier to scan viral photos for AI-generated artifacts. Hands missing fingers, melting backgrounds, and impossible physics.
-              </p>
+              <div className="p-8 relative overflow-hidden">
+                <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
+                <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+                  <Camera className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 002: Image Analysis</h3>
+                <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
+                  Use the digital magnifier to scan viral photos for AI-generated artifacts. Hands missing fingers, melting backgrounds, and impossible physics.
+                </p>
+              </div>
             </motion.div>
 
             {/* Feature 3 */}
             <motion.div 
               variants={{
-                hidden: { opacity: 0, y: 40, rotate: 0 },
-                visible: { opacity: 1, y: 0, rotate: 2, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
+                hidden: { opacity: 0, y: 40 },
+                visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              whileHover={{ scale: 1.03, y: -5, rotate: 0 }}
-              whileTap={{ scale: 0.97 }}
-              className="bg-white text-[#0F172A] p-8 border-[3px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] mt-8 md:mt-0 cursor-default"
-              style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+              className="bg-white text-[#0F172A] border-[4px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] flex flex-col mt-8 md:mt-0 hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#FFB800] transition-all"
             >
-              <div className="w-16 h-16 bg-[#FFB800] rounded-full flex items-center justify-center mb-6 border-2 border-[#0F172A]">
-                <Video className="w-8 h-8 text-[#0F172A]" />
+              <div className="border-b-[4px] border-[#FFB800] bg-[#FFB800] p-2 flex gap-1.5">
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
               </div>
-              <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 003: Video Deepfakes</h3>
-              <p className="font-sans text-lg leading-relaxed">
-                Scrub through video feeds frame by frame to detect temporal inconsistencies, audio-sync failures, and digital masks.
-              </p>
+              <div className="p-8 relative overflow-hidden">
+                <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
+                <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+                  <Video className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 003: Video Deepfakes</h3>
+                <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
+                  Scrub through video feeds frame by frame to detect temporal inconsistencies, audio-sync failures, and digital masks.
+                </p>
+              </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* SECTION 2: WHY TRAIN WITH US? (MISSION) */}
-      <section id="mission" className="w-full py-24 relative overflow-hidden bg-[#FAFAFA]">
+      <section id="mission" className="w-full py-24 md:py-32 relative overflow-hidden bg-white">
+        {/* Brutalist Background Elements */}
+        <div className="absolute bottom-10 left-10 w-24 h-24 bg-[#FFB800] border-[4px] border-[#0F172A] z-0 hidden md:block"></div>
+        <div className="absolute top-20 right-20 w-48 h-12 bg-black z-0 hidden lg:block -rotate-12"></div>
+        
         <div className="max-w-[1400px] mx-auto px-6 relative z-10 flex justify-center">
           
           <motion.div 
@@ -267,13 +245,15 @@ export default function Home() {
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, type: "spring", bounce: 0.3 }}
-            className="max-w-4xl w-full bg-[#FFB800] p-10 md:p-16 border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative -rotate-1"
-            style={{ borderRadius: "2px" }}
+            className="max-w-4xl w-full bg-[#FFB800] p-10 md:p-16 border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative flex flex-col hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_#0F172A] transition-all"
           >
-            {/* Paper clip */}
-            <div className="absolute -top-6 right-10 w-8 h-20 border-[4px] border-[#0F172A] rounded-full bg-white rotate-12 z-20 shadow-[2px_2px_0px_0px_#0F172A]"></div>
+            <div className="absolute top-0 left-0 w-full border-b-[4px] border-[#0F172A] bg-white p-2 flex gap-2">
+              <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#FFB800]"></div>
+              <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+              <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+            </div>
             
-            <div className="flex items-center justify-center mb-8 gap-4 border-b-[4px] border-[#0F172A] pb-8">
+            <div className="flex items-center justify-center mb-8 gap-4 border-b-[4px] border-[#0F172A] pb-8 pt-6">
               <ShieldAlert className="w-12 h-12 text-[#0F172A]" />
               <h2 className="text-4xl md:text-5xl font-black font-heading tracking-tight uppercase text-[#0F172A]">
                 Mission Briefing
@@ -324,8 +304,7 @@ export default function Home() {
         <Link href="/how-to-play" passHref>
           <Button 
             size="lg" 
-            className="h-20 px-16 text-2xl font-heading tracking-wide bg-[#FFB800] hover:bg-white text-[#0F172A] border-[4px] border-[#FFB800] shadow-[8px_8px_0px_0px_rgba(255,184,0,0.5)] hover:shadow-[4px_4px_0px_0px_#FFB800] hover:translate-x-[4px] hover:translate-y-[4px] transition-all duration-200 group"
-            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+            className="bg-white hover:bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px] h-20 px-16 text-2xl font-heading font-black tracking-wider uppercase transition-all group"
           >
             <Play className="mr-4 w-8 h-8" />
             Begin Investigation

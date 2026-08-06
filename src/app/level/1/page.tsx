@@ -293,9 +293,9 @@ export default function Level1Page() {
 
   return (
     <main 
-      className={`min-h-full bg-[#FAFAFA] text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans ${currentRoundIndex === 0 ? 'pb-72 md:pb-56 lg:pb-48' : 'pb-32'}`}
+      className={`min-h-full bg-white text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans ${currentRoundIndex === 0 ? 'pb-72 md:pb-56 lg:pb-48' : 'pb-32'}`}
       style={{
-        backgroundImage: "radial-gradient(#1D2A3C 1.5px, transparent 1.5px)",
+        backgroundImage: "linear-gradient(to right, #0F172A12 1px, transparent 1px), linear-gradient(to bottom, #0F172A12 1px, transparent 1px)",
         backgroundSize: "24px 24px"
       }}
     >
@@ -308,20 +308,18 @@ export default function Level1Page() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
             <div className="flex items-center gap-3">
               <div 
-                className="px-3 py-1.5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FAFAFA] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2"
-                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                className="px-3 py-1.5 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2"
               >
-                <FileText className="w-4 h-4 text-[#FFB800]" />
-                <span>Case 001 // Text Feed</span>
+                <FileText className="w-4 h-4 text-[#0F172A]" />
+                <span>CASE 001 // TEXT FEED</span>
               </div>
               <span 
-                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] ${currentRound.badgeColor}`}
-                style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] ${currentRound.badgeColor}`}
               >
                 {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${sessionRounds.length - 1}`}
               </span>
             </div>
-            <div className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]" style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}>
+            <div className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
               <span>Score: </span>
               <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
                 {currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
@@ -351,15 +349,13 @@ export default function Level1Page() {
           {/* Mock Social Post */}
           <div 
             id="tutorial-post"
-            className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] -rotate-1 ${
-              currentRoundIndex === 0 && tutorialStep === 2 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+            className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
+              currentRoundIndex === 0 && tutorialStep === 2 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : "z-10"
             }`}
-            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
           >
-            <div className="flex items-center gap-4 mb-6 border-b-[3px] border-dashed border-[#0F172A]/30 pb-4">
+            <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div 
-                className="w-14 h-14 bg-[#1D2A3C] border-[3px] border-[#0F172A] flex items-center justify-center -rotate-3"
-                style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+                className="w-14 h-14 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center"
               >
                 <User className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} />
               </div>
@@ -428,48 +424,34 @@ export default function Level1Page() {
         <div className="lg:col-span-5 flex flex-col gap-6 sticky top-28">
           
           <div 
-            className="bg-[#FFB800] p-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 relative"
-            style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+            className="bg-[#FFB800] p-5 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] relative"
           >
-            {/* Decorative Tack */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
-            </div>
-
-            <h3 className="font-heading font-bold text-2xl mb-1 flex items-center gap-2 text-[#0F172A]">
-              <Search className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} /> Objective:
+            <h3 className="font-heading font-bold text-2xl mb-1 flex items-center gap-2 text-[#0F172A] uppercase">
+              <Search className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} /> Objective
             </h3>
-            <p className="text-[17px] text-[#0F172A]/90 font-medium font-sans leading-relaxed">
+            <p className="text-[17px] text-[#0F172A] font-bold font-sans leading-relaxed">
               Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
-              Find at least <strong className="text-[#0F172A] font-bold underline decoration-wavy decoration-1 underline-offset-4">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong> to proceed.
+              Find at least <strong className="text-[#0F172A] font-black border-b-[4px] border-[#0F172A]">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong> to proceed.
             </p>
           </div>
 
           <div 
-            className="p-6 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative rotate-1"
-            style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+            className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative"
           >
-            {/* Tape Decoration */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
-            </div>
-
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-3xl font-bold font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
-                <Flag className="w-7 h-7 text-[#FFB800]" strokeWidth={2.5} /> Evidence Board
+              <h2 className="text-3xl font-black font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
+                <Flag className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} /> Evidence
               </h2>
               <span 
-                className="font-mono text-sm font-bold bg-[#0F172A] text-white px-3 py-1 shadow-[2px_2px_0px_0px_#FFB800]"
-                style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+                className="font-mono text-sm font-bold bg-[#FFB800] border-[4px] border-[#0F172A] text-[#0F172A] px-3 py-1 shadow-[4px_4px_0px_0px_#0F172A]"
               >
-                {foundClues.length} / {currentRound.cluesNeeded} Clues
+                {foundClues.length} / {currentRound.cluesNeeded}
               </span>
             </div>
             
-            <div className={`min-h-[150px] border-[3px] border-dashed border-[#0F172A]/30 p-4 space-y-3 bg-[radial-gradient(#0F172A33_1.5px,transparent_1.5px)] bg-[size:16px_16px] transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 6 ? "z-40 bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+            <div className={`min-h-[150px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[linear-gradient(45deg,#0F172A11_25%,transparent_25%,transparent_50%,#0F172A11_50%,#0F172A11_75%,transparent_75%,transparent)] bg-[length:16px_16px] transition-all duration-500 relative ${
+              currentRoundIndex === 0 && tutorialStep === 6 ? "z-40 bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : "z-10"
             }`}
-            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
               {foundClues.length === 0 ? (
                 <p className="text-center text-[#0F172A]/40 font-mono text-sm absolute inset-0 flex items-center justify-center">
@@ -480,14 +462,10 @@ export default function Level1Page() {
                   {foundClues.map((clue, idx) => (
                     <motion.div
                       key={clue.id}
-                      initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-                      animate={{ opacity: 1, scale: 1, rotate: idx % 2 === 0 ? 1 : -1 }}
-                      className="bg-[#FFB800] p-3 border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] relative"
-                      style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="bg-[#FFB800] p-3 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative"
                     >
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-                        <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
-                      </div>
                       <p className="text-xs font-bold font-mono text-[#0F172A]/70 mb-1 uppercase tracking-widest">Found Clue:</p>
                       <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">&quot;{clue.text.substring(0, 50)}...&quot;</p>
                       {clue.explanation && (
@@ -506,17 +484,15 @@ export default function Level1Page() {
               className={`mt-6 space-y-4 transition-all duration-500 relative ${
               currentRoundIndex === 0 && tutorialStep === 3 ? "z-40" : "z-10"
             }`}
-            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
               <Button
                 onClick={handleOpenSourceCheck}
                 disabled={currentRoundIndex === 0 && tutorialStep < 3}
-                className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[3px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed ${
+                className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[4px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed ${
                   sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
                 } ${
-                  currentRoundIndex === 0 && tutorialStep === 3 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
+                  currentRoundIndex === 0 && tutorialStep === 3 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
                 }`}
-                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
                 <Search className="mr-2 w-5 h-5" strokeWidth={2.5} /> 
                 {sourceCheckOpen ? "Close Source Check" : "Open Source Check"}
@@ -531,10 +507,9 @@ export default function Level1Page() {
                     className={currentRoundIndex === 0 && tutorialStep === 4 ? "overflow-visible" : "overflow-hidden"}
                   >
                     <div 
-                      className={`p-5 bg-white border-[3px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative ${
-                        currentRoundIndex === 0 && tutorialStep === 4 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-[#FAFAFA] scale-[1.02]" : "z-10"
+                      className={`p-5 bg-white border-[4px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative ${
+                        currentRoundIndex === 0 && tutorialStep === 4 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : "z-10"
                       }`}
-                      style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                     >
                       <div className="space-y-3 font-sans">
                         <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
@@ -550,7 +525,7 @@ export default function Level1Page() {
             
             <div 
               id="tutorial-verdict"
-              className={`mt-6 pt-6 border-t-[3px] border-dashed border-[#0F172A]/30 transition-all duration-500 relative ${
+              className={`mt-6 pt-6 border-t-[4px] border-dashed border-[#0F172A] transition-all duration-500 relative ${
               currentRoundIndex === 0 && tutorialStep === 9 ? "z-40" : "z-10"
             }`}>
               <Button
@@ -562,10 +537,9 @@ export default function Level1Page() {
                   }
                 }}
                 disabled={!canFileVerdict}
-                className={`w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[3px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
-                  currentRoundIndex === 0 && tutorialStep === 9 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
+                className={`w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
+                  currentRoundIndex === 0 && tutorialStep === 9 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
                 }`}
-                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
               >
                 {canFileVerdict ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
               </Button>
@@ -582,10 +556,9 @@ export default function Level1Page() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className={`p-5 md:p-6 w-full max-w-2xl overflow-y-auto overflow-x-hidden bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative ${
+              className={`p-5 md:p-6 w-full max-w-2xl overflow-y-auto overflow-x-hidden bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative ${
                 currentRoundIndex === 0 ? "max-h-[calc(100vh-320px)] md:max-h-[calc(100vh-280px)]" : "max-h-[90vh]"
               }`}
-              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
               {!feedback ? (
                 <>
@@ -618,16 +591,15 @@ export default function Level1Page() {
                               }}
                               onMouseEnter={() => setHoveredTactic(tactic)}
                               onMouseLeave={() => setHoveredTactic(null)}
-                              className={`p-3 border-[3px] font-bold font-sans transition-all text-[#0F172A] ${
-                                isTutorialWrongTactic ? "opacity-40 cursor-not-allowed bg-[#FAFAFA] border-dashed border-[#0F172A]/30" : "cursor-pointer"
+                              className={`p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] ${
+                                isTutorialWrongTactic ? "opacity-40 cursor-not-allowed bg-white border-dashed border-[#0F172A]/30" : "cursor-pointer"
                               } ${
                                 currentRoundIndex === 0 && tutorialStep === 10 && !selectedTactic && !isTutorialWrongTactic ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
                               } ${
                                 selectedTactic === tactic
-                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
+                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]"
                                   : !isTutorialWrongTactic ? "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]" : ""
                               }`}
-                              style={{ borderRadius: "15px 255px 15px 225px / 225px 15px 255px 15px" }}
                             >
                               {tactic}
                             </button>
@@ -646,18 +618,16 @@ export default function Level1Page() {
                     <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
                       <Button
                         onClick={() => setShowVerdictModal(false)}
-                        className="flex-1 h-12 bg-white text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-[#FFB800] hover:text-[#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
-                        style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                        className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
                       >
                         Cancel
                       </Button>
                       <Button
                         onClick={handleSubmitVerdict}
                         disabled={!selectedTactic}
-                        className={`flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
-                          currentRoundIndex === 0 && tutorialStep === 11 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
+                        className={`flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
+                          currentRoundIndex === 0 && tutorialStep === 11 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
                         }`}
-                        style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
                       >
                         Submit Report
                       </Button>
@@ -669,15 +639,13 @@ export default function Level1Page() {
                   <div className="flex justify-center">
                     {feedback.isSuccess ? (
                       <div 
-                        className="w-24 h-24 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A] rotate-2"
-                        style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+                        className="w-24 h-24 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A]"
                       >
                         <CheckCircle2 className="w-12 h-12 text-[#0F172A]" strokeWidth={2.5} />
                       </div>
                     ) : (
                       <div 
-                        className="w-24 h-24 bg-[#FFB800]/20 border-[4px] border-[#FFB800] flex items-center justify-center shadow-[6px_6px_0px_0px_#FFB800] -rotate-2"
-                        style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                        className="w-24 h-24 bg-white border-[4px] border-[#FFB800] flex items-center justify-center shadow-[6px_6px_0px_0px_#FFB800]"
                       >
                         <XCircle className="w-12 h-12 text-[#FFB800]" strokeWidth={2.5} />
                       </div>
@@ -695,10 +663,9 @@ export default function Level1Page() {
                     {feedback.isSuccess ? (
                       <Button
                         onClick={handleNextRound}
-                        className={`w-full h-16 text-white text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all ${
-                          currentRoundIndex === 0 ? "bg-[#10B981] hover:bg-[#10B981]/90" : "bg-[#FFB800] hover:bg-[#FFB800]/90"
+                        className={`w-full h-16 text-white text-2xl font-heading uppercase tracking-widest border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all ${
+                          currentRoundIndex === 0 ? "bg-[#10B981] hover:bg-[#10B981]/90" : "bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A]"
                         }`}
-                        style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                       >
                         {currentRoundIndex < sessionRounds.length - 1 ? (
                           <span className="flex items-center justify-center">{currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"} <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
@@ -709,8 +676,7 @@ export default function Level1Page() {
                     ) : (
                       <Button
                         onClick={handleRetryRound}
-                        className="w-full h-16 bg-white text-[#0F172A] text-2xl font-heading uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:bg-[#1D2A3C] hover:text-white active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all"
-                        style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                        className="w-full h-16 bg-white text-[#0F172A] text-2xl font-heading uppercase tracking-widest border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:bg-gray-100 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all"
                       >
                         <RotateCcw className="mr-3 w-7 h-7" strokeWidth={2.5} /> Retry Verdict
                       </Button>
@@ -756,8 +722,7 @@ export default function Level1Page() {
 
             {/* Speech Bubble */}
             <div 
-              className="flex-1 bg-white border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] p-4 md:p-6 relative font-sans"
-              style={{ borderRadius: "25px 255px 25px 225px / 255px 25px 225px 25px" }}
+              className="flex-1 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] p-4 md:p-6 relative font-sans"
             >
               {/* Pointer Triangle (Desktop) */}
               <div className={`absolute bottom-8 w-0 h-0 border-y-[12px] border-y-transparent hidden lg:block transition-all duration-300 ${
@@ -811,8 +776,7 @@ export default function Level1Page() {
                 <Button 
                   onClick={() => setTutorialStep(prev => prev + 1)}
                   disabled={tutorialCooldown > 0 || [3, 5, 9, 10, 11].includes(tutorialStep)}
-                  className="bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-base md:text-lg uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:bg-[#1D2A3C] disabled:text-white/50 disabled:border-solid disabled:shadow-none h-10 px-4 md:px-6"
-                  style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                  className="bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-base md:text-lg uppercase tracking-widest border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:bg-gray-100 disabled:text-[#0F172A]/50 disabled:border-solid disabled:shadow-none h-10 px-4 md:px-6"
                 >
                   {[3, 5, 9, 10, 11].includes(tutorialStep) 
                     ? "Action Required"
@@ -842,8 +806,7 @@ export default function Level1Page() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="p-5 md:p-6 max-w-md w-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative -rotate-1 text-center"
-              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              className="p-5 md:p-6 max-w-md w-full bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative text-center"
             >
               <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-3 uppercase tracking-wider">
                 Skip Training?
@@ -855,8 +818,7 @@ export default function Level1Page() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   onClick={() => setShowSkipConfirm(false)}
-                  className="flex-1 h-12 bg-white hover:bg-gray-50 text-[#0F172A] font-bold font-heading text-lg uppercase tracking-wider border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
-                  style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}
+                  className="flex-1 h-12 bg-white hover:bg-gray-50 text-[#0F172A] font-bold font-heading text-lg uppercase tracking-wider border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
                 >
                   Cancel
                 </Button>
@@ -865,8 +827,7 @@ export default function Level1Page() {
                     setShowSkipConfirm(false);
                     handleNextRound();
                   }}
-                  className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-lg uppercase tracking-wider border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
-                  style={{ borderRadius: "225px 15px 255px 15px / 15px 255px 15px 225px" }}
+                  className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-lg uppercase tracking-wider border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
                 >
                   Yes, Skip It
                 </Button>

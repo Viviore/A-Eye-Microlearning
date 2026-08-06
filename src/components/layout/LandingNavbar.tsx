@@ -30,14 +30,13 @@ export function LandingNavbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b-[3px] border-dashed border-[#0F172A] bg-[#FAFAFA]/95 backdrop-blur-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b-[4px] border-dashed border-[#0F172A] bg-white/95 backdrop-blur-sm">
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-3 xl:h-20 xl:py-0 flex items-center justify-between relative">
         
         {/* Brand Mark */}
         <Link href="#hero" onClick={(e) => scrollToSection(e, "#hero")} className="flex items-center gap-3 group">
           <div 
-            className="p-2 bg-[#FFB800] border-[3px] border-[#0F172A] text-white shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105"
-            style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+            className="p-2 bg-[#FFB800] border-[4px] border-[#0F172A] text-white shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105"
           >
             <Shield className="w-6 h-6" />
           </div>
@@ -50,8 +49,7 @@ export function LandingNavbar() {
 
         {/* Mobile Hamburger Button */}
         <button 
-          className="md:hidden p-2 text-[#0F172A] border-[3px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors"
-          style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+          className="md:hidden p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -60,7 +58,7 @@ export function LandingNavbar() {
         {/* Navigation & CTA */}
         <nav className={`${
           isMobileMenuOpen 
-            ? "flex absolute top-full left-0 right-0 bg-[#FAFAFA] border-b-[3px] border-dashed border-[#0F172A] p-6 shadow-xl z-50 flex-col items-center gap-6" 
+            ? "flex absolute top-full left-0 right-0 bg-white border-b-[4px] border-dashed border-[#0F172A] p-6 shadow-xl z-50 flex-col items-center gap-6" 
             : "hidden"
         } md:flex md:static md:flex-row md:bg-transparent md:border-none md:p-0 md:shadow-none md:items-center gap-6 md:gap-8`}>
           
@@ -81,8 +79,7 @@ export function LandingNavbar() {
           <Link href="/how-to-play" passHref className="w-full md:w-auto">
             <Button 
               size="lg" 
-              className="w-full md:w-auto h-12 px-6 text-base font-heading font-bold tracking-wide bg-[#FFB800] hover:bg-[#0F172A] hover:text-white text-[#0F172A] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 group"
-              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              className="w-full md:w-auto h-12 px-6 text-base font-heading font-bold tracking-wide bg-[#FFB800] hover:bg-[#0F172A] hover:text-white text-[#0F172A] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 group"
             >
               <Play className="mr-2 w-5 h-5" />
               Start Training

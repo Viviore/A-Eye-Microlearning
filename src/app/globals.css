@@ -60,7 +60,7 @@
   --secondary: #1D2A3C;
   --secondary-foreground: #0F172A;
   --muted: #1D2A3C;
-  --muted-foreground: rgba(45, 45, 45, 0.72);
+  --muted-foreground: rgba(15, 23, 42, 0.72);
   --accent: #FFB800;
   --accent-foreground: #0F172A;
   --destructive: #FFB800;
@@ -82,11 +82,8 @@
   --sidebar-border: #0F172A;
   --sidebar-ring: #0F172A;
   
-  --border-radius-wobbly: 255px 15px 225px 15px / 15px 225px 15px 255px;
-  --border-radius-wobbly-sm: 225px 25px 215px 25px / 25px 215px 25px 225px;
-  --border-radius-wobbly-md: 255px 25px 225px 25px / 25px 225px 25px 255px;
-  --shadow-hard: 4px 4px 0px 0px #0F172A;
-  --shadow-hard-hover: 2px 2px 0px 0px #0F172A;
+  --shadow-hard: 6px 6px 0px 0px #0F172A;
+  --shadow-hard-hover: 3px 3px 0px 0px #0F172A;
   --shadow-hard-active: 0px 0px 0px 0px #0F172A;
 }
 
@@ -96,8 +93,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(var(--muted) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-image: linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
     min-height: 100vh;
   }
   html {
@@ -106,68 +104,62 @@
 
   /* Brutalist Scrollbar */
   ::-webkit-scrollbar {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
   
   ::-webkit-scrollbar-track {
-    background: repeating-linear-gradient(
-      45deg,
-      rgba(15, 23, 42, 0.1),
-      rgba(15, 23, 42, 0.1) 4px,
-      var(--background) 4px,
-      var(--background) 8px
-    );
-    border-left: 4px solid var(--foreground);
+    background: var(--background);
+    border-left: 3px solid var(--foreground);
   }
   
   ::-webkit-scrollbar-thumb {
     background-color: var(--primary);
-    border: 4px solid var(--foreground);
+    border: 3px solid var(--foreground);
     border-radius: 0px; /* Sharp corners */
   }
   
   ::-webkit-scrollbar-thumb:hover {
     background-color: #0F172A;
   }
-
-
 }
 
-/* Hand-Drawn Utility Classes */
+/* Brutalist Utility Classes */
 @layer utilities {
   .glass-panel {
     background: #ffffff;
-    border: 3px solid #0F172A;
-    border-radius: var(--border-radius-wobbly);
-    box-shadow: var(--shadow-hard);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 4px solid #0F172A;
+    border-radius: 0;
+    box-shadow: 8px 8px 0px 0px #0F172A;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .btn-primary {
     background: #ffffff;
     color: #0F172A;
-    font-family: var(--font-sans), sans-serif;
-    font-weight: 600;
+    font-family: var(--font-heading), sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     padding: 12px 24px;
-    border-radius: var(--border-radius-wobbly);
-    border: 3px solid #0F172A;
+    border-radius: 0;
+    border: 4px solid #0F172A;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-shadow: var(--shadow-hard);
+    box-shadow: 4px 4px 0px 0px #0F172A;
     transition: all 0.1s ease-in-out;
   }
   .btn-primary:hover {
     background: var(--primary);
-    color: #ffffff;
+    color: #0F172A;
     transform: translate(2px, 2px);
-    box-shadow: var(--shadow-hard-hover);
+    box-shadow: 2px 2px 0px 0px #0F172A;
   }
   .btn-primary:active {
     transform: translate(4px, 4px);
-    box-shadow: var(--shadow-hard-active);
+    box-shadow: 0px 0px 0px 0px #0F172A;
   }
 }
