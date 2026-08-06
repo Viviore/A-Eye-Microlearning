@@ -13,15 +13,32 @@ export default function Home() {
       <main className="min-h-screen relative overflow-x-hidden font-sans flex flex-col bg-[#FAFAFA] pt-20">
       
       {/* Decorative Scribbles in Background */}
-      <div className="absolute top-10 left-10 opacity-20 pointer-events-none rotate-12">
+      <div className="absolute top-10 left-10 opacity-20 pointer-events-none rotate-12 z-0">
         <svg width="200" height="200" viewBox="0 0 100 100" fill="none">
           <path d="M10,50 Q40,10 90,50 T10,90" stroke="#0F172A" strokeWidth="2" strokeDasharray="5,5" />
         </svg>
       </div>
-      <div className="absolute top-[80vh] right-20 opacity-20 pointer-events-none -rotate-12">
+      <div className="absolute top-[80vh] right-20 opacity-20 pointer-events-none -rotate-12 z-0 hidden lg:block">
         <svg width="150" height="150" viewBox="0 0 100 100" fill="none">
           <circle cx="50" cy="50" r="40" stroke="#FFB800" strokeWidth="3" strokeDasharray="8,4" />
           <path d="M30,30 L70,70 M70,30 L30,70" stroke="#FFB800" strokeWidth="3" />
+        </svg>
+      </div>
+      <div className="absolute top-[140vh] left-[5%] opacity-10 pointer-events-none rotate-45 z-0 hidden lg:block">
+        <svg width="300" height="300" viewBox="0 0 100 100" fill="none">
+          <path d="M20,20 L80,20 L80,80 L20,80 Z" stroke="#0F172A" strokeWidth="1" strokeDasharray="2,8" />
+          <path d="M30,30 L70,30 L70,70 L30,70 Z" stroke="#0F172A" strokeWidth="1" strokeDasharray="2,8" />
+        </svg>
+      </div>
+      <div className="absolute top-[220vh] right-[10%] opacity-20 pointer-events-none -rotate-6 z-0">
+        <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
+          <path d="M50,10 L50,90 M10,50 L90,50" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+        </svg>
+      </div>
+      <div className="absolute top-[280vh] left-[15%] opacity-15 pointer-events-none rotate-12 z-0">
+        <svg width="180" height="180" viewBox="0 0 100 100" fill="none">
+          <path d="M10,20 Q50,80 90,20" stroke="#FFB800" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <circle cx="90" cy="20" r="4" fill="#FFB800" />
         </svg>
       </div>
 
