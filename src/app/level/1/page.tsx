@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { driver } from "driver.js";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -102,58 +103,38 @@ export default function Level1Page() {
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
   
   const [tutorialStep, setTutorialStep] = useState(1);
-  const [tutorialCooldown, setTutorialCooldown] = useState(3);
-  const [showSkipConfirm, setShowSkipConfirm] = useState(false);
-  
-  const tutorialDialogs = [
-    "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts.",
-    "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.",
-    "Always gather facts first! Click 'Open Source Check' on the right to see verified information.",
-    "Read the verified sources carefully and cross-check them against the claims made in the post.",
-    "See that highlighted sentence? It contradicts our verified facts! Click it to flag it as a clue.",
-    "Great! Your flagged clues appear on the Evidence Board. Try to find the real clues, but watch out for decoys!",
-    "Let's talk about Scoring. Each round starts at 100 points, but mistakes will cost you!",
-    "Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points. If your total score hits 0, it's Game Over!",
-    "Once you have enough evidence, click 'File Verdict' to submit your report. Good luck!",
-    "Now for the final step! How was this faked? Identify the specific manipulation tactic they used.",
-    "Awesome! We're ready. Click 'Submit Report' to finalize your verdict!"
-  ];
+  const driverObjRef = useRef<any>(null);
 
-  const tutorialMascots = [
-    "confident_expression.png",
-    "determined_expression.png",
-    "thinking_expression.png",
-    "thinking_expression.png",
-    "idea_expression.png",
-    "confident_expression.png",
-    "determined_expression.png",
-    "thinking_expression.png",
-    "idea_expression.png",
-    "determined_expression.png",
-    "confident_expression.png"
-  ];
-  
   useEffect(() => {
-    if (currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTutorialCooldown(3);
-      const interval = setInterval(() => {
-        setTutorialCooldown(prev => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(interval);
+    if (currentRoundIndex === 0) {
+      const d = driver({
+        showProgress: true,
+        allowClose: false,
+        steps: [
+          { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
+          { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.", side: "bottom" } },
+          { element: '#btn-source-check', popover: { title: 'A-Eye Agent', description: "Always gather facts first! Click 'Open Source Check' on the right to see verified information.", side: "left", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(3) },
+          { element: '#tutorial-source', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" } },
+          { element: '#segment-t-2', popover: { title: 'A-Eye Agent', description: "See that highlighted sentence? It contradicts our verified facts! Click it to flag it as a clue.", side: "bottom", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(5) },
+          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Great! Your flagged clues appear on the Evidence Board. Try to find the real clues, but watch out for decoys!", side: "left" }, onHighlightStarted: () => setTutorialStep(6) },
+          { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Let's talk about Scoring. Each round starts at 100 points, but mistakes will cost you!", side: "bottom" }, onHighlightStarted: () => setTutorialStep(7) },
+          { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points. If your total score hits 0, it's Game Over!", side: "bottom" }, onHighlightStarted: () => setTutorialStep(8) },
+          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report. Good luck!", side: "left", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(9) },
+        ]
+      });
+      driverObjRef.current = d;
+      d.drive();
+
+      return () => {
+        d.destroy();
+      };
     }
-  }, [tutorialStep, currentRoundIndex, tutorialDialogs.length]);
-  
+  }, [currentRoundIndex]);
+
   useEffect(() => {
     if (currentRoundIndex === 0 && tutorialStep === 4) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSourceCheckOpen(true);
+      setTimeout(() => driverObjRef.current?.moveNext(), 300);
     }
   }, [tutorialStep, currentRoundIndex]);
   
@@ -208,7 +189,7 @@ export default function Level1Page() {
 
     if (currentRoundIndex === 0 && tutorialStep === 5) {
       setTutorialStep(6);
-      setTutorialCooldown(2);
+      setTimeout(() => driverObjRef.current?.moveNext(), 300);
     }
   };
   
@@ -217,7 +198,7 @@ export default function Level1Page() {
     if (!sourceCheckOpen) {
       if (currentRoundIndex === 0 && tutorialStep === 3) {
         setTutorialStep(4);
-        setTutorialCooldown(2);
+        
       }
     }
   };
@@ -319,7 +300,7 @@ export default function Level1Page() {
                 {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${sessionRounds.length - 1}`}
               </span>
             </div>
-            <div className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+            <div id="tutorial-score" className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
               <span>Score: </span>
               <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
                 {currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
@@ -372,6 +353,7 @@ export default function Level1Page() {
                 return (
                   <span
                     key={segment.id}
+                    id={`segment-${segment.id}`}
                     onClick={() => handleFlagSegment(segment)}
                     className={`cursor-pointer transition-all px-1.5 py-0.5 inline-block mb-2 relative mx-0.5 ${
                       isFlagged 
@@ -436,6 +418,7 @@ export default function Level1Page() {
           </div>
 
           <div 
+            id="tutorial-evidence"
             className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative"
           >
             <div className="flex items-center justify-between mb-4">
@@ -486,6 +469,7 @@ export default function Level1Page() {
             }`}
             >
               <Button
+                id="btn-source-check"
                 onClick={handleOpenSourceCheck}
                 disabled={currentRoundIndex === 0 && tutorialStep < 3}
                 className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[4px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed ${
@@ -529,11 +513,12 @@ export default function Level1Page() {
               currentRoundIndex === 0 && tutorialStep === 9 ? "z-40" : "z-10"
             }`}>
               <Button
+                id="tutorial-verdict-btn"
                 onClick={() => {
                   setShowVerdictModal(true);
                   if (currentRoundIndex === 0 && tutorialStep >= 9 && tutorialStep <= 11) {
                     setTutorialStep(10);
-                    setTutorialCooldown(2);
+                    // No cooldown
                   }
                 }}
                 disabled={!canFileVerdict}
@@ -586,7 +571,7 @@ export default function Level1Page() {
                                 setSelectedTactic(tactic);
                                 if (currentRoundIndex === 0 && tutorialStep === 10) {
                                   setTutorialStep(11);
-                                  setTutorialCooldown(2);
+                                  // No cooldown
                                 }
                               }}
                               onMouseEnter={() => setHoveredTactic(tactic)}
@@ -689,154 +674,6 @@ export default function Level1Page() {
         )}
       </AnimatePresence>
 
-      {/* Floating Tutorial Helper (Bottom Right) */}
-      {/* Tutorial Overlay */}
-      <AnimatePresence mode="wait">
-        {currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length && (tutorialStep >= 10 ? showVerdictModal : !showVerdictModal) && !feedback && (
-          <motion.div 
-            key="tutorial-dialog"
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className={`fixed bottom-4 md:bottom-8 z-50 flex items-end gap-3 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-auto lg:max-w-4xl transition-all duration-700 ease-in-out left-1/2 -translate-x-1/2 ${
-              [3, 4, 6, 8, 9].includes(tutorialStep) 
-                ? "lg:left-12 lg:right-auto lg:translate-x-0 lg:flex-row" 
-                : "lg:left-auto lg:right-12 lg:translate-x-0 lg:flex-row-reverse"
-            }`}
-          >
-            {/* Mascot */}
-            <div className="shrink-0 z-10 hidden lg:block" style={{ perspective: "1000px" }}>
-              <AnimatePresence mode="wait">
-                <motion.img 
-                  key={tutorialMascots[tutorialStep - 1]}
-                  initial={{ rotateY: 90, opacity: 0, scaleX: tutorialStep > 2 && tutorialStep !== 5 ? -1 : 1 }}
-                  animate={{ rotateY: 0, opacity: 1, scaleX: tutorialStep > 2 && tutorialStep !== 5 ? -1 : 1 }}
-                  exit={{ rotateY: -90, opacity: 0, scaleX: tutorialStep > 2 && tutorialStep !== 5 ? -1 : 1 }}
-                  transition={{ duration: 0.15 }}
-                  src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`} 
-                  alt="A-Eye Agent" 
-                  className="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-[4px_4px_0px_rgba(15,23,42,0.15)]"
-                />
-              </AnimatePresence>
-            </div>
-
-            {/* Speech Bubble */}
-            <div 
-              className="flex-1 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] p-4 md:p-6 relative font-sans"
-            >
-              {/* Pointer Triangle (Desktop) */}
-              <div className={`absolute bottom-8 w-0 h-0 border-y-[12px] border-y-transparent hidden lg:block transition-all duration-300 ${
-                [3, 4, 6, 7].includes(tutorialStep) 
-                  ? "border-r-[14px] border-r-[#0F172A] -left-[14px]" 
-                  : "border-l-[14px] border-l-[#0F172A] -right-[14px]"
-              }`}>
-                <div className={`absolute -top-[9px] w-0 h-0 border-y-[9px] border-y-transparent z-10 ${
-                  [3, 4, 6, 7].includes(tutorialStep) 
-                    ? "border-r-[11px] border-r-white -left-[10px]" 
-                    : "border-l-[11px] border-l-white -right-[10px]"
-                }`} />
-              </div>
-              
-              <div className="lg:hidden flex items-center gap-3 mb-3 pb-3 border-b-2 border-dashed border-[#0F172A]/10" style={{ perspective: "1000px" }}>
-                <AnimatePresence mode="wait">
-                  <motion.img 
-                    key={tutorialMascots[tutorialStep - 1]}
-                    initial={{ rotateY: 90, opacity: 0, scaleX: tutorialStep > 2 && tutorialStep !== 5 ? -1 : 1 }}
-                    animate={{ rotateY: 0, opacity: 1, scaleX: tutorialStep > 2 && tutorialStep !== 5 ? -1 : 1 }}
-                    exit={{ rotateY: -90, opacity: 0, scaleX: tutorialStep > 2 && tutorialStep !== 5 ? -1 : 1 }}
-                    transition={{ duration: 0.15 }}
-                    src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`} 
-                    alt="A-Eye Agent" 
-                    className="w-10 h-10 object-contain shrink-0"
-                  />
-                </AnimatePresence>
-                <h3 className="font-heading font-bold text-lg text-[#0F172A]">A-Eye Agent</h3>
-              </div>
-
-              <h3 className="hidden lg:block font-heading font-bold text-xl md:text-2xl text-[#1D2A3C] mb-1 md:mb-2">
-                A-Eye Agent
-              </h3>
-              
-              <p className="text-base md:text-lg font-bold font-sans text-[#0F172A]/90 mb-4 leading-relaxed">
-                {tutorialDialogs[tutorialStep - 1]}
-              </p>
-              
-              <div className="flex justify-between items-center border-t-[3px] border-dashed border-[#0F172A]/20 pt-3">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-                  <span className="text-xs md:text-sm font-sans font-bold text-[#0F172A]/60 uppercase tracking-widest">
-                    Step {tutorialStep} / {tutorialDialogs.length}
-                  </span>
-                  <button 
-                    onClick={() => setShowSkipConfirm(true)} 
-                    className="cursor-pointer text-xs md:text-sm font-sans font-bold text-[#0F172A]/40 hover:text-[#0F172A] underline decoration-[#0F172A]/30 hover:decoration-[#0F172A] underline-offset-4 transition-colors uppercase tracking-widest text-left"
-                  >
-                    Skip Tutorial
-                  </button>
-                </div>
-                <Button 
-                  onClick={() => setTutorialStep(prev => prev + 1)}
-                  disabled={tutorialCooldown > 0 || [3, 5, 9, 10, 11].includes(tutorialStep)}
-                  className="bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-base md:text-lg uppercase tracking-widest border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:bg-gray-100 disabled:text-[#0F172A]/50 disabled:border-solid disabled:shadow-none h-10 px-4 md:px-6"
-                >
-                  {[3, 5, 9, 10, 11].includes(tutorialStep) 
-                    ? "Action Required"
-                    : tutorialCooldown > 0 
-                      ? `Wait ${tutorialCooldown}s` 
-                      : tutorialStep === tutorialDialogs.length ? "Got it!" : "Next"} 
-                  {tutorialCooldown === 0 && ![3, 5, 9, 10, 11].includes(tutorialStep) && <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2" strokeWidth={2.5} />}
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Tutorial z-index fix for Verdict Modal overlay */}
-      {currentRoundIndex === 0 && tutorialStep >= 10 && showVerdictModal && (
-        <style dangerouslySetInnerHTML={{__html: `
-          .fixed.inset-0.z-50 { z-index: 40 !important; }
-        `}} />
-      )}
-
-      {/* Skip Tutorial Confirmation Modal */}
-      <AnimatePresence>
-        {showSkipConfirm && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="p-5 md:p-6 max-w-md w-full bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative text-center"
-            >
-              <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-3 uppercase tracking-wider">
-                Skip Training?
-              </h2>
-              <p className="text-lg font-bold font-sans text-[#0F172A]/80 mb-6 leading-relaxed">
-                Are you sure you want to skip the rest of the tutorial? You&apos;ll be thrown straight into Case 002.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  onClick={() => setShowSkipConfirm(false)}
-                  className="flex-1 h-12 bg-white hover:bg-gray-50 text-[#0F172A] font-bold font-heading text-lg uppercase tracking-wider border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    setShowSkipConfirm(false);
-                    handleNextRound();
-                  }}
-                  className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-lg uppercase tracking-wider border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
-                >
-                  Yes, Skip It
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-    </main>
+      </main>
   );
 }
