@@ -357,9 +357,17 @@ export default function Level2Page() {
     setShowVerdictModal(false);
     
     if (timeLeft === 0) {
-      // Timeout requires randomizing round (simplest way is to reset current state, but wait, rules say "random round".
-      // To keep it simple, we just swap the current round with another unplayed one if we time out.
-      // Or we can just restart the round score/timer and let them try again. Let's just reset the state for now and pretend it's a new round since they lose all progress anyway.
+      const availableReplacementRounds = IMAGE_ROUNDS.filter(
+        (r) => !r.isTutorial && !sessionRounds.some((sr) => sr.id === r.id)
+      );
+
+      if (availableReplacementRounds.length > 0) {
+        const replacement = availableReplacementRounds[Math.floor(Math.random() * availableReplacementRounds.length)];
+        const newSessionRounds = [...sessionRounds];
+        newSessionRounds[currentRoundIndex] = replacement;
+        setSessionRounds(newSessionRounds);
+      }
+
       setFlaggedIds(new Set());
       setFoundClues([]);
       setTimeLeft(60);
