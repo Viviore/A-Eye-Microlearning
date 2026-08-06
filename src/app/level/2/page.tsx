@@ -174,8 +174,12 @@ export default function Level2Page() {
     imgHeight: 0,
   });
 
+  const isDriverInitialized = useRef(false);
+
   useEffect(() => {
-    if (currentRound?.isTutorial) {
+    if (currentRound?.isTutorial && !isDriverInitialized.current) {
+      isDriverInitialized.current = true;
+
       const d = driver({
         showProgress: true,
         allowClose: false,
@@ -193,11 +197,13 @@ export default function Level2Page() {
       });
       driverObjRef.current = d;
       d.drive();
-
-      return () => {
-        d.destroy();
-      };
     }
+
+    return () => {
+      if (driverObjRef.current) {
+        driverObjRef.current.destroy();
+      }
+    };
   }, [currentRound?.isTutorial]);
 
   useEffect(() => {

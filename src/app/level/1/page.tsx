@@ -105,8 +105,12 @@ export default function Level1Page() {
   const [tutorialStep, setTutorialStep] = useState(1);
   const driverObjRef = useRef<any>(null);
 
+  const isDriverInitialized = useRef(false);
+
   useEffect(() => {
-    if (currentRoundIndex === 0) {
+    if (currentRoundIndex === 0 && !isDriverInitialized.current) {
+      isDriverInitialized.current = true;
+      
       const d = driver({
         showProgress: true,
         allowClose: false,
@@ -124,11 +128,14 @@ export default function Level1Page() {
       });
       driverObjRef.current = d;
       d.drive();
-
-      return () => {
-        d.destroy();
-      };
     }
+
+    return () => {
+      // Ensure absolute cleanup on unmount
+      if (driverObjRef.current) {
+        driverObjRef.current.destroy();
+      }
+    };
   }, [currentRoundIndex]);
 
   useEffect(() => {
