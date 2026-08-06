@@ -345,24 +345,6 @@ export default function Level1Page() {
             
           </div>
           
-          <div 
-            className="bg-[#FFB800] p-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 mt-4 relative"
-            style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
-          >
-            {/* Decorative Tack */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
-            </div>
-
-            <h3 className="font-heading font-bold text-2xl mb-1 flex items-center gap-2 text-[#0F172A]">
-              <Search className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} /> Objective:
-            </h3>
-            <p className="text-[17px] text-[#0F172A]/90 font-medium font-sans leading-relaxed">
-              Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
-              Find at least <strong className="text-[#0F172A] font-bold underline decoration-wavy decoration-1 underline-offset-4">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong> to proceed.
-            </p>
-          </div>
-          
           {/* Mock Social Post */}
           <div 
             id="tutorial-post"
@@ -442,6 +424,24 @@ export default function Level1Page() {
         {/* Right Column: Evidence Board & Source Check */}
         <div className="lg:col-span-5 flex flex-col gap-6 sticky top-28">
           
+          <div 
+            className="bg-[#FFB800] p-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 relative"
+            style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
+          >
+            {/* Decorative Tack */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+            </div>
+
+            <h3 className="font-heading font-bold text-2xl mb-1 flex items-center gap-2 text-[#0F172A]">
+              <Search className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} /> Objective:
+            </h3>
+            <p className="text-[17px] text-[#0F172A]/90 font-medium font-sans leading-relaxed">
+              Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
+              Find at least <strong className="text-[#0F172A] font-bold underline decoration-wavy decoration-1 underline-offset-4">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong> to proceed.
+            </p>
+          </div>
+
           <div 
             className="p-6 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative rotate-1"
             style={{ borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px" }}

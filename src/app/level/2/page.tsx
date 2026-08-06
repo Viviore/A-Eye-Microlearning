@@ -236,6 +236,7 @@ export default function Level2Page() {
       title: "Time's Up!",
       message: "You ran out of time to file a verdict. Your progress is lost and you must investigate a different case.",
     });
+    setShowVerdictModal(true);
   };
 
   useEffect(() => {
@@ -425,7 +426,7 @@ export default function Level2Page() {
               </div>
               
               <span
-                className="px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] bg-[#0F172A]/10 text-[#0F172A] border-[#0F172A]"
+                className="px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] border-[#0F172A]"
                 style={{
                   borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px",
                 }}
@@ -437,13 +438,11 @@ export default function Level2Page() {
             </div>
 
             <div
-              className="px-4 py-1.5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-white flex items-center gap-2 relative"
-              style={{ borderRadius: "225px 15px 255px 15px / 15px 255px 15px 225px" }}
+              className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative"
+              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
             >
-              <span className="font-sans font-bold text-sm text-[#0F172A]/70 uppercase tracking-widest">
-                Live Score:
-              </span>
-              <span className="font-heading font-black text-xl text-[#0F172A]">
+              <span>Live Score: </span>
+              <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
                 {cumulativeScore + roundScore}
               </span>
 
@@ -464,34 +463,6 @@ export default function Level2Page() {
             </div>
           </div>
 
-          <div
-            className="bg-[#FFB800] p-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 mt-4 relative"
-            style={{
-              borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px",
-            }}
-          >
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
-            </div>
-
-            <h3 className="font-heading font-bold text-2xl mb-1 flex items-center gap-2 text-[#0F172A]">
-              <Search className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} />{" "}
-              Objective:
-            </h3>
-            <p className="text-[17px] text-[#0F172A]/90 font-medium font-sans leading-relaxed">
-              Use the Magnifier Tool to inspect the viral photo. Click on any
-              areas that look like AI generation mistakes to flag them. Find at
-              least{" "}
-              <strong className="text-[#0F172A] font-bold underline decoration-wavy decoration-1 underline-offset-4">
-                {currentRound.cluesNeeded} visual clue
-                {currentRound.cluesNeeded !== 1 ? "s" : ""}
-              </strong>{" "}
-              to proceed.
-            </p>
-          
-          </div>
-
-          
           {/* Mock Social Post (Photo) */}
 
           <div
@@ -724,6 +695,33 @@ export default function Level2Page() {
 
         {/* Right Column: Evidence Board */}
         <div className="lg:col-span-5 flex flex-col gap-6 sticky top-28">
+          
+          <div
+            className="bg-[#FFB800] p-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1 relative"
+            style={{
+              borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px",
+            }}
+          >
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
+              <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
+            </div>
+
+            <h3 className="font-heading font-bold text-2xl mb-1 flex items-center gap-2 text-[#0F172A]">
+              <Search className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} />{" "}
+              Objective:
+            </h3>
+            <p className="text-[17px] text-[#0F172A]/90 font-medium font-sans leading-relaxed">
+              Use the Magnifier Tool to inspect the viral photo. Click on any
+              areas that look like AI generation mistakes to flag them. Find at
+              least{" "}
+              <strong className="text-[#0F172A] font-bold underline decoration-wavy decoration-1 underline-offset-4">
+                {currentRound.cluesNeeded} visual clue
+                {currentRound.cluesNeeded !== 1 ? "s" : ""}
+              </strong>{" "}
+              to proceed.
+            </p>
+          </div>
+
           <div
             className="p-6 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative rotate-1"
             style={{
