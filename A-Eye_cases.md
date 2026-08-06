@@ -200,8 +200,85 @@ Correct tactic?
 
 ## Section 3 — Case 003 (Video Investigation)
 
-_(To be discussed later — content cleared pending revision.)_
+### Format
+- 2 video panels shown side-by-side, playing at the same time. Prompt: "Which one is AI?"
+- Pool of 10 total video pairs, 5 shown per session (matches Case 002's pool structure).
+
+### Tools
+- Playback — both panels play automatically at the same time.
+- Replay — 5 free "grace" replays allowed per round. Beyond 5, each additional replay deducts -10 from that round's score. Replay count resets to 5 fresh every time a new round loads (including after a random swap from a failed round).
+- +30 Seconds tool — adds 30 seconds to the round's 60-second timer, costs -80, 1 use per round, requires enough score to use.
+
+### Timer
+- 60-second timer per round, same as Case 002.
+- Timer runs out → counts as a failed attempt (same penalty as picking the wrong panel — see Scoring). Retries with a random round, not the same one, same no-repeat-within-session rule as Case 002 (never re-show a round/theme already seen this session, swap only pulls from the session's 5 selected rounds).
+
+### Verdict Flow
+1. Player clicks the panel they believe is AI-generated.
+2. "Are you sure?" confirmation before locking in.
+3. Once confirmed, no more replays.
+4. Player picks a "tell" reason from a short list (e.g. "blinking looked off," "mouth didn't match," "hands/fingers looked wrong," "lighting was inconsistent") — this is the anti-guessing check.
+5. Reveal screen shows "AI" / "Real" labels directly on each panel, regardless of whether the player was right.
+
+### Scoring
+- Each round starts at 100 points.
+- Wrong panel picked → -50 (matches Case 002's failed-round penalty).
+- Correct panel + wrong tell → -20 (partial penalty — got the harder part right, the panel, but couldn't explain why).
+- Timeout → -50 (same as wrong panel).
+- +30 Seconds tool used → -80.
+- Extra replay beyond the 5 free ones → -10 per extra replay.
+- All penalties stack cumulatively in real time, same rule as Case 002.
+- Round score floored at 0, no negative carryover.
+- Completed round's score adds to the running case total.
+- Cumulative total (across all cases) hitting 0 → resets entire A-Eye experience, same as Case 001/002.
+
+### Failure / Retry Rules
+- Both wrong panel AND timeout randomize to a new round (not the same round) — this is different from Case 001/002, where only timeout randomizes and a normal wrong-tactic failure stays on the same round. Confirmed for Case 003: any failure (wrong panel or timeout) triggers a random swap.
+- No-repeat rule applies: swap never re-shows a round/theme already seen this session, and only pulls from the session's 5 selected rounds.
+- No max-attempts cap — retries allowed until score hits 0 (matches Case 001/002).
+
+### Flow Diagram
+```text
+Show 2 video panels, play at the same time
+   v
+Optional replay(s)
+   v
+Player clicks a panel
+   v
+"Are you sure?" confirmation
+   v (confirmed - no more replays)
+Player picks a "tell" reason
+   v
+Reveal: "AI" / "Real" labels shown on each panel
+   v
+Correct panel?
+   No --> retry with a random round (no repeats this session, applies to both wrong panel and timeout)
+   Yes --> correct tell?
+      No --> -20 penalty (lucky guess)
+      Yes --> full score
+   v
+Next round or end of case (scoring per above)
+```
 
 ### Implementation Checklist
-
-_(Not applicable yet — checklist will be added once Case 003's rules are revised and locked in.)_
+- [ ] 10 total video pairs in pool, 5 shown per session
+- [ ] 5 free grace replays per round, resets to 5 fresh on every new round (including after a random swap), extra replays beyond 5 = -10 each
+- [ ] "Are you sure?" confirmation kept before locking in a panel pick
+- [ ] 2 video panels, play side-by-side simultaneously
+- [ ] "Which one is AI?" prompt shown
+- [ ] 60-second timer per round
+- [ ] Timeout → -50 penalty AND random round swap, no repeats within session, swap only from session's 5
+- [ ] Wrong panel (not timeout) → -50 penalty, ALSO randomizes to a new round (unlike Case 001/002, both failure types randomize in Case 003)
+- [ ] No max-attempts cap — unlimited retries until score hits 0
+- [ ] Tell-selection step kept as anti-guessing check
+- [ ] Reveal screen shows AI/Real labels on both panels after answer
+- [ ] +30 Seconds tool: adds 30 sec to the round timer, -80 cost, 1 per round, requires sufficient score
+- [ ] Scoring: round starts at 100
+- [ ] Scoring: wrong panel = -50
+- [ ] Scoring: correct panel + wrong tell = -20
+- [ ] Scoring: timeout = -50
+- [ ] Scoring: +30 Seconds = -80
+- [ ] Scoring: extra replay beyond 5 free ones = -10 each
+- [ ] All penalties stack cumulatively
+- [ ] Round score floored at 0, no negative carryover
+- [ ] Cumulative total across all cases hitting 0 → resets entire A-Eye experience

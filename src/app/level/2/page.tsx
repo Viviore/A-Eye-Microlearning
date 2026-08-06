@@ -100,7 +100,6 @@ export default function Level2Page() {
   const [isReady, setIsReady] = useState(false);
   
   const [timeLeft, setTimeLeft] = useState(60);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [toolUsed, setToolUsed] = useState(false);
   
   const [roundScore, setRoundScore] = useState(100);
@@ -160,8 +159,8 @@ export default function Level2Page() {
     }
   };
 
-  const [tutorialStep, setTutorialStep] = useState(1);
-  const driverObjRef = useRef<any>(null);
+  const [isTourActive, setIsTourActive] = useState(true);
+  const driverObjRef = useRef<unknown>(null);
   
   const [isHoveringImage, setIsHoveringImage] = useState(false);
   const [magnifier, setMagnifier] = useState({
@@ -179,20 +178,47 @@ export default function Level2Page() {
   useEffect(() => {
     if (currentRound?.isTutorial && !isDriverInitialized.current) {
       isDriverInitialized.current = true;
+      setIsTourActive(true);
 
       const d = driver({
         showProgress: true,
         allowClose: false,
+        disableActiveInteraction: true,
+        onPopoverRender: (popover, { state }) => {
+          if (!driverObjRef.current?.hasNextStep()) return;
+
+          const navBtns = popover.wrapper.querySelector(".driver-popover-navigation-btns");
+          if (navBtns && !navBtns.querySelector(".driver-skip-btn")) {
+            const skipBtn = document.createElement("button");
+            skipBtn.innerText = "Skip";
+            skipBtn.className = "driver-popover-footer-btn driver-skip-btn";
+            skipBtn.setAttribute("aria-label", "Skip Tutorial");
+            skipBtn.addEventListener("click", () => {
+              if (driverObjRef.current) {
+                driverObjRef.current.destroy();
+              }
+            });
+            navBtns.insertBefore(skipBtn, navBtns.firstChild);
+          }
+        },
+        onDestroyStarted: () => {
+          if (driverObjRef.current?.hasNextStep()) {
+            driverObjRef.current.destroy();
+          } else {
+            driverObjRef.current.destroy();
+          }
+          setIsTourActive(false);
+        },
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome to Case 002! A viral photo claims to show an official receiving a secret cash payout." } },
           { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Is this a real scandal, or an AI-generated smear campaign? We need to look closely to find out.", side: "bottom" } },
-          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "When analyzing photos, we use the Magnifier Tool. Hover your mouse over the photo to activate it.", side: "bottom" } },
-          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "Move the magnifier over the hand giving the money on the top right side.", side: "bottom", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(4) },
-          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "See that? A classic AI mistake: a double thumb! Click the hand to flag it as evidence.", side: "bottom", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(5) },
-          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Excellent! Your flagged clue has been added to the Evidence Board on the right.", side: "left" }, onHighlightStarted: () => setTutorialStep(6) },
-          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "Notice the timer above? Real cases only give you 60 seconds! Running out of time costs -50 points.", side: "bottom" }, onHighlightStarted: () => setTutorialStep(7) },
-          { element: '#tutorial-tool', popover: { title: 'A-Eye Agent', description: "Need more time? You can use the +30s tool, but it costs -80 points! Only use it if you really have to.", side: "bottom" }, onHighlightStarted: () => setTutorialStep(8) },
-          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "You've found enough evidence! Click the 'File Verdict' button below when you're ready to make the call.", side: "left", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(9) },
+          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "When analyzing photos, we use the Magnifier Tool. You will hover your mouse over the photo to activate it.", side: "bottom" } },
+          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "Look for AI mistakes like double thumbs or warped backgrounds. When you spot one, you will click it to flag it as evidence.", side: "bottom" } },
+          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board on the right.", side: "left" } },
+          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "Notice the timer above? Real cases only give you 60 seconds! Running out of time costs -50 points.", side: "bottom" } },
+          { element: '#tutorial-tool', popover: { title: 'A-Eye Agent', description: "Need more time? You can use the +30s tool, but it costs -80 points! Only use it if you really have to.", side: "bottom" } },
+          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report.", side: "left" } },
+          { popover: { title: 'A-Eye Agent', description: "Now you do it yourself! Find the evidence, identify the tactic, and submit your verdict. Good luck!", doneBtnText: "Start Playing" } }
         ]
       });
       driverObjRef.current = d;
@@ -205,43 +231,6 @@ export default function Level2Page() {
       }
     };
   }, [currentRound?.isTutorial]);
-
-  useEffect(() => {
-    if (!currentRound?.isTutorial) return;
-
-    if (tutorialStep === 3 && isHoveringImage) {
-      setTimeout(() => driverObjRef.current?.moveNext(), 300);
-    }
-    if (
-      (tutorialStep === 4 || tutorialStep === 5) &&
-      isHoveringImage &&
-      !flaggedIds.has("v-1")
-    ) {
-      const isOverHand =
-        magnifier.xPercent > 45 &&
-        magnifier.xPercent < 80 &&
-        magnifier.yPercent > 15 &&
-        magnifier.yPercent < 45;
-      if (isOverHand && tutorialStep === 4) {
-        setTimeout(() => driverObjRef.current?.moveNext(), 300);
-      } else if (!isOverHand && tutorialStep === 5) {
-        // user moved mouse away, ideally driver moves back, but we can just leave it
-        setTutorialStep(4);
-      }
-    }
-    if (tutorialStep === 5 && flaggedIds.has("v-1")) {
-      setTimeout(() => driverObjRef.current?.moveNext(), 300);
-    }
-  }, [
-    tutorialStep,
-    isHoveringImage,
-    magnifier,
-    flaggedIds,
-    foundClues,
-    showVerdictModal,
-    selectedEvidenceId,
-    currentRound?.isTutorial,
-  ]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -263,7 +252,7 @@ export default function Level2Page() {
   
   const handleClueClick = (clue: VisualClue) => {
     if (flaggedIds.has(clue.id)) return;
-    if (currentRound.isTutorial && tutorialStep < 6 && clue.id !== "v-1")
+    if (currentRound.isTutorial && isTourActive)
       return;
 
     setFlaggedIds((prev) => new Set([...prev, clue.id]));
@@ -396,9 +385,10 @@ export default function Level2Page() {
             </div>
 
             <div
+              id="tutorial-score"
               className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative"
             >
-              <span>Live Score: </span>
+              <span>Score: </span>
               <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
                 {cumulativeScore + roundScore}
               </span>
@@ -424,11 +414,7 @@ export default function Level2Page() {
 
           <div
             id="tutorial-post"
-            className={`p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
-              currentRound.isTutorial && tutorialStep === 2
-                ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]"
-                : ""
-            }`}
+            className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div
@@ -446,11 +432,7 @@ export default function Level2Page() {
                 </p>
               </div>
               
-              <div className={`ml-auto flex items-center gap-4 transition-all duration-300 ${
-                currentRound.isTutorial && (tutorialStep === 7 || tutorialStep === 8)
-                  ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white bg-white p-2 rounded-xl scale-[1.02]"
-                  : ""
-              }`}>
+              <div className="ml-auto flex items-center gap-4 transition-all duration-300">
                 <div id="tutorial-tool" className="relative group">
                   <Button
                     disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
@@ -474,9 +456,7 @@ export default function Level2Page() {
 
                 <div 
                   id="tutorial-timer" 
-                  className={`text-right transition-all duration-500 ${
-                    currentRound.isTutorial && tutorialStep === 7 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02] bg-white p-2 border-[4px] border-[#0F172A]" : ""
-                  }`}
+                  className="text-right transition-all duration-500"
                 >
                   <div className="text-sm font-bold uppercase text-red-500">Timer</div>
                   <div className="text-3xl font-black font-heading">{timeLeft}s</div>
@@ -494,11 +474,7 @@ export default function Level2Page() {
               {/* Interactive Image Container */}
             <div
               id="tutorial-image-container"
-              className={`relative cursor-crosshair w-full aspect-auto transition-all ${
-                currentRound.isTutorial && (tutorialStep >= 3 && tutorialStep <= 5)
-                  ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white"
-                  : ""
-              } ${isHoveringImage ? "cursor-none" : "cursor-crosshair"}`}
+              className={`relative cursor-crosshair w-full aspect-auto transition-all ${isHoveringImage ? "cursor-none" : "cursor-crosshair"}`}
               onMouseEnter={() => setIsHoveringImage(true)}
               onMouseLeave={() => {
                 setIsHoveringImage(false);
@@ -513,7 +489,7 @@ export default function Level2Page() {
                 alt="Viral Photo"
                 className="w-full h-auto block select-none border-b-[4px] border-transparent"
                 onPointerDown={() => {
-                  if (currentRound.isTutorial && tutorialStep < 6) return;
+                  if (currentRound.isTutorial && isTourActive) return;
                   applyDeduction(10);
                 }}
               />
@@ -542,8 +518,7 @@ export default function Level2Page() {
               ))}
 
               {/* Magnifier Shadow (Inside overflow-hidden to clip) */}
-              {magnifier.show &&
-                (!currentRound.isTutorial || tutorialStep >= 3) && (
+              {magnifier.show && (
                   <div
                     className="absolute pointer-events-none z-30 rounded-full"
                     style={{
@@ -559,8 +534,7 @@ export default function Level2Page() {
             </div>
 
             {/* Magnifier Lens (Outside overflow-hidden to float above) */}
-            {magnifier.show &&
-              (!currentRound.isTutorial || tutorialStep >= 3) && (
+            {magnifier.show && (
                 <div
                   className="absolute pointer-events-none z-40 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] bg-white overflow-hidden"
                     style={{
@@ -668,41 +642,26 @@ export default function Level2Page() {
 
           <div
             id="tutorial-evidence"
-            className={`p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
-              currentRound.isTutorial && tutorialStep === 6 ? "relative z-[100005]" : ""
-            }`}
+            className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
           >
 
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-3xl font-black font-heading uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
-                <Flag className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} />{" "}
-                Evidence Board
+              <h2 className="text-3xl font-black font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
+                <Flag className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} /> Evidence
               </h2>
-              <span
-                className="font-mono text-sm font-bold bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] text-[#0F172A] px-3 py-1"
+              <span 
+                className="font-mono text-sm font-bold bg-[#FFB800] border-[4px] border-[#0F172A] text-[#0F172A] px-3 py-1 shadow-[4px_4px_0px_0px_#0F172A]"
               >
-                {foundClues.length} / {currentRound.cluesNeeded} Clue
-                {currentRound.cluesNeeded !== 1 ? "s" : ""}
+                {foundClues.length} / {currentRound.cluesNeeded}
               </span>
             </div>
 
-            <div
-              className={`min-h-[300px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[#FAFAFA] transition-all duration-500 ${
-                currentRound.isTutorial && tutorialStep === 6
-                  ? "relative z-[100005] bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]"
-                  : ""
-              }`}
+            <div className="min-h-[150px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[linear-gradient(45deg,#0F172A11_25%,transparent_25%,transparent_50%,#0F172A11_50%,#0F172A11_75%,transparent_75%,transparent)] bg-[length:16px_16px] transition-all duration-500 relative"
             >
               {foundClues.length === 0 && foundDecoys.length === 0 ? (
-                <div className="h-full absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/40 space-y-3 p-6 text-center">
-                  <Search className="w-12 h-12 opacity-50" />
-                  <p className="font-bold uppercase tracking-widest text-sm">
-                    No evidence flagged
-                  </p>
-                  <p className="text-xs opacity-70 font-sans">
-                    Use the magnifier to inspect the photo.
-                  </p>
-                </div>
+                <p className="text-center text-[#0F172A]/40 font-mono text-sm absolute inset-0 flex items-center justify-center">
+                  [ No clues flagged yet ]
+                </p>
               ) : (
                 <AnimatePresence>
                   {[...foundClues, ...foundDecoys].map((clue, idx) => (
@@ -742,26 +701,19 @@ export default function Level2Page() {
               )}
             </div>
 
-            <div
-              className={`mt-6 transition-all duration-500`}
+            <div 
+              id="tutorial-verdict"
+              className="mt-6 pt-6 border-t-[4px] border-dashed border-[#0F172A] transition-all duration-500"
             >
               <Button
                 id="tutorial-verdict-btn"
-                onClick={() => setShowVerdictModal(true)}
+                onClick={() => {
+                  setShowVerdictModal(true);
+                }}
                 disabled={foundClues.length < currentRound.cluesNeeded}
-                className={`w-full h-16 font-black font-heading text-xl uppercase tracking-widest border-[4px] border-[#0F172A] transition-all active:translate-x-[6px] active:translate-y-[6px] active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed ${
-                  foundClues.length >= currentRound.cluesNeeded
-                    ? "bg-[#FFB800] text-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A]"
-                    : "bg-gray-200 text-[#0F172A] border-dashed shadow-none hover:translate-x-0 hover:translate-y-0"
-                } ${
-                  currentRound.isTutorial &&
-                  tutorialStep === 7 &&
-                  foundClues.length >= currentRound.cluesNeeded
-                    ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]"
-                    : ""
-                }`}
+                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
               >
-                File Verdict
+                {foundClues.length >= currentRound.cluesNeeded ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
               </Button>
             </div>
           </div>
@@ -811,36 +763,16 @@ export default function Level2Page() {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {TACTIC_OPTIONS.map((tactic) => {
-                          const isTutorialWrongTactic =
-                            currentRound.isTutorial &&
-                            tutorialStep === 10 &&
-                            currentRound.clues[0] &&
-                            tactic !== currentRound.clues[0].tactic;
-
                           return (
                             <button
                               key={tactic}
-                              disabled={isTutorialWrongTactic}
                               onClick={() => setSelectedTactic(tactic)}
                               onMouseEnter={() => setHoveredTactic(tactic)}
                               onMouseLeave={() => setHoveredTactic(null)}
-                              className={`p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] ${
-                                isTutorialWrongTactic
-                                  ? "opacity-40 cursor-not-allowed bg-white border-dashed border-[#0F172A]/30"
-                                  : "cursor-pointer"
-                              } ${
-                                currentRound.isTutorial &&
-                                tutorialStep === 10 &&
-                                !selectedTactic &&
-                                !isTutorialWrongTactic
-                                  ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]"
-                                  : ""
-                              } ${
+                              className={`p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer ${
                                 selectedTactic === tactic
                                   ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]"
-                                  : !isTutorialWrongTactic
-                                    ? "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                                    : ""
+                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
                               }`}
                             >
                               {tactic}
@@ -859,16 +791,15 @@ export default function Level2Page() {
                     <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
                       <Button
                         onClick={() => setShowVerdictModal(false)}
-                        className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        disabled={currentRound.isTutorial && isTourActive}
+                        className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Cancel
                       </Button>
                       <Button
                         onClick={handleSubmitVerdict}
                         disabled={!selectedTactic}
-                        className={`flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
-                          currentRound.isTutorial && tutorialStep === 11 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
-                        }`}
+                        className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
                       >
                         Submit Report
                       </Button>

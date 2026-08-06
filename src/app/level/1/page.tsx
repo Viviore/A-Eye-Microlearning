@@ -102,28 +102,56 @@ export default function Level1Page() {
   
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
   
-  const [tutorialStep, setTutorialStep] = useState(1);
-  const driverObjRef = useRef<any>(null);
+  const [isTourActive, setIsTourActive] = useState(true);
+  const driverObjRef = useRef<unknown>(null);
 
   const isDriverInitialized = useRef(false);
 
   useEffect(() => {
     if (currentRoundIndex === 0 && !isDriverInitialized.current) {
       isDriverInitialized.current = true;
+      setIsTourActive(true);
       
       const d = driver({
         showProgress: true,
         allowClose: false,
+        disableActiveInteraction: true,
+        onPopoverRender: (popover, { state }) => {
+          if (!driverObjRef.current?.hasNextStep()) return;
+
+          const navBtns = popover.wrapper.querySelector(".driver-popover-navigation-btns");
+          if (navBtns && !navBtns.querySelector(".driver-skip-btn")) {
+            const skipBtn = document.createElement("button");
+            skipBtn.innerText = "Skip";
+            skipBtn.className = "driver-popover-footer-btn driver-skip-btn";
+            skipBtn.setAttribute("aria-label", "Skip Tutorial");
+            skipBtn.addEventListener("click", () => {
+              if (driverObjRef.current) {
+                driverObjRef.current.destroy();
+              }
+            });
+            navBtns.insertBefore(skipBtn, navBtns.firstChild);
+          }
+        },
+        onDestroyStarted: () => {
+          if (driverObjRef.current?.hasNextStep()) {
+            driverObjRef.current.destroy();
+          } else {
+            driverObjRef.current.destroy();
+          }
+          setIsTourActive(false);
+          setSourceCheckOpen(false);
+        },
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
           { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.", side: "bottom" } },
-          { element: '#btn-source-check', popover: { title: 'A-Eye Agent', description: "Always gather facts first! Click 'Open Source Check' on the right to see verified information.", side: "left", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(3) },
-          { element: '#tutorial-source', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" } },
-          { element: '#segment-t-2', popover: { title: 'A-Eye Agent', description: "See that highlighted sentence? It contradicts our verified facts! Click it to flag it as a clue.", side: "bottom", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(5) },
-          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Great! Your flagged clues appear on the Evidence Board. Try to find the real clues, but watch out for decoys!", side: "left" }, onHighlightStarted: () => setTutorialStep(6) },
-          { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Let's talk about Scoring. Each round starts at 100 points, but mistakes will cost you!", side: "bottom" }, onHighlightStarted: () => setTutorialStep(7) },
-          { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points. If your total score hits 0, it's Game Over!", side: "bottom" }, onHighlightStarted: () => setTutorialStep(8) },
-          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report. Good luck!", side: "left", showButtons: ['previous'] }, onHighlightStarted: () => setTutorialStep(9) },
+          { element: '#btn-source-check', popover: { title: 'A-Eye Agent', description: "Always gather facts first! We'll click 'Open Source Check' to see verified information.", side: "left" } },
+          { element: '#tutorial-source', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" }, onHighlightStarted: () => setSourceCheckOpen(true) },
+          { element: '#segment-t-2', popover: { title: 'A-Eye Agent', description: "Look at the highlighted sentence. It contradicts our verified facts! You'll need to flag such clues.", side: "bottom" } },
+          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board. Watch out for decoys!", side: "left" } },
+          { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Each round starts at 100 points. Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points.", side: "bottom" } },
+          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report.", side: "left" } },
+          { popover: { title: 'A-Eye Agent', description: "Now you do it yourself! Find the evidence, identify the tactic, and submit your verdict. Good luck!", doneBtnText: "Start Playing" } }
         ]
       });
       driverObjRef.current = d;
@@ -131,54 +159,16 @@ export default function Level1Page() {
     }
 
     return () => {
-      // Ensure absolute cleanup on unmount
       if (driverObjRef.current) {
         driverObjRef.current.destroy();
       }
     };
   }, [currentRoundIndex]);
-
-  useEffect(() => {
-    if (currentRoundIndex === 0 && tutorialStep === 4) {
-      setSourceCheckOpen(true);
-      setTimeout(() => driverObjRef.current?.moveNext(), 300);
-    }
-  }, [tutorialStep, currentRoundIndex]);
   
-  // Auto-scroll to highlighted elements in tutorial for mobile view
-  useEffect(() => {
-    if (currentRoundIndex !== 0) return;
-    
-    let targetId = "";
-    switch (tutorialStep) {
-      case 2:
-      case 5:
-        targetId = "tutorial-post";
-        break;
-      case 3:
-      case 4:
-        targetId = "tutorial-source";
-        break;
-      case 8:
-      case 9:
-        targetId = "tutorial-verdict";
-        break;
-      default:
-        return;
-    }
-    
-    if (targetId && typeof window !== 'undefined' && window.innerWidth < 1024) {
-      setTimeout(() => {
-        const el = document.getElementById(targetId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 150);
-    }
-  }, [tutorialStep, currentRoundIndex]);
+  // Removed auto-scroll for tutorial as driver.js handles scrolling
   
   const handleFlagSegment = (segment: TextSegment) => {
-    if (currentRoundIndex === 0 && tutorialStep < 5) return;
+    if (currentRoundIndex === 0 && isTourActive) return;
     if (flaggedIds.has(segment.id)) return;
     if (foundClues.length >= currentRound.cluesNeeded) return;
     
@@ -193,21 +183,10 @@ export default function Level1Page() {
         triggerScoreAnimation(-10);
       }
     }
-
-    if (currentRoundIndex === 0 && tutorialStep === 5) {
-      setTutorialStep(6);
-      setTimeout(() => driverObjRef.current?.moveNext(), 300);
-    }
   };
   
   const handleOpenSourceCheck = () => {
     setSourceCheckOpen(!sourceCheckOpen);
-    if (!sourceCheckOpen) {
-      if (currentRoundIndex === 0 && tutorialStep === 3) {
-        setTutorialStep(4);
-        
-      }
-    }
   };
   
   const canFileVerdict = foundClues.length >= currentRound.cluesNeeded;
@@ -302,14 +281,16 @@ export default function Level1Page() {
                 <span>CASE 001 // TEXT FEED</span>
               </div>
               <span 
-                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] ${currentRound.badgeColor}`}
+                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] border-[#0F172A] ${
+                  currentRoundIndex === 0 ? "bg-white text-[#0F172A]" : "bg-[#FFB800] text-[#0F172A]"
+                }`}
               >
-                {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${sessionRounds.length - 1}`}
+                {currentRoundIndex === 0
+                  ? "TUTORIAL"
+                  : `POST ${currentRoundIndex} / ${TEXT_ROUNDS.length - 1}`}
               </span>
             </div>
-            <div id="tutorial-score" className={`font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ${
-              currentRoundIndex === 0 && (tutorialStep === 7 || tutorialStep === 8) ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
-            }`}>
+            <div id="tutorial-score" className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
               <span>Score: </span>
               <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
                 {currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
@@ -339,9 +320,7 @@ export default function Level1Page() {
           {/* Mock Social Post */}
           <div 
             id="tutorial-post"
-            className={`p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
-              currentRoundIndex === 0 && tutorialStep === 2 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
-            }`}
+            className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div 
@@ -358,7 +337,7 @@ export default function Level1Page() {
             <div className="text-xl md:text-2xl font-sans leading-relaxed text-[#0F172A]">
               {currentRound.segments.map((segment) => {
                 const isFlagged = flaggedIds.has(segment.id);
-                const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0 && tutorialStep === 5;
+                const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0;
                 return (
                   <span
                     key={segment.id}
@@ -370,10 +349,8 @@ export default function Level1Page() {
                             ? "bg-[#FFB800] border-[3px] border-[#0F172A] font-bold shadow-[2px_2px_0px_0px_#0F172A] rotate-1" 
                               : "text-red-500 line-through decoration-red-500 decoration-2 opacity-80 -rotate-1")
                         : showTutorialPulse
-                          ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800] z-[100005]"
-                          : (currentRoundIndex === 0 && tutorialStep < 5)
-                            ? ""
-                            : "hover:bg-[#FFB800]/50 hover:border-b-[3px] hover:border-dashed hover:border-[#0F172A]"
+                          ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800]"
+                          : "hover:bg-[#FFB800]/50 hover:border-b-[3px] hover:border-dashed hover:border-[#0F172A]"
                     }`}
                     style={isFlagged && segment.isClue ? { borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" } : {}}
                   >
@@ -428,9 +405,7 @@ export default function Level1Page() {
 
           <div 
             id="tutorial-evidence"
-            className={`p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
-              currentRoundIndex === 0 && tutorialStep === 6 ? "relative z-[100005]" : ""
-            }`}
+            className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-3xl font-black font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
@@ -443,9 +418,7 @@ export default function Level1Page() {
               </span>
             </div>
             
-            <div className={`min-h-[150px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[linear-gradient(45deg,#0F172A11_25%,transparent_25%,transparent_50%,#0F172A11_50%,#0F172A11_75%,transparent_75%,transparent)] bg-[length:16px_16px] transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 6 ? "bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
-            }`}
+            <div className="min-h-[150px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[linear-gradient(45deg,#0F172A11_25%,transparent_25%,transparent_50%,#0F172A11_50%,#0F172A11_75%,transparent_75%,transparent)] bg-[length:16px_16px] transition-all duration-500 relative"
             >
               {foundClues.length === 0 ? (
                 <p className="text-center text-[#0F172A]/40 font-mono text-sm absolute inset-0 flex items-center justify-center">
@@ -475,18 +448,14 @@ export default function Level1Page() {
             
             <div 
               id="tutorial-source"
-              className={`mt-6 space-y-4 transition-all duration-500 ${
-                currentRoundIndex === 0 && tutorialStep === 4 ? "relative z-[100005]" : ""
-              }`}
+              className="mt-6 space-y-4 transition-all duration-500"
             >
               <Button
                 id="btn-source-check"
                 onClick={handleOpenSourceCheck}
-                disabled={currentRoundIndex === 0 && tutorialStep < 3}
+                disabled={currentRoundIndex === 0 && isTourActive}
                 className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[4px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed ${
                   sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
-                } ${
-                  currentRoundIndex === 0 && tutorialStep === 3 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
                 }`}
               >
                 <Search className="mr-2 w-5 h-5" strokeWidth={2.5} /> 
@@ -499,12 +468,10 @@ export default function Level1Page() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    className={currentRoundIndex === 0 && tutorialStep === 4 ? "overflow-visible" : "overflow-hidden"}
+                    className="overflow-hidden"
                   >
                     <div 
-                      className={`p-5 bg-white border-[4px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative ${
-                        currentRoundIndex === 0 && tutorialStep === 4 ? "ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
-                      }`}
+                      className="p-5 bg-white border-[4px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative"
                     >
                       <div className="space-y-3 font-sans">
                         <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
@@ -526,15 +493,9 @@ export default function Level1Page() {
                 id="tutorial-verdict-btn"
                 onClick={() => {
                   setShowVerdictModal(true);
-                  if (currentRoundIndex === 0 && tutorialStep >= 9 && tutorialStep <= 11) {
-                    setTutorialStep(10);
-                    // No cooldown
-                  }
                 }}
                 disabled={!canFileVerdict}
-                className={`w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
-                  currentRoundIndex === 0 && tutorialStep === 9 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
-                }`}
+                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
               >
                 {canFileVerdict ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
               </Button>
@@ -571,29 +532,18 @@ export default function Level1Page() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {currentRound.tacticOptions.map(tactic => {
                           const correctTactics = currentRound.segments.filter(s => s.isClue && s.tactic).map(s => s.tactic);
-                          const isTutorialWrongTactic = currentRoundIndex === 0 && !correctTactics.includes(tactic);
-                          
                           return (
                             <button
                               key={tactic}
-                              disabled={isTutorialWrongTactic}
                               onClick={() => {
                                 setSelectedTactic(tactic);
-                                if (currentRoundIndex === 0 && tutorialStep === 10) {
-                                  setTutorialStep(11);
-                                  // No cooldown
-                                }
                               }}
                               onMouseEnter={() => setHoveredTactic(tactic)}
                               onMouseLeave={() => setHoveredTactic(null)}
-                              className={`p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] ${
-                                isTutorialWrongTactic ? "opacity-40 cursor-not-allowed bg-white border-dashed border-[#0F172A]/30" : "cursor-pointer"
-                              } ${
-                                currentRoundIndex === 0 && tutorialStep === 10 && !selectedTactic && !isTutorialWrongTactic ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]" : ""
-                              } ${
+                              className={`p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer ${
                                 selectedTactic === tactic
                                   ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]"
-                                  : !isTutorialWrongTactic ? "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]" : ""
+                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
                               }`}
                             >
                               {tactic}
@@ -620,9 +570,7 @@ export default function Level1Page() {
                       <Button
                         onClick={handleSubmitVerdict}
                         disabled={!selectedTactic}
-                        className={`flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] ${
-                          currentRoundIndex === 0 && tutorialStep === 11 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
-                        }`}
+                        className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
                       >
                         Submit Report
                       </Button>
