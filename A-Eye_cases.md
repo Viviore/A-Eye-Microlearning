@@ -39,7 +39,7 @@ No Real/Fake choice, no evidence-select step — every scenario is always "Fake,
 - Decoy click → -10 per decoy click (applies immediately to live score with a floating animation).
 - Failed round (wrong tactic) → -25 per failed attempt (applies immediately with floating animation).
 - Completing a round permanently banks that round's remaining score into the case total.
-- Each round's score is floored at 0 — a deduction cannot push a round's score negative, and negative balance does not carry over into the next round.
+- **Deductions:** Can be endless. If `roundScore` + `cumulativeScore` hits 0 or below, it's Game Over.
 - If the cumulative total score across all cases hits 0 (not just a single round — see cumulative scoring note at top of doc), the entire A-Eye experience resets — all cases (001/002/003) reset.
 
 ### Failure / Retry Rules
@@ -88,7 +88,7 @@ Correct tactic?
 - [x] Scoring UI: display is a single merged live score (Bank + Current Round)
 - [x] Scoring: decoy click = -10 (with floating deduction animation)
 - [x] Scoring: failed round (wrong tactic) = -25 (with floating deduction animation)
-- [x] Scoring: round score floored at 0, no negative carryover into next round
+- [x] Scoring: endless deductions, no flooring at 0
 - [x] Scoring: completed round's score adds to running case total
 - [x] Cumulative total (across all 3 cases) hitting 0 → resets entire A-Eye experience
 - [x] Wrong tactic → partial reset (keep clues found, clear tactic pick), same round repeats
@@ -174,27 +174,27 @@ Correct tactic?
 
 ### Implementation Checklist
 
-- [ ] 10 total rounds in the pool, only 5 shown per session (randomly selected)
-- [ ] Magnifier tool (hover to zoom)
-- [ ] Magnifier crosshair inverts color based on photo underneath (stays visible on dark and light photos)
-- [ ] Evidence Board — no hover-hint, player must genuinely spot the mistake
-- [ ] +30 Seconds tool — 1 per round max, costs -80, checks player has enough score before allowing use, button disabled if not, does not reveal any answer
-- [ ] 60-second timer per round (Case 002 only, not Case 001)
-- [ ] Timer runs out → -50 deduction (same as failed round) AND retries with a RANDOM round, not the same round — applies even with partial progress
-- [ ] Wrong tactic (not timeout) → same round repeats, partial reset, does NOT randomize
-- [ ] Gate: 2+ real clues flagged (no Source Check requirement, no tool-use requirement beyond Magnifier)
-- [ ] No decoys in Case 002 — any non-clue click is a misclick, not a decoy
-- [ ] Verdict Flow is tactic-ID only — no evidence-select step, no exceptions
-- [ ] 4 tactic options per round, 1 correct + 3 distinct distractors
-- [ ] Scoring: round starts at 100
-- [ ] All penalties stack cumulatively in real time (misclicks + failed attempts + tool use all subtract together, not just the worst one)
-- [ ] Scoring: misclick (any non-clue click) = -10
-- [ ] Scoring: failed round (wrong tactic) = -50
-- [ ] Scoring: timeout = -50 (same as failed round)
-- [ ] Scoring: +30 Seconds tool used = -80
-- [ ] Scoring: round score floored at 0, no negative carryover
-- [ ] Scoring: completed round's score adds to running case total
-- [ ] Cumulative total (across all 3 cases) hitting 0 → resets entire A-Eye experience
+- [x] 10 total rounds in the pool, only 5 shown per session (randomly selected)
+- [x] Magnifier tool (hover to zoom)
+- [x] Magnifier crosshair inverts color based on photo underneath (stays visible on dark and light photos)
+- [x] Evidence Board — no hover-hint, player must genuinely spot the mistake
+- [x] +30 Seconds tool — 1 per round max, costs -80, checks player has enough score before allowing use, button disabled if not, does not reveal any answer
+- [x] 60-second timer per round (Case 002 only, not Case 001)
+- [x] Timer runs out → -50 deduction (same as failed round) AND retries with a RANDOM round, not the same round — applies even with partial progress
+- [x] Wrong tactic (not timeout) → same round repeats, partial reset, does NOT randomize
+- [x] Gate: 2+ real clues flagged (no Source Check requirement, no tool-use requirement beyond Magnifier)
+- [x] No decoys in Case 002 — any non-clue click is a misclick, not a decoy
+- [x] Verdict Flow is tactic-ID only — no evidence-select step, no exceptions
+- [x] 4 tactic options per round, 1 correct + 3 distinct distractors
+- [x] Scoring: round starts at 100
+- [x] All penalties stack cumulatively in real time (misclicks + failed attempts + tool use all subtract together, not just the worst one)
+- [x] Scoring: misclick (any non-clue click) = -10
+- [x] Scoring: failed round (wrong tactic) = -50
+- [x] Scoring: timeout = -50 (same as failed round)
+- [x] Scoring: +30 Seconds tool used = -80
+- [x] Scoring: endless deductions, no flooring at 0
+- [x] Scoring: completed round's score adds to running case total
+- [x] Cumulative total (across all 3 cases) hitting 0 → resets entire A-Eye experience
 
 ---
 

@@ -196,7 +196,7 @@ export default function Level1Page() {
     } else {
       setFoundDecoys((prev) => [...prev, segment]);
       if (currentRoundIndex !== 0) {
-        setRoundScore(prev => Math.max(0, prev - 10));
+        setRoundScore(prev => prev - 10);
         triggerScoreAnimation(-10);
       }
     }
@@ -239,7 +239,7 @@ export default function Level1Page() {
       });
     } else {
       if (currentRoundIndex !== 0) {
-        setRoundScore(prev => Math.max(0, prev - 25));
+        setRoundScore(prev => prev - 25);
         triggerScoreAnimation(-25);
       }
       setFeedback({
@@ -264,7 +264,7 @@ export default function Level1Page() {
       markCase001RoundPlayed(currentRound.id);
     }
 
-    if (currentRoundIndex < TEXT_ROUNDS.length - 1) {
+    if (currentRoundIndex < sessionRounds.length - 1) {
       setCurrentRoundIndex(prev => prev + 1);
       setRoundScore(100);
       setFlaggedIds(new Set());

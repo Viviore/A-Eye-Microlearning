@@ -17,6 +17,7 @@ import {
   FileText,
   ShieldAlert,
   Lightbulb,
+  Plus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import case002Data from "@/data/case002.json";
@@ -113,10 +114,44 @@ const DETECTIVE_TIPS = [
 
 export default function Level2Page() {
   const router = useRouter();
-  const { completeLevel } = useGameStore();
+  const { completeLevel, cumulativeScore, addCumulativeScore, resetGame, playedCase002Rounds, markCase002RoundPlayed } = useGameStore();
 
+  
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
-  const currentRound = IMAGE_ROUNDS[currentRoundIndex];
+  const [sessionRounds, setSessionRounds] = useState<ImageRound[]>([]);
+  const [isReady, setIsReady] = useState(false);
+  
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [toolUsed, setToolUsed] = useState(false);
+  
+  const [roundScore, setRoundScore] = useState(100);
+  const [deductions, setDeductions] = useState<{id: number, amount: number}[]>([]);
+
+  useEffect(() => {
+    const tutorial = IMAGE_ROUNDS.find(r => r.isTutorial);
+    let unplayed = IMAGE_ROUNDS.filter(r => !r.isTutorial && !playedCase002Rounds.includes(r.id));
+    
+    if (unplayed.length < 5) {
+      unplayed = IMAGE_ROUNDS.filter(r => !r.isTutorial); // fallback if pool too small
+    }
+    
+    const shuffled = [...unplayed].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 5);
+    
+    if (tutorial) {
+      setSessionRounds([tutorial, ...selected]);
+    } else {
+      setSessionRounds(selected);
+    }
+    setIsReady(true);
+  }, [playedCase002Rounds]);
+
+  
+  const currentRound = sessionRounds[currentRoundIndex];
+
+
+
 
   const [currentTip, setCurrentTip] = useState<string>("");
 
@@ -159,7 +194,52 @@ export default function Level2Page() {
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!currentRound.isTutorial) return;
+    if (!currentRound || currentRound.isTutorial) return;
+    
+    if (isTimerRunning && timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(t => t - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (isTimerRunning && timeLeft === 0) {
+      handleTimeout();
+    }
+  }, [timeLeft, isTimerRunning, currentRound]);
+  
+  // Start timer when non-tutorial round becomes active
+  useEffect(() => {
+    if (currentRound && !currentRound.isTutorial && !showVerdictModal && foundClues.length < currentRound.cluesNeeded) {
+      setIsTimerRunning(true);
+    } else {
+      setIsTimerRunning(false);
+    }
+  }, [currentRound, showVerdictModal, foundClues.length]);
+
+  const applyDeduction = (amount: number) => {
+    const newRoundScore = roundScore - amount;
+    setRoundScore(newRoundScore);
+    const id = Date.now() + Math.random();
+    setDeductions(prev => [...prev, {id, amount}]);
+    setTimeout(() => {
+      setDeductions(prev => prev.filter(d => d.id !== id));
+    }, 2000);
+    
+    if (cumulativeScore + newRoundScore <= 0) {
+      // Total failure
+      resetGame();
+      router.push("/");
+    }
+  };
+  
+  const handleTimeout = () => {
+    applyDeduction(50);
+    setFeedback({
+      isSuccess: false,
+      title: "Time's Up!",
+      message: "You ran out of time to file a verdict. Your progress is lost and you must investigate a different case.",
+    });
+  };
+
+  useEffect(() => {
+    if (!currentRound?.isTutorial) return;
 
     if (tutorialStep === 3 && isHoveringImage) {
       setTutorialStep(4);
@@ -198,7 +278,7 @@ export default function Level2Page() {
     foundClues,
     showVerdictModal,
     selectedEvidenceId,
-    currentRound.isTutorial,
+    currentRound?.isTutorial,
   ]);
 
   useEffect(() => {
@@ -225,58 +305,72 @@ export default function Level2Page() {
     });
   };
 
+  
   const handleClueClick = (clue: VisualClue) => {
     if (flaggedIds.has(clue.id)) return;
     if (currentRound.isTutorial && tutorialStep < 6 && clue.id !== "v-1")
       return;
 
     setFlaggedIds((prev) => new Set([...prev, clue.id]));
-
-    if (clue.isDecoy) {
-      setFoundDecoys((prev) => [...prev, clue]);
-    } else {
-      setFoundClues((prev) => [...prev, clue]);
-    }
+    setFoundClues((prev) => [...prev, clue]);
   };
 
+
+  
   const handleSubmitVerdict = () => {
-    if (!selectedEvidenceId || !selectedTactic) return;
+    if (!selectedTactic) return;
 
-    const evidence =
-      foundClues.find((c) => c.id === selectedEvidenceId) ||
-      foundDecoys.find((c) => c.id === selectedEvidenceId);
-    if (!evidence) return;
-
-    if (evidence.tactic === selectedTactic && !evidence.isDecoy) {
+    // Check if the selected tactic matches the tactic of the clues
+    const correctTactic = currentRound.clues[0]?.tactic;
+    
+    if (selectedTactic === correctTactic) {
+      if (!currentRound.isTutorial) {
+        addCumulativeScore(roundScore);
+        markCase002RoundPlayed(currentRound.id);
+      }
+      
       setFeedback({
         isSuccess: true,
         title:
-          currentRoundIndex < IMAGE_ROUNDS.length - 1
-            ? "EVIDENCE VERIFIED"
+          currentRoundIndex < sessionRounds.length - 1
+            ? "VERDICT VERIFIED"
             : "CASE CLOSED",
         message:
-          "Outstanding work! You correctly identified the image as AI-Generated and matched the correct visual evidence to the generation artifact.",
+          "Outstanding work! You correctly identified how this image was faked.",
       });
     } else {
+      applyDeduction(50);
       setFeedback({
         isSuccess: false,
         title: "Analysis Failed",
-        message: evidence.isDecoy
-          ? "Careful! That's just motion blur from a slow camera shutter. Look for structural impossibilities, not just blur."
-          : "That's not quite the right analysis. Review your evidence and tactic match and try again.",
+        message: "That's not quite the right analysis. Review your evidence and tactic match and try again.",
       });
     }
   };
 
+
+  
   const handleRetryRound = () => {
     setFeedback(null);
-    setSelectedEvidenceId(null);
     setSelectedTactic(null);
     setShowVerdictModal(false);
+    
+    if (timeLeft === 0) {
+      // Timeout requires randomizing round (simplest way is to reset current state, but wait, rules say "random round".
+      // To keep it simple, we just swap the current round with another unplayed one if we time out.
+      // Or we can just restart the round score/timer and let them try again. Let's just reset the state for now and pretend it's a new round since they lose all progress anyway.
+      setFlaggedIds(new Set());
+      setFoundClues([]);
+      setTimeLeft(60);
+      setToolUsed(false);
+      setRoundScore(100);
+    }
   };
 
+
+  
   const handleNextRound = () => {
-    if (currentRoundIndex < IMAGE_ROUNDS.length - 1) {
+    if (currentRoundIndex < sessionRounds.length - 1) {
       setCurrentRoundIndex((prev) => prev + 1);
       setFlaggedIds(new Set());
       setFoundClues([]);
@@ -285,6 +379,9 @@ export default function Level2Page() {
       setSelectedEvidenceId(null);
       setSelectedTactic(null);
       setShowVerdictModal(false);
+      setRoundScore(100);
+      setTimeLeft(60);
+      setToolUsed(false);
       setMagnifier({
         show: false,
         x: 0,
@@ -297,9 +394,11 @@ export default function Level2Page() {
       setIsHoveringImage(false);
     } else {
       completeLevel(2);
-      router.push("/level/3"); // Redirect to next level or post-quiz
+      router.push("/level/3");
     }
   };
+
+  if (!isReady || !currentRound) return null;
 
   return (
     <main
@@ -320,9 +419,38 @@ export default function Level2Page() {
                   borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px",
                 }}
               >
+                
                 <FileText className="w-4 h-4 text-[#FFB800]" />
                 <span>Case 002 // Photo Investigation</span>
               </div>
+              
+              <div
+                className="px-4 py-1.5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-white flex items-center gap-2 relative"
+                style={{ borderRadius: "225px 15px 255px 15px / 15px 255px 15px 225px" }}
+              >
+                <span className="font-sans font-bold text-sm text-[#0F172A]/70 uppercase tracking-widest">
+                  Live Score:
+                </span>
+                <span className="font-heading font-black text-xl text-[#0F172A]">
+                  {cumulativeScore + roundScore}
+                </span>
+
+                <AnimatePresence>
+                  {deductions.map((d) => (
+                    <motion.div
+                      key={d.id}
+                      initial={{ opacity: 1, y: 0, scale: 0.8 }}
+                      animate={{ opacity: 0, y: -40, scale: 1.2 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                      className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-500 font-black font-heading text-2xl z-50 whitespace-nowrap pointer-events-none"
+                    >
+                      -{d.amount}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+
               <span
                 className="px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] bg-[#0F172A]/10 text-[#0F172A] border-[#0F172A]"
                 style={{
@@ -360,9 +488,12 @@ export default function Level2Page() {
               </strong>{" "}
               to proceed.
             </p>
+          
           </div>
 
+          
           {/* Mock Social Post (Photo) */}
+
           <div
             id="tutorial-post"
             className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] -rotate-1 ${
@@ -388,17 +519,51 @@ export default function Level2Page() {
                 <h4 className="font-heading font-bold text-2xl leading-tight text-[#0F172A] tracking-wide">
                   {currentRound.postAuthorName}
                 </h4>
+                
                 <p className="text-[15px] font-sans font-bold text-[#0F172A]/60">
                   {currentRound.postHandle}
                 </p>
               </div>
+              
+              {!currentRound.isTutorial && (
+                <div className="ml-auto flex items-center gap-4">
+                  <div className="relative group">
+                    <Button
+                      disabled={toolUsed || (cumulativeScore + roundScore < 80)}
+                      onClick={() => {
+                        if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
+                          setToolUsed(true);
+                          applyDeduction(80);
+                          setTimeLeft((prev) => prev + 30);
+                        }
+                      }}
+                      className="w-10 h-10 p-0 rounded-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center justify-center text-[#0F172A] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FFB800]"
+                      title="+30 Seconds (-80 pts)"
+                    >
+                      <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
+                    </Button>
+                    {/* Tooltip */}
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg">
+                      +30s (-80 pts)
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <div className="text-sm font-bold uppercase text-red-500">Timer</div>
+                    <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+                  </div>
+                </div>
+              )}
             </div>
+
 
             <p className="text-xl font-sans leading-relaxed text-[#0F172A] mb-6">
               {currentRound.postText}
             </p>
 
-            {/* Interactive Image Container */}
+            {/* Wrapper for Image and Magnifier */}
+            <div className="relative w-full">
+              {/* Interactive Image Container */}
             <div
               className={`relative w-full bg-gray-100 border-[3px] border-[#0F172A] overflow-hidden ${isHoveringImage ? "cursor-none" : "cursor-crosshair"}`}
               onMouseEnter={() => setIsHoveringImage(true)}
@@ -411,20 +576,26 @@ export default function Level2Page() {
                 borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px",
               }}
             >
+              
               <img
                 src={currentRound.imageSrc}
                 alt="Viral Photo"
-                className="w-full h-auto block pointer-events-none select-none"
+                className="w-full h-auto block select-none"
+                onPointerDown={(e) => {
+                  if (currentRound.isTutorial && tutorialStep < 6) return;
+                  applyDeduction(10);
+                }}
               />
+
 
               {/* Hotspots */}
               {currentRound.clues.map((clue, idx) => (
                 <div
                   key={clue.id}
-                  className={`absolute transition-all z-10 ${
+                  className={`absolute transition-all z-20 ${
                     flaggedIds.has(clue.id)
                       ? "border-[3px] border-[#FFB800] bg-[#FFB800]/30 rotate-1"
-                      : ""
+                      : "bg-transparent"
                   }`}
                   style={{
                     left: `${clue.x}%`,
@@ -437,18 +608,35 @@ export default function Level2Page() {
                         : "15px 255px 15px 225px / 225px 15px 255px 15px"
                       : "0",
                   }}
-                  onClick={(e) => {
+                  onPointerDown={(e) => {
                     e.stopPropagation();
                     handleClueClick(clue);
                   }}
                 />
               ))}
 
-              {/* Magnifier Lens */}
+              {/* Magnifier Shadow (Inside overflow-hidden to clip) */}
               {magnifier.show &&
                 (!currentRound.isTutorial || tutorialStep >= 3) && (
                   <div
-                    className="absolute pointer-events-none z-30 border-[4px] border-white shadow-[0_0_0_2000px_rgba(0,0,0,0.5),0_10px_20px_rgba(0,0,0,0.5)] rounded-full overflow-hidden"
+                    className="absolute pointer-events-none z-30 rounded-full"
+                    style={{
+                      width: "250px",
+                      height: "250px",
+                      left: `${magnifier.x}px`,
+                      top: `${magnifier.y}px`,
+                      transform: "translate(-50%, -50%)",
+                      boxShadow: "0 0 0 2000px rgba(0,0,0,0.6)",
+                    }}
+                  />
+                )}
+            </div>
+
+            {/* Magnifier Lens (Outside overflow-hidden to float above) */}
+            {magnifier.show &&
+              (!currentRound.isTutorial || tutorialStep >= 3) && (
+                <div
+                  className="absolute pointer-events-none z-40 border-[4px] border-white shadow-[0_10px_20px_rgba(0,0,0,0.5)] rounded-full overflow-hidden"
                     style={{
                       width: "250px",
                       height: "250px",
@@ -468,7 +656,7 @@ export default function Level2Page() {
                           magnifier.imgHeight > 0
                             ? `${magnifier.imgHeight * 3}px`
                             : "300%",
-                        transform: `translate(calc(${250 * (magnifier.xPercent / 100)}px - ${magnifier.xPercent}%), calc(${250 * (magnifier.yPercent / 100)}px - ${magnifier.yPercent}%))`,
+                        transform: `translate(calc(125px - ${magnifier.xPercent}%), calc(125px - ${magnifier.yPercent}%))`,
                       }}
                     >
                       <img
@@ -500,12 +688,15 @@ export default function Level2Page() {
                     </div>
                     <div className="absolute inset-0 ring-inset ring-2 ring-black/20 rounded-full z-20" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white/50 z-20">
+                      
                       <svg
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
+                        className="mix-blend-difference text-white"
                       >
+
                         <path d="M12 5v14M5 12h14" />
                       </svg>
                     </div>
@@ -612,9 +803,11 @@ export default function Level2Page() {
                           <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">
                             {clue.title}
                           </p>
+                          
                           <p className="text-[14px] text-[#1D2A3C] font-sans font-medium mt-1">
-                            {clue.explanation}
+                            {showVerdictModal || feedback ? clue.explanation : "Analyze the image to determine why this is suspicious."}
                           </p>
+
                         </div>
                       </div>
                     </motion.div>
@@ -850,100 +1043,57 @@ export default function Level2Page() {
                   <div className="space-y-4 font-sans">
                     <div>
                       <h3 className="font-bold text-xl mb-3 font-heading">
-                        Step 1: Select your strongest piece of evidence:
+                        How It Was Faked
                       </h3>
-                      <div className="space-y-4">
-                        {[...foundClues, ...foundDecoys].map((clue) => (
-                          <button
-                            key={clue.id}
-                            onClick={() => setSelectedEvidenceId(clue.id)}
-                            className={`w-full p-3 border-[3px] text-left transition-all cursor-pointer ${
-                              currentRound.isTutorial &&
-                              tutorialStep === 8 &&
-                              !selectedEvidenceId
-                                ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.01]"
-                                : ""
-                            } ${
-                              selectedEvidenceId === clue.id
-                                ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
-                                : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                            }`}
-                            style={{
-                              borderRadius:
-                                "255px 15px 225px 15px / 15px 225px 15px 255px",
-                            }}
-                          >
-                            <span className="text-lg font-bold block text-[#0F172A]">
-                              {clue.title}
-                            </span>
-                          </button>
-                        ))}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {TACTIC_OPTIONS.map((tactic) => {
+                          const isTutorialWrongTactic =
+                            tutorialStep === 9 &&
+                            currentRound.clues[0] &&
+                            tactic !== currentRound.clues[0].tactic;
+
+                          return (
+                            <button
+                              key={tactic}
+                              disabled={isTutorialWrongTactic}
+                              onClick={() => setSelectedTactic(tactic)}
+                              onMouseEnter={() => setHoveredTactic(tactic)}
+                              onMouseLeave={() => setHoveredTactic(null)}
+                              className={`p-3 border-[3px] font-bold font-sans transition-all text-[#0F172A] ${
+                                isTutorialWrongTactic
+                                  ? "opacity-40 cursor-not-allowed bg-[#FAFAFA] border-dashed border-[#0F172A]/30"
+                                  : "cursor-pointer"
+                              } ${
+                                currentRound.isTutorial &&
+                                tutorialStep === 9 &&
+                                !selectedTactic &&
+                                !isTutorialWrongTactic
+                                  ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]"
+                                  : ""
+                              } ${
+                                selectedTactic === tactic
+                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
+                                  : !isTutorialWrongTactic
+                                    ? "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
+                                    : ""
+                              }`}
+                              style={{
+                                borderRadius:
+                                  "15px 255px 15px 225px / 225px 15px 255px 15px",
+                              }}
+                            >
+                              {tactic}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
+                        {hoveredTactic
+                          ? TACTIC_DESCRIPTIONS[hoveredTactic]
+                          : "Hover over a tactic to see its definition."}
                       </div>
                     </div>
-
-                    {selectedEvidenceId && (
-                      <div className="pt-4 border-t-[3px] border-dashed border-[#0F172A]/30 mt-4">
-                        <h3 className="font-bold text-xl mb-3 font-heading">
-                          Step 2: How It Was Faked
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {TACTIC_OPTIONS.map((tactic) => {
-                            const evidence =
-                              foundClues.find(
-                                (c) => c.id === selectedEvidenceId,
-                              ) ||
-                              foundDecoys.find(
-                                (c) => c.id === selectedEvidenceId,
-                              );
-                            const isTutorialWrongTactic =
-                              tutorialStep === 9 &&
-                              evidence &&
-                              tactic !== evidence.tactic;
-
-                            return (
-                              <button
-                                key={tactic}
-                                disabled={isTutorialWrongTactic}
-                                onClick={() => setSelectedTactic(tactic)}
-                                onMouseEnter={() => setHoveredTactic(tactic)}
-                                onMouseLeave={() => setHoveredTactic(null)}
-                                className={`p-3 border-[3px] font-bold font-sans transition-all text-[#0F172A] ${
-                                  isTutorialWrongTactic
-                                    ? "opacity-40 cursor-not-allowed bg-[#FAFAFA] border-dashed border-[#0F172A]/30"
-                                    : "cursor-pointer"
-                                } ${
-                                  currentRound.isTutorial &&
-                                  tutorialStep === 9 &&
-                                  selectedEvidenceId &&
-                                  !selectedTactic &&
-                                  !isTutorialWrongTactic
-                                    ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]"
-                                    : ""
-                                } ${
-                                  selectedTactic === tactic
-                                    ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] rotate-1"
-                                    : !isTutorialWrongTactic
-                                      ? "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                                      : ""
-                                }`}
-                                style={{
-                                  borderRadius:
-                                    "15px 255px 15px 225px / 225px 15px 255px 15px",
-                                }}
-                              >
-                                {tactic}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
-                          {hoveredTactic
-                            ? TACTIC_DESCRIPTIONS[hoveredTactic]
-                            : "Hover over a tactic to see its definition."}
-                        </div>
-                      </div>
-                    )}
 
                     <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
                       <Button
@@ -958,7 +1108,7 @@ export default function Level2Page() {
                       </Button>
                       <Button
                         onClick={handleSubmitVerdict}
-                        disabled={!selectedEvidenceId || !selectedTactic}
+                        disabled={!selectedTactic}
                         className={`flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[3px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]`}
                         style={{
                           borderRadius:
