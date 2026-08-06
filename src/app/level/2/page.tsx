@@ -72,8 +72,9 @@ const tutorialDialogs = [
   "Move the magnifier over the hand giving the money on the top right side.",
   "See that? A classic AI mistake: a double thumb! Click the hand to flag it as evidence.",
   "Excellent! Your flagged clue has been added to the Evidence Board on the right.",
+  "Notice the timer above? Real cases only give you 60 seconds! Running out of time costs -50 points.",
+  "Need more time? You can use the +30s tool, but it costs -80 points! Only use it if you really have to.",
   "You've found enough evidence! Click the 'File Verdict' button below when you're ready to make the call.",
-  "Just like before, select your strongest piece of evidence.",
   "Finally, select the manipulation tactic used here. Submit your report when ready!",
 ];
 
@@ -84,8 +85,9 @@ const tutorialMascots = [
   "thinking_expression.png",
   "idea_expression.png",
   "confident_expression.png",
-  "confident_expression.png",
+  "determined_expression.png",
   "thinking_expression.png",
+  "confident_expression.png",
   "thinking_expression.png",
 ];
 
@@ -265,11 +267,8 @@ export default function Level2Page() {
       setTutorialStep(6);
       setTutorialCooldown(2);
     }
-    if (tutorialStep === 7 && showVerdictModal) {
-      setTutorialStep(8);
-    }
-    if (tutorialStep === 8 && selectedEvidenceId) {
-      setTutorialStep(9);
+    if (tutorialStep === 9 && showVerdictModal) {
+      setTutorialStep(10);
     }
   }, [
     tutorialStep,
@@ -434,7 +433,9 @@ export default function Level2Page() {
               </div>
               
               <span
-                className="px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] border-[#0F172A]"
+                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] border-[#0F172A] ${
+                  currentRound.isTutorial ? "bg-[#0F172A]/10 text-[#0F172A]" : "bg-[#FFB800] text-[#0F172A]"
+                }`}
                 style={{
                   borderRadius: "15px 225px 15px 255px / 225px 15px 255px 15px",
                 }}
@@ -504,35 +505,37 @@ export default function Level2Page() {
                 </p>
               </div>
               
-              {!currentRound.isTutorial && (
-                <div className="ml-auto flex items-center gap-4">
-                  <div className="relative group">
-                    <Button
-                      disabled={toolUsed || (cumulativeScore + roundScore < 80)}
-                      onClick={() => {
-                        if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
-                          setToolUsed(true);
-                          applyDeduction(80);
-                          setTimeLeft((prev) => prev + 30);
-                        }
-                      }}
-                      className="w-10 h-10 p-0 rounded-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center justify-center text-[#0F172A] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FFB800]"
-                      title="+30 Seconds (-80 pts)"
-                    >
-                      <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
-                    </Button>
-                    {/* Tooltip */}
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg">
-                      +30s (-80 pts)
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <div className="text-sm font-bold uppercase text-red-500">Timer</div>
-                    <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+              <div className={`ml-auto flex items-center gap-4 transition-all duration-300 ${
+                currentRound.isTutorial && (tutorialStep === 7 || tutorialStep === 8)
+                  ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white bg-white p-2 rounded-xl scale-[1.02]"
+                  : ""
+              }`}>
+                <div className="relative group">
+                  <Button
+                    disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
+                    onClick={() => {
+                      if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
+                        setToolUsed(true);
+                        applyDeduction(80);
+                        setTimeLeft((prev) => prev + 30);
+                      }
+                    }}
+                    className="w-10 h-10 p-0 rounded-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center justify-center text-[#0F172A] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FFB800]"
+                    title="+30 Seconds (-80 pts)"
+                  >
+                    <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
+                  </Button>
+                  {/* Tooltip */}
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg">
+                    +30s (-80 pts)
                   </div>
                 </div>
-              )}
+
+                <div className="text-right">
+                  <div className="text-sm font-bold uppercase text-red-500">Timer</div>
+                  <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+                </div>
+              </div>
             </div>
 
 
@@ -878,7 +881,7 @@ export default function Level2Page() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             className={`fixed bottom-4 md:bottom-8 z-50 flex items-end gap-3 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-auto lg:max-w-4xl transition-all duration-700 ease-in-out left-1/2 -translate-x-1/2 ${
-              [7, 8, 9].includes(tutorialStep)
+              [7, 8, 9, 10].includes(tutorialStep)
                 ? "lg:left-12 lg:right-auto lg:translate-x-0 lg:flex-row"
                 : "lg:left-auto lg:right-12 lg:translate-x-0 lg:flex-row-reverse"
             }`}
@@ -894,17 +897,17 @@ export default function Level2Page() {
                   initial={{
                     rotateY: 90,
                     opacity: 0,
-                    scaleX: [7, 8, 9].includes(tutorialStep) ? -1 : 1,
+                    scaleX: [7, 8, 9, 10].includes(tutorialStep) ? -1 : 1,
                   }}
                   animate={{
                     rotateY: 0,
                     opacity: 1,
-                    scaleX: [7, 8, 9].includes(tutorialStep) ? -1 : 1,
+                    scaleX: [7, 8, 9, 10].includes(tutorialStep) ? -1 : 1,
                   }}
                   exit={{
                     rotateY: -90,
                     opacity: 0,
-                    scaleX: [7, 8, 9].includes(tutorialStep) ? -1 : 1,
+                    scaleX: [7, 8, 9, 10].includes(tutorialStep) ? -1 : 1,
                   }}
                   transition={{ duration: 0.15 }}
                   src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`}
@@ -924,14 +927,14 @@ export default function Level2Page() {
               {/* Pointer Triangle (Desktop) */}
               <div
                 className={`absolute bottom-8 w-0 h-0 border-y-[12px] border-y-transparent hidden lg:block transition-all duration-300 ${
-                  [7, 8, 9].includes(tutorialStep)
+                  [7, 8, 9, 10].includes(tutorialStep)
                     ? "border-r-[14px] border-r-[#0F172A] -left-[14px]"
                     : "border-l-[14px] border-l-[#0F172A] -right-[14px]"
                 }`}
               >
                 <div
                   className={`absolute -top-[9px] w-0 h-0 border-y-[9px] border-y-transparent z-10 ${
-                    [7, 8, 9].includes(tutorialStep)
+                    [7, 8, 9, 10].includes(tutorialStep)
                       ? "border-r-[11px] border-r-white -left-[10px]"
                       : "border-l-[11px] border-l-white -right-[10px]"
                   }`}
@@ -948,17 +951,17 @@ export default function Level2Page() {
                     initial={{
                       rotateY: 90,
                       opacity: 0,
-                      scaleX: [7, 8, 9].includes(tutorialStep) ? -1 : 1,
+                      scaleX: [7, 8, 9, 10].includes(tutorialStep) ? -1 : 1,
                     }}
                     animate={{
                       rotateY: 0,
                       opacity: 1,
-                      scaleX: [7, 8, 9].includes(tutorialStep) ? -1 : 1,
+                      scaleX: [7, 8, 9, 10].includes(tutorialStep) ? -1 : 1,
                     }}
                     exit={{
                       rotateY: -90,
                       opacity: 0,
-                      scaleX: [7, 8, 9].includes(tutorialStep) ? -1 : 1,
+                      scaleX: [7, 8, 9, 10].includes(tutorialStep) ? -1 : 1,
                     }}
                     transition={{ duration: 0.15 }}
                     src={`/character_mascot/${tutorialMascots[tutorialStep - 1]}`}
@@ -994,7 +997,7 @@ export default function Level2Page() {
                   onClick={() => setTutorialStep((prev) => prev + 1)}
                   disabled={
                     tutorialCooldown > 0 ||
-                    [3, 4, 5, 7, 8, 9].includes(tutorialStep)
+                    [3, 4, 5, 9, 10].includes(tutorialStep)
                   }
                   className="bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A] font-bold font-heading text-base md:text-lg uppercase tracking-widest border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:bg-[#1D2A3C] disabled:text-white/50 disabled:border-solid disabled:shadow-none h-10 px-4 md:px-6"
                   style={{
@@ -1002,7 +1005,7 @@ export default function Level2Page() {
                       "15px 225px 15px 255px / 225px 15px 255px 15px",
                   }}
                 >
-                  {[3, 4, 5, 7, 8, 9].includes(tutorialStep)
+                  {[3, 4, 5, 9, 10].includes(tutorialStep)
                     ? "Action Required"
                     : tutorialCooldown > 0
                       ? `Wait ${tutorialCooldown}s`
@@ -1010,7 +1013,7 @@ export default function Level2Page() {
                         ? "Got it!"
                         : "Next"}
                   {tutorialCooldown === 0 &&
-                    ![3, 4, 5, 7, 8, 9].includes(tutorialStep) && (
+                    ![3, 4, 5, 9, 10].includes(tutorialStep) && (
                       <ArrowRight
                         className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2"
                         strokeWidth={2.5}
@@ -1054,7 +1057,8 @@ export default function Level2Page() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {TACTIC_OPTIONS.map((tactic) => {
                           const isTutorialWrongTactic =
-                            tutorialStep === 9 &&
+                            currentRound.isTutorial &&
+                            tutorialStep === 10 &&
                             currentRound.clues[0] &&
                             tactic !== currentRound.clues[0].tactic;
 
@@ -1071,7 +1075,7 @@ export default function Level2Page() {
                                   : "cursor-pointer"
                               } ${
                                 currentRound.isTutorial &&
-                                tutorialStep === 9 &&
+                                tutorialStep === 10 &&
                                 !selectedTactic &&
                                 !isTutorialWrongTactic
                                   ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-[#FAFAFA] scale-[1.02]"
