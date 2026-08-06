@@ -22,10 +22,16 @@ interface GameState {
   preQuizScore: number | null;
   postQuizScore: number | null;
   completedLevels: number[];
+  cumulativeScore: number;
   setPreQuizScore: (score: number) => void;
   setPostQuizScore: (score: number) => void;
   completeLevel: (levelId: number) => void;
+  addCumulativeScore: (points: number) => void;
+  resetCumulativeScore: () => void;
   resetGame: () => void;
+  
+  playedCase001Rounds: number[];
+  markCase001RoundPlayed: (roundId: number) => void;
 
   // Level 1 specific state
   level1FoundArtifacts: string[];
@@ -168,6 +174,7 @@ export const useGameStore = create<GameState>((set) => ({
   preQuizScore: 0,
   postQuizScore: 0,
   completedLevels: [],
+  cumulativeScore: 0,
   setPreQuizScore: (score) => set({ preQuizScore: score }),
   setPostQuizScore: (score) => set({ postQuizScore: score }),
   completeLevel: (levelId) =>
@@ -176,11 +183,23 @@ export const useGameStore = create<GameState>((set) => ({
         ? state.completedLevels
         : [...state.completedLevels, levelId],
     })),
+  addCumulativeScore: (points) =>
+    set((state) => ({ cumulativeScore: state.cumulativeScore + points })),
+  resetCumulativeScore: () => set({ cumulativeScore: 0 }),
+  
+  playedCase001Rounds: [],
+  markCase001RoundPlayed: (roundId) => 
+    set((state) => {
+      if (state.playedCase001Rounds.includes(roundId)) return state;
+      return { playedCase001Rounds: [...state.playedCase001Rounds, roundId] };
+    }),
+    
   resetGame: () =>
     set({
       preQuizScore: null,
       postQuizScore: null,
       completedLevels: [],
+      cumulativeScore: 0,
       level1FoundArtifacts: [],
       level1Verdict: null,
       level1Confidence: null,
@@ -190,6 +209,7 @@ export const useGameStore = create<GameState>((set) => ({
       level3FoundArtifacts: [],
       level3Verdict: null,
       level3Confidence: null,
+      playedCase001Rounds: [],
       sessions: initialSessions(),
     }),
 
