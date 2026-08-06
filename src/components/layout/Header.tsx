@@ -11,6 +11,10 @@ export function Header() {
   const pathname = usePathname();
   const { preQuizScore, postQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict } = useGameStore();
 
+  if (pathname === "/") {
+    return null;
+  }
+
   const isPreQuizDone = preQuizScore !== null;
   const isC1Done = completedLevels.includes(1) || level1Verdict !== null;
   const isC2Done = completedLevels.includes(2) || level2Verdict !== null;
