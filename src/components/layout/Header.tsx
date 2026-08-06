@@ -9,7 +9,7 @@ import { useGameStore } from "@/store/gameStore";
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { preQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict } = useGameStore();
+  const { preQuizScore, postQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict } = useGameStore();
 
   const isPreQuizDone = preQuizScore !== null;
   const isC1Done = completedLevels.includes(1) || level1Verdict !== null;
@@ -64,7 +64,7 @@ export function Header() {
       label: "Post-Test",
       icon: CheckCircle2,
       unlocked: true,
-      done: false,
+      done: postQuizScore !== null,
     },
   ];
 
