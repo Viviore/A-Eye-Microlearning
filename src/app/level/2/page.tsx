@@ -459,7 +459,7 @@ export default function Level2Page() {
               >
                 {currentRound.isTutorial
                   ? "TUTORIAL"
-                  : `PHOTO ${currentRoundIndex + 1} / ${IMAGE_ROUNDS.length}`}
+                  : `PHOTO ${sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1} / ${sessionRounds.filter(r => !r.isTutorial).length}`}
               </span>
             </div>
           </div>
