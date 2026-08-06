@@ -74,8 +74,8 @@ export default function Home() {
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
-                className="absolute -bottom-4 left-0 w-full h-6 text-[#FFB800]" viewBox="0 0 200 20" preserveAspectRatio="none">
-                <motion.path d="M4,10 Q50,20 100,5 T196,10" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+                className="absolute -bottom-4 left-0 w-full h-6 text-[#FFB800] overflow-visible" viewBox="0 0 200 20" preserveAspectRatio="none">
+                <motion.path d="M4,10 Q50,15 100,10 T196,10" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
               </motion.svg>
             </motion.h1>
 
