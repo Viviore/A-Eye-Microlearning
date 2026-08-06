@@ -19,6 +19,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import case002Data from "@/data/case002.json";
 
 type VisualClue = {
   id: string;
@@ -43,133 +44,7 @@ type ImageRound = {
   clues: VisualClue[];
 };
 
-const IMAGE_ROUNDS: ImageRound[] = [
-  {
-    id: "round-1",
-    isTutorial: true,
-    imageSrc: "/case002/bribe.jpg",
-    cluesNeeded: 1,
-    postAuthorName: "Anonymous Tipster",
-    postHandle: "@TruthBomber • 1 hr ago",
-    postText:
-      "Caught red-handed! 📸 Can't believe they thought they could get away with this right before the elections. #Scandal",
-    clues: [
-      {
-        id: "v-1",
-        title: "Double Thumb",
-        x: 48,
-        y: 20,
-        width: 30,
-        height: 25,
-        explanation:
-          "AI often struggles with hands. Looking closely reveals two thumbs overlapping each other on the hand holding the money.",
-        tactic: "AI Image Generation",
-      },
-    ],
-  },
-  {
-    id: "round-2",
-    isTutorial: false,
-    imageSrc: "/photos/set1/car.png",
-    cluesNeeded: 2,
-    postAuthorName: "Street Spotter",
-    postHandle: "@AutoEnthusiast • 3 hrs ago",
-    postText:
-      "Just saw this crazy custom Cadillac rolling down the street! 🚗💨 The body kit on this thing is insane. Anyone know the owner? #CarSpotting #Cadillac",
-    clues: [
-      {
-        id: "v-5",
-        title: "Garbled License Plate",
-        x: 33,
-        y: 62.5,
-        width: 10,
-        height: 6.5,
-        explanation:
-          "AI often struggles with text and fonts. This license plate has a garbled character (3Λ SV 0984) and inconsistent font spacing.",
-        tactic: "AI Image Generation",
-      },
-      {
-        id: "v-6",
-        title: "Impossible Reflection",
-        x: 36,
-        y: 42,
-        width: 44,
-        height: 9,
-        explanation:
-          "The reflection in the rear windshield shows abstract distorted squiggles that completely fail to match the tree branches visible in the background.",
-        tactic: "AI Image Generation",
-      },
-    ],
-  },
-  {
-    id: "round-3",
-    isTutorial: false,
-    imageSrc: "/photos/set2/receipt.png",
-    cluesNeeded: 2,
-    postAuthorName: "Eagle Eye Investigates",
-    postHandle: "@EagleEye_Inv • 2 hrs ago",
-    postText:
-      "Exclusive leak: We've obtained the receipt from the shadow dinner. Look at the payment terminal code at the bottom—proof undeniable! 🧾👀 #ConspiracyConfirmed",
-    clues: [
-      {
-        id: "v-7",
-        title: "Mismatched Font",
-        x: 64,
-        y: 38,
-        width: 8,
-        height: 4,
-        explanation:
-          "The price for 'Dolor Sit' uses a completely different font weight and letter shape compared to the rest of the receipt, indicating it was edited in.",
-        tactic: "Photoshopped Composite",
-      },
-      {
-        id: "v-8",
-        title: "Unscannable Barcode",
-        x: 27,
-        y: 78,
-        width: 46,
-        height: 16,
-        explanation:
-          "The barcode has uneven lines, inconsistent spacing, and doesn't form a real scannable pattern, typical of AI generation or poor image manipulation.",
-        tactic: "AI Image Generation",
-      },
-    ],
-  },
-  {
-    id: "round-4",
-    isTutorial: false,
-    imageSrc: "/photos/set3/id.png",
-    cluesNeeded: 2,
-    postAuthorName: "Corporate Watchdog",
-    postHandle: "@CorpWhistle • 1 hr ago",
-    postText:
-      "Leaked ID badge of the new 'consultant' who just got full access to the server room. Does this guy even exist? 🧐 The picture looks completely fake. #SecurityBreach",
-    clues: [
-      {
-        id: "v-9",
-        title: "Hairline Glitch",
-        x: 57,
-        y: 16,
-        width: 9,
-        height: 9,
-        explanation:
-          "There is a very subtle, slightly jagged and smudged area along the top right hairline (viewer's right) where the hair texture looks digitally reconstructed rather than naturally grown.",
-        tactic: "AI Image Generation",
-      },
-      {
-        id: "v-10",
-        title: "Flesh-Embedded Tie",
-        x: 37,
-        y: 68,
-        width: 26,
-        height: 15,
-        explanation:
-          "In a bizarre and horrifying AI artifact, a piece of the tie knot appears to be literally embedded in and growing out of the skin folds of the man's neck. Additionally, the skin transitions into the shirt collar with an unnatural, pixelated seam. This happens when the AI fundamentally misunderstands the spatial boundaries and physical interaction between flesh, fabric, and clothing accessories.",
-        tactic: "AI Image Generation",
-      },
-    ],
-  },
-];
+const IMAGE_ROUNDS: ImageRound[] = case002Data as ImageRound[];
 
 const TACTIC_OPTIONS = [
   "AI Image Generation",
