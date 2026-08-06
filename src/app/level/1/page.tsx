@@ -307,7 +307,9 @@ export default function Level1Page() {
                 {currentRoundIndex === 0 ? "TUTORIAL" : `ROUND ${currentRoundIndex} / ${sessionRounds.length - 1}`}
               </span>
             </div>
-            <div id="tutorial-score" className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+            <div id="tutorial-score" className={`font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ${
+              currentRoundIndex === 0 && (tutorialStep === 7 || tutorialStep === 8) ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
+            }`}>
               <span>Score: </span>
               <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
                 {currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
@@ -337,8 +339,8 @@ export default function Level1Page() {
           {/* Mock Social Post */}
           <div 
             id="tutorial-post"
-            className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
-              currentRoundIndex === 0 && tutorialStep === 2 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : "z-10"
+            className={`p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
+              currentRoundIndex === 0 && tutorialStep === 2 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
             }`}
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
@@ -368,7 +370,7 @@ export default function Level1Page() {
                             ? "bg-[#FFB800] border-[3px] border-[#0F172A] font-bold shadow-[2px_2px_0px_0px_#0F172A] rotate-1" 
                               : "text-red-500 line-through decoration-red-500 decoration-2 opacity-80 -rotate-1")
                         : showTutorialPulse
-                          ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800]"
+                          ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800] z-[100005]"
                           : (currentRoundIndex === 0 && tutorialStep < 5)
                             ? ""
                             : "hover:bg-[#FFB800]/50 hover:border-b-[3px] hover:border-dashed hover:border-[#0F172A]"
@@ -410,7 +412,7 @@ export default function Level1Page() {
         </div>
         
         {/* Right Column: Evidence Board & Source Check */}
-        <div className="lg:col-span-5 flex flex-col gap-6 sticky top-28">
+        <div className={`lg:col-span-5 flex flex-col gap-6 ${currentRoundIndex === 0 ? "" : "sticky top-28"}`}>
           
           <div 
             className="bg-[#FFB800] p-5 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] relative"
@@ -426,7 +428,9 @@ export default function Level1Page() {
 
           <div 
             id="tutorial-evidence"
-            className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative"
+            className={`p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
+              currentRoundIndex === 0 && tutorialStep === 6 ? "relative z-[100005]" : ""
+            }`}
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-3xl font-black font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
@@ -440,7 +444,7 @@ export default function Level1Page() {
             </div>
             
             <div className={`min-h-[150px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[linear-gradient(45deg,#0F172A11_25%,transparent_25%,transparent_50%,#0F172A11_50%,#0F172A11_75%,transparent_75%,transparent)] bg-[length:16px_16px] transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 6 ? "z-40 bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : "z-10"
+              currentRoundIndex === 0 && tutorialStep === 6 ? "bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
             }`}
             >
               {foundClues.length === 0 ? (
@@ -471,9 +475,9 @@ export default function Level1Page() {
             
             <div 
               id="tutorial-source"
-              className={`mt-6 space-y-4 transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 3 ? "z-40" : "z-10"
-            }`}
+              className={`mt-6 space-y-4 transition-all duration-500 ${
+                currentRoundIndex === 0 && tutorialStep === 4 ? "relative z-[100005]" : ""
+              }`}
             >
               <Button
                 id="btn-source-check"
@@ -482,7 +486,7 @@ export default function Level1Page() {
                 className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[4px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed ${
                   sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
                 } ${
-                  currentRoundIndex === 0 && tutorialStep === 3 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
+                  currentRoundIndex === 0 && tutorialStep === 3 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
                 }`}
               >
                 <Search className="mr-2 w-5 h-5" strokeWidth={2.5} /> 
@@ -499,7 +503,7 @@ export default function Level1Page() {
                   >
                     <div 
                       className={`p-5 bg-white border-[4px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative ${
-                        currentRoundIndex === 0 && tutorialStep === 4 ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : "z-10"
+                        currentRoundIndex === 0 && tutorialStep === 4 ? "ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]" : ""
                       }`}
                     >
                       <div className="space-y-3 font-sans">
@@ -516,9 +520,8 @@ export default function Level1Page() {
             
             <div 
               id="tutorial-verdict"
-              className={`mt-6 pt-6 border-t-[4px] border-dashed border-[#0F172A] transition-all duration-500 relative ${
-              currentRoundIndex === 0 && tutorialStep === 9 ? "z-40" : "z-10"
-            }`}>
+              className="mt-6 pt-6 border-t-[4px] border-dashed border-[#0F172A] transition-all duration-500"
+            >
               <Button
                 id="tutorial-verdict-btn"
                 onClick={() => {
@@ -530,7 +533,7 @@ export default function Level1Page() {
                 }}
                 disabled={!canFileVerdict}
                 className={`w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all ${
-                  currentRoundIndex === 0 && tutorialStep === 9 ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
+                  currentRoundIndex === 0 && tutorialStep === 9 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]" : ""
                 }`}
               >
                 {canFileVerdict ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}

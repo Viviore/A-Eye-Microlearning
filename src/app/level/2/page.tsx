@@ -424,11 +424,10 @@ export default function Level2Page() {
 
           <div
             id="tutorial-post"
-            className={`p-6 md:p-8 mt-6 bg-white relative transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
-              currentRound.isTutorial &&
-              (tutorialStep === 3 || tutorialStep === 4)
-                ? "z-40 ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]"
-                : "z-10"
+            className={`p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
+              currentRound.isTutorial && tutorialStep === 2
+                ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]"
+                : ""
             }`}
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
@@ -473,7 +472,12 @@ export default function Level2Page() {
                   </div>
                 </div>
 
-                <div id="tutorial-timer" className="text-right">
+                <div 
+                  id="tutorial-timer" 
+                  className={`text-right transition-all duration-500 ${
+                    currentRound.isTutorial && tutorialStep === 7 ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02] bg-white p-2 border-[4px] border-[#0F172A]" : ""
+                  }`}
+                >
                   <div className="text-sm font-bold uppercase text-red-500">Timer</div>
                   <div className="text-3xl font-black font-heading">{timeLeft}s</div>
                 </div>
@@ -490,7 +494,11 @@ export default function Level2Page() {
               {/* Interactive Image Container */}
             <div
               id="tutorial-image-container"
-className={`relative w-full bg-white border-[4px] border-[#0F172A] overflow-hidden ${isHoveringImage ? "cursor-none" : "cursor-crosshair"}`}
+              className={`relative cursor-crosshair w-full aspect-auto transition-all ${
+                currentRound.isTutorial && (tutorialStep >= 3 && tutorialStep <= 5)
+                  ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white"
+                  : ""
+              } ${isHoveringImage ? "cursor-none" : "cursor-crosshair"}`}
               onMouseEnter={() => setIsHoveringImage(true)}
               onMouseLeave={() => {
                 setIsHoveringImage(false);
@@ -637,7 +645,7 @@ className={`relative w-full bg-white border-[4px] border-[#0F172A] overflow-hidd
         </div>
 
         {/* Right Column: Evidence Board */}
-        <div className="lg:col-span-5 flex flex-col gap-6 sticky top-28">
+        <div className={`lg:col-span-5 flex flex-col gap-6 ${currentRound.isTutorial ? "" : "sticky top-28"}`}>
           
           <div
             className="bg-[#FFB800] p-5 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative"
@@ -660,7 +668,9 @@ className={`relative w-full bg-white border-[4px] border-[#0F172A] overflow-hidd
 
           <div
             id="tutorial-evidence"
-className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative"
+            className={`p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${
+              currentRound.isTutorial && tutorialStep === 6 ? "relative z-[100005]" : ""
+            }`}
           >
 
             <div className="flex items-center justify-between mb-4">
@@ -677,10 +687,10 @@ className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0
             </div>
 
             <div
-              className={`min-h-[300px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[#FAFAFA] transition-all duration-500 relative ${
+              className={`min-h-[300px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[#FAFAFA] transition-all duration-500 ${
                 currentRound.isTutorial && tutorialStep === 6
-                  ? "z-40 bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]"
-                  : "z-10"
+                  ? "relative z-[100005] bg-white ring-4 ring-[#FFB800] ring-offset-4 ring-offset-white scale-[1.02]"
+                  : ""
               }`}
             >
               {foundClues.length === 0 && foundDecoys.length === 0 ? (
@@ -733,7 +743,7 @@ className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0
             </div>
 
             <div
-              className={`mt-6 transition-all duration-500 relative ${currentRound.isTutorial && tutorialStep === 7 && foundClues.length >= 1 ? "z-40" : "z-10"}`}
+              className={`mt-6 transition-all duration-500`}
             >
               <Button
                 id="tutorial-verdict-btn"
@@ -747,7 +757,7 @@ className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0
                   currentRound.isTutorial &&
                   tutorialStep === 7 &&
                   foundClues.length >= currentRound.cluesNeeded
-                    ? "z-10 ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]"
+                    ? "relative z-[100005] ring-4 ring-[#FFB800] ring-offset-2 ring-offset-white scale-[1.02]"
                     : ""
                 }`}
               >
