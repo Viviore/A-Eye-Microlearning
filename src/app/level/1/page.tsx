@@ -70,8 +70,10 @@ export default function Level1Page() {
     // Always start with tutorial
     const tutorial = TEXT_ROUNDS.find(r => r.id === 0);
     if (tutorial) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionRounds([tutorial, ...selected]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const currentRound = sessionRounds[currentRoundIndex] || TEXT_ROUNDS[currentRoundIndex];
@@ -81,7 +83,6 @@ export default function Level1Page() {
   const [foundDecoys, setFoundDecoys] = useState<TextSegment[]>([]);
   
   const [sourceCheckOpen, setSourceCheckOpen] = useState(false);
-  const [hasOpenedSourceCheck, setHasOpenedSourceCheck] = useState(false);
   
   const [showVerdictModal, setShowVerdictModal] = useState(false);
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
@@ -134,6 +135,7 @@ export default function Level1Page() {
   
   useEffect(() => {
     if (currentRoundIndex === 0 && tutorialStep <= tutorialDialogs.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTutorialCooldown(3);
       const interval = setInterval(() => {
         setTutorialCooldown(prev => {
@@ -150,8 +152,8 @@ export default function Level1Page() {
   
   useEffect(() => {
     if (currentRoundIndex === 0 && tutorialStep === 4) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSourceCheckOpen(true);
-      setHasOpenedSourceCheck(true);
     }
   }, [tutorialStep, currentRoundIndex]);
   
@@ -213,7 +215,6 @@ export default function Level1Page() {
   const handleOpenSourceCheck = () => {
     setSourceCheckOpen(!sourceCheckOpen);
     if (!sourceCheckOpen) {
-      setHasOpenedSourceCheck(true);
       if (currentRoundIndex === 0 && tutorialStep === 3) {
         setTutorialStep(4);
         setTutorialCooldown(2);
@@ -274,7 +275,6 @@ export default function Level1Page() {
       setFoundClues([]);
       setFoundDecoys([]);
       setSourceCheckOpen(false);
-      setHasOpenedSourceCheck(false);
       setShowVerdictModal(false);
       setSelectedTactic(null);
       setFeedback(null);
@@ -416,7 +416,7 @@ export default function Level1Page() {
                 className="mt-6 p-3 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] wobbly-border flex items-start gap-2 text-sm text-[#0F172A] -rotate-1 font-medium"
               >
                 <ShieldAlert className="w-5 h-5 text-[#0F172A] shrink-0 mt-0.5" />
-                <p><strong>Careful!</strong> You flagged something that looks suspicious but is actually true. That's a decoy. Focus on the core claims.</p>
+                <p><strong>Careful!</strong> You flagged something that looks suspicious but is actually true. That&apos;s a decoy. Focus on the core claims.</p>
               </motion.div>
             )}
           </div>
@@ -489,7 +489,7 @@ export default function Level1Page() {
                         <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
                       </div>
                       <p className="text-xs font-bold font-mono text-[#0F172A]/70 mb-1 uppercase tracking-widest">Found Clue:</p>
-                      <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">"{clue.text.substring(0, 50)}..."</p>
+                      <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">&quot;{clue.text.substring(0, 50)}...&quot;</p>
                       {clue.explanation && (
                         <p className="text-[15px] text-[#1D2A3C] font-sans font-bold mt-2 pt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
                           {clue.explanation}
@@ -538,7 +538,7 @@ export default function Level1Page() {
                     >
                       <div className="space-y-3 font-sans">
                         <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
-                        {currentRound.verifiedSources && currentRound.verifiedSources.map((source: any, i: number) => (
+                        {currentRound.verifiedSources && currentRound.verifiedSources.map((source: VerifiedSource, i: number) => (
                           <p key={i} className="text-[#0F172A]"><strong>{source.name}:</strong> {source.text}</p>
                         ))}
                       </div>
@@ -849,7 +849,7 @@ export default function Level1Page() {
                 Skip Training?
               </h2>
               <p className="text-lg font-bold font-sans text-[#0F172A]/80 mb-6 leading-relaxed">
-                Are you sure you want to skip the rest of the tutorial? You'll be thrown straight into Case 002.
+                Are you sure you want to skip the rest of the tutorial? You&apos;ll be thrown straight into Case 002.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-3">

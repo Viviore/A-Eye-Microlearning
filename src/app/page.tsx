@@ -106,6 +106,7 @@ export default function Home() {
               </div>
 
               <div className="absolute inset-0 flex items-center justify-center z-0 pt-8 pb-32">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src="/character_mascot/character_pose.png" 
                   alt="A-Eye Mascot" 

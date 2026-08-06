@@ -7,7 +7,7 @@ export interface Evidence {
   discovered: boolean;
   timestamp: number;
   explanation: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface InvestigationSession {

@@ -12,7 +12,7 @@ interface GameState {
       description: string;
       category: string;
       explanation: string;
-      metadata?: Record<string, any>;
+      metadata?: Record<string, unknown>;
     }
   ) => void;
   setSessionVerdict: (missionId: string, verdict: string) => void;
