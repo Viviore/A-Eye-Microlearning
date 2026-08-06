@@ -424,33 +424,6 @@ export default function Level2Page() {
                 <span>Case 002 // Photo Investigation</span>
               </div>
               
-              <div
-                className="px-4 py-1.5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-white flex items-center gap-2 relative"
-                style={{ borderRadius: "225px 15px 255px 15px / 15px 255px 15px 225px" }}
-              >
-                <span className="font-sans font-bold text-sm text-[#0F172A]/70 uppercase tracking-widest">
-                  Live Score:
-                </span>
-                <span className="font-heading font-black text-xl text-[#0F172A]">
-                  {cumulativeScore + roundScore}
-                </span>
-
-                <AnimatePresence>
-                  {deductions.map((d) => (
-                    <motion.div
-                      key={d.id}
-                      initial={{ opacity: 1, y: 0, scale: 0.8 }}
-                      animate={{ opacity: 0, y: -40, scale: 1.2 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                      className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-500 font-black font-heading text-2xl z-50 whitespace-nowrap pointer-events-none"
-                    >
-                      -{d.amount}
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-
               <span
                 className="px-3 py-1 font-mono text-xs font-bold uppercase border-[3px] shadow-[2px_2px_0px_0px_#0F172A] bg-[#0F172A]/10 text-[#0F172A] border-[#0F172A]"
                 style={{
@@ -461,6 +434,33 @@ export default function Level2Page() {
                   ? "TUTORIAL"
                   : `PHOTO ${sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1} / ${sessionRounds.filter(r => !r.isTutorial).length}`}
               </span>
+            </div>
+
+            <div
+              className="px-4 py-1.5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-white flex items-center gap-2 relative"
+              style={{ borderRadius: "225px 15px 255px 15px / 15px 255px 15px 225px" }}
+            >
+              <span className="font-sans font-bold text-sm text-[#0F172A]/70 uppercase tracking-widest">
+                Live Score:
+              </span>
+              <span className="font-heading font-black text-xl text-[#0F172A]">
+                {cumulativeScore + roundScore}
+              </span>
+
+              <AnimatePresence>
+                {deductions.map((d) => (
+                  <motion.div
+                    key={d.id}
+                    initial={{ opacity: 1, y: 0, scale: 0.8 }}
+                    animate={{ opacity: 0, y: -40, scale: 1.2 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-500 font-black font-heading text-2xl z-50 whitespace-nowrap pointer-events-none"
+                  >
+                    -{d.amount}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </div>
 
