@@ -135,7 +135,7 @@ export default function PostAssessmentQuizPage() {
                 {improvementDelta > 0 ? `+${improvementDelta}` : improvementDelta}%
               </div>
             </div>
-            <div className="text-xl font-sans font-bold text-[#0F172A]">
+            <div className={`text-xl font-sans font-bold ${didImprove ? 'text-[#F8FAFC]' : 'text-[#0F172A]'}`}>
               Media Literacy Improvement
             </div>
           </div>
