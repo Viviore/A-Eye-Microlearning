@@ -173,8 +173,8 @@ export const useGameStore = create<GameState>((set) => ({
       };
     }),
 
-  preQuizScore: 0,
-  postQuizScore: 0,
+  preQuizScore: null,
+  postQuizScore: null,
   completedLevels: [],
   cumulativeScore: 0,
   setPreQuizScore: (score) => set({ preQuizScore: score }),
