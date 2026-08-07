@@ -54,6 +54,7 @@ export default function Level1Page() {
   const [roundScore, setRoundScore] = useState<number>(100);
   
   const [sessionRounds, setSessionRounds] = useState<TextRound[]>([]);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     // Prevent reappearance of rounds played in previous sessions
@@ -73,11 +74,14 @@ export default function Level1Page() {
     if (tutorial) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionRounds([tutorial, ...selected]);
+    } else {
+      setSessionRounds(selected);
     }
+    setIsReady(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [playedCase001Rounds]);
 
-  const currentRound = sessionRounds[currentRoundIndex] || TEXT_ROUNDS[currentRoundIndex];
+  const currentRound = sessionRounds[currentRoundIndex];
   
   const [flaggedIds, setFlaggedIds] = useState<Set<string>>(new Set());
   const [foundClues, setFoundClues] = useState<TextSegment[]>([]);
@@ -88,16 +92,13 @@ export default function Level1Page() {
   const [showVerdictModal, setShowVerdictModal] = useState(false);
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
-  const [showScoreAnimation, setShowScoreAnimation] = useState(false);
-  const [scoreChange, setScoreChange] = useState(0);
+  const [scorePopups, setScorePopups] = useState<{ id: number; amount: number }[]>([]);
   
   const triggerScoreAnimation = (amount: number) => {
-    setShowScoreAnimation(false);
+    setScorePopups((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
     setTimeout(() => {
-      setScoreChange(amount);
-      setShowScoreAnimation(true);
-    }, 50);
-    setTimeout(() => setShowScoreAnimation(false), 2000);
+      setScorePopups((prev) => prev.slice(1));
+    }, 2000);
   };
   
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
@@ -108,7 +109,7 @@ export default function Level1Page() {
   const isDriverInitialized = useRef(false);
 
   useEffect(() => {
-    if (currentRoundIndex === 0 && !isDriverInitialized.current) {
+    if (currentRoundIndex === 0 && !isDriverInitialized.current && isReady) {
       isDriverInitialized.current = true;
       setIsTourActive(true);
       
@@ -134,13 +135,13 @@ export default function Level1Page() {
           }
         },
         onDestroyStarted: () => {
+          setIsTourActive(false);
+          setSourceCheckOpen(false);
           if (driverObjRef.current?.hasNextStep()) {
             driverObjRef.current.destroy();
           } else {
             driverObjRef.current.destroy();
           }
-          setIsTourActive(false);
-          setSourceCheckOpen(false);
         },
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
@@ -163,9 +164,9 @@ export default function Level1Page() {
         driverObjRef.current.destroy();
       }
     };
-  }, [currentRoundIndex]);
+  }, [currentRoundIndex, isReady]);
   
-  // Removed auto-scroll for tutorial as driver.js handles scrolling
+  if (!isReady || !currentRound) return null;
   
   const handleFlagSegment = (segment: TextSegment) => {
     if (currentRoundIndex === 0 && isTourActive) return;
@@ -296,21 +297,22 @@ export default function Level1Page() {
                 {currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
                 
                 <AnimatePresence>
-                  {showScoreAnimation && (
+                  {scorePopups.map((popup) => (
                     <motion.div 
+                      key={popup.id}
                       initial={{ opacity: 0, y: 0, scale: 0.8 }}
                       animate={{ opacity: 1, y: -30, scale: 1.2 }}
                       exit={{ opacity: 0, y: -45, scale: 0.8 }}
                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
                       className={`absolute left-1/2 -translate-x-1/2 top-0 pointer-events-none font-black whitespace-nowrap ${
-                        scoreChange > 0 
+                        popup.amount > 0 
                           ? "text-[#FFB800] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]" 
                           : "text-[#FF3366] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]"
                       }`}
                     >
-                      {scoreChange > 0 ? `+${scoreChange}` : scoreChange}
+                      {popup.amount > 0 ? `+${popup.amount}` : popup.amount}
                     </motion.div>
-                  )}
+                  ))}
                 </AnimatePresence>
               </span>
             </div>
@@ -324,17 +326,17 @@ export default function Level1Page() {
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div 
-                className="w-14 h-14 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center"
+                className="w-14 h-14 bg-[#2563EB] border-[4px] border-[#0F172A] flex items-center justify-center overflow-hidden"
               >
-                <User className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} />
+                <img src={`https://api.dicebear.com/10.x/critters/svg?seed=${encodeURIComponent(currentRound.postAuthor)}`} alt="avatar" className="w-full h-full object-cover" />
               </div>
               <div>
-                <h4 className="font-heading font-bold text-2xl leading-tight text-[#0F172A] tracking-wide">{currentRound.postAuthor}</h4>
-                <p className="text-[15px] font-sans font-bold text-[#0F172A]/60">{currentRound.postHandle} • {currentRound.postTime}</p>
+                <h4 className="font-mono font-bold text-2xl leading-tight text-[#0F172A] tracking-wide">{currentRound.postAuthor}</h4>
+                <p className="text-[15px] font-mono font-bold text-[#0F172A]/60">{currentRound.postHandle} • {currentRound.postTime}</p>
               </div>
             </div>
             
-            <div className="text-xl md:text-2xl font-sans leading-relaxed text-[#0F172A]">
+            <div className="text-xl md:text-2xl font-mono leading-relaxed text-[#0F172A]">
               {currentRound.segments.map((segment) => {
                 const isFlagged = flaggedIds.has(segment.id);
                 const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0;
@@ -346,24 +348,24 @@ export default function Level1Page() {
                     className={`cursor-pointer transition-all px-1.5 py-0.5 inline-block mb-2 relative mx-0.5 ${
                       isFlagged 
                         ? (segment.isClue 
-                            ? "bg-[#FFB800] border-[3px] border-[#0F172A] font-bold shadow-[2px_2px_0px_0px_#0F172A] rotate-1" 
+                            ? "bg-[#FFB800] border-[3px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] -translate-y-[2px] -translate-x-[2px]" 
                               : "text-red-500 line-through decoration-red-500 decoration-2 opacity-80 -rotate-1")
                         : showTutorialPulse
                           ? "bg-[#FFB800]/20 border-b-[3px] border-dashed border-[#FFB800]"
                           : "hover:bg-[#FFB800]/50 hover:border-b-[3px] hover:border-dashed hover:border-[#0F172A]"
                     }`}
-                    style={isFlagged && segment.isClue ? { borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" } : {}}
+                    style={{}}
                   >
                     {segment.text}
                     {showTutorialPulse && (
                       <motion.span 
                         animate={{ x: [0, 8, 0] }}
                         transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                        className="absolute top-1/2 -translate-y-1/2 -left-12 text-[#FFB800] pointer-events-none z-10"
+                        className="absolute top-1/2 -translate-y-1/2 -left-16 pointer-events-none z-10"
                       >
-                        <svg viewBox="0 0 40 40" className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5,25 Q20,10 35,20" />
-                          <polyline points="25,10 35,20 25,30" />
+                        <svg viewBox="0 0 100 100" className="w-12 h-12 overflow-visible">
+                          <polygon points="14,44 54,44 54,24 94,54 54,84 54,64 14,64" fill="#0F172A" />
+                          <polygon points="10,40 50,40 50,20 90,50 50,80 50,60 10,60" fill="#FFB800" stroke="#0F172A" strokeWidth="6" strokeLinejoin="miter" />
                         </svg>
                       </motion.span>
                     )}

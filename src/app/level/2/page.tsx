@@ -150,16 +150,6 @@ export default function Level2Page() {
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
   const [foundDecoys, setFoundDecoys] = useState<VisualClue[]>([]);
 
-  const applyDeduction = (amount: number) => {
-    if (!currentRound?.isTutorial) {
-      setRoundScore((prev) => prev - amount);
-      setDeductions((prev) => [...prev, { id: Date.now(), amount }]);
-      setTimeout(() => {
-        setDeductions((prev) => prev.slice(1));
-      }, 2000);
-    }
-  };
-
   const [isTourActive, setIsTourActive] = useState(true);
   const driverObjRef = useRef<any>(null);
   
@@ -175,6 +165,45 @@ export default function Level2Page() {
   });
 
   const isDriverInitialized = useRef(false);
+  const applyDeduction = (amount: number) => {
+    if (!currentRound?.isTutorial) {
+      setRoundScore((prev) => prev - amount);
+      setDeductions((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
+      setTimeout(() => {
+        setDeductions((prev) => prev.slice(1));
+      }, 2000);
+    }
+  };
+
+  const handleTimeout = () => {
+    applyDeduction(50);
+    setTimeLeft(0);
+    setFeedback({
+      isSuccess: false,
+      title: "TIME'S UP",
+      message: "You ran out of time. The AI generates new content fast, you must be faster."
+    });
+  };
+
+  useEffect(() => {
+    if (!isReady || !currentRound || isTourActive || showVerdictModal || feedback || currentRound.isTutorial) return;
+    
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleTimeout();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady, currentRound, isTourActive, showVerdictModal, feedback]);
+
+
 
   useEffect(() => {
     if (currentRound?.isTutorial && !isDriverInitialized.current) {
@@ -419,9 +448,9 @@ export default function Level2Page() {
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div
-                className="w-14 h-14 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center"
+                className="w-14 h-14 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center overflow-hidden"
               >
-                <User className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} />
+                <img src={`https://api.dicebear.com/10.x/critters/svg?seed=${encodeURIComponent(currentRound.postAuthorName)}`} alt="avatar" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h4 className="font-heading font-bold text-2xl leading-tight text-[#0F172A] tracking-wide">

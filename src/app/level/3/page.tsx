@@ -61,6 +61,7 @@ export default function Level3Page() {
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
   const isDriverInitialized = useRef(false);
+  const driverObjRef = useRef<any>(null);
   const [isTourActive, setIsTourActive] = useState(true);
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function Level3Page() {
   const applyDeduction = (amount: number) => {
     if (!currentRound?.isTutorial) {
       setRoundScore((prev) => Math.max(0, prev - amount));
-      setDeductions((prev) => [...prev, { id: Date.now(), amount }]);
+      setDeductions((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
       setTimeout(() => {
         setDeductions((prev) => prev.slice(1));
       }, 2000);
@@ -276,6 +277,23 @@ export default function Level3Page() {
         showProgress: true,
         allowClose: false,
         disableActiveInteraction: true,
+        onPopoverRender: (popover, { state }) => {
+          if (!driverObjRef.current?.hasNextStep()) return;
+
+          const navBtns = popover.wrapper.querySelector(".driver-popover-navigation-btns");
+          if (navBtns && !navBtns.querySelector(".driver-skip-btn")) {
+            const skipBtn = document.createElement("button");
+            skipBtn.innerText = "Skip";
+            skipBtn.className = "driver-popover-footer-btn driver-skip-btn";
+            skipBtn.setAttribute("aria-label", "Skip Tutorial");
+            skipBtn.addEventListener("click", () => {
+              if (driverObjRef.current) {
+                driverObjRef.current.destroy();
+              }
+            });
+            navBtns.insertBefore(skipBtn, navBtns.firstChild);
+          }
+        },
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome to Case 003! You need to figure out which video is AI generated." } },
           { element: '#tutorial-videos', popover: { title: 'A-Eye Agent', description: "Watch both panels carefully. They play simultaneously." } },
@@ -289,11 +307,22 @@ export default function Level3Page() {
               videoARef.current.play().catch(e => console.log(e));
               videoBRef.current.play().catch(e => console.log(e));
           }
-          d.destroy();
+          if (driverObjRef.current?.hasNextStep()) {
+            driverObjRef.current.destroy();
+          } else {
+            driverObjRef.current.destroy();
+          }
         }
       });
+      driverObjRef.current = d;
       d.drive();
     }
+    
+    return () => {
+      if (driverObjRef.current) {
+        driverObjRef.current.destroy();
+      }
+    };
   }, [currentRound?.isTutorial, isReady]);
 
   if (!isReady || !currentRound) return null;

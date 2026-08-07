@@ -1,3 +1,159 @@
+﻿# A-Eye — System & Game Architecture
+
+## Project Vision
+
+A-Eye is an interactive **Digital Investigation Simulator** built for the UNESCO Youth Hackathon.
+
+Unlike traditional AI detection games, A-Eye does not teach players to memorize AI-generated artifacts. Instead, it develops Media and Information Literacy (MIL) by training players to investigate digital content using observation, evidence, reasoning, and critical thinking.
+
+Players take on the role of a Digital Investigator responsible for reviewing viral online content before it spreads. Every investigation requires collecting evidence, evaluating credibility, and reaching a justified conclusion.
+
+The objective is simple:
+
+> **Don't guess whether something is AI.**
+>
+> **Investigate whether it can be trusted.**
+
+---
+
+# Design Principles
+
+Every feature in A-Eye follows these principles:
+
+1. **Evidence Over Guessing**: Every conclusion should be supported by collected evidence and database cross-referencing.
+2. **Learn Through Investigation**: Players learn by actively inspecting content rather than reading passive slides.
+3. **Reflection Before Progression**: Every completed investigation explains **why** the conclusion was correct through learning debriefs.
+4. **Consistent Gameplay**: Every case follows the same investigation process regardless of media type.
+5. **Accessibility & High Readability**: Clean, high-contrast, large-font interface designed for all age groups, non-tech users, and children.
+
+---
+
+# Core Gameplay Loop
+
+Every investigation follows the same structure:
+
+```
+Mission Brief
+    â†“
+Observe Content & Tool Analysis
+    â†“
+Collect Evidence & Discover Clues
+    â†“
+Rate Certainty Calibration (0-100%)
+    â†“
+Submit Investigation Report
+    â†“
+Learning Debrief & Context Card
+    â†“
+Next Case Progression
+```
+
+---
+
+# Sequential Route Locking & Screen Flow
+
+Linear route progression is guarded by `RouteGuard.tsx` and displayed on the persistent `Header.tsx`:
+
+```
+Home / How to Play
+    â†“
+Pre-Assessment Quiz (/quiz/pre) — [Unlocked Baseline]
+    â†“ ðŸ”’ (Requires Pre-Quiz completion)
+Case 001: Text Investigation (/level/1) — Redaction Pen & Fact Checker Drawer
+    â†“ ðŸ”’ (Requires Case 001 completion)
+Case 002: Photo Investigation (/level/2) — Forensic Lens & Evidence Tagging
+    â†“ ðŸ”’ (Requires Case 002 completion)
+Case 003: Video Investigation (/level/3) — 3-Round Temporal Video Forensics
+    â†“ ðŸ”’ (Requires Case 003 completion)
+Results Dashboard (/results) — MIL Competency Report
+    â†“ ðŸ”’ (Requires Case 003 completion)
+Post-Assessment Quiz (/quiz/post) — Growth & Impact Evaluation
+```
+
+---
+
+# Investigation Cases Implementation
+
+---
+
+## Case 001 — Text Investigation (Redaction Pen & Fact-Checker Drawer)
+
+### Learning Objective
+Cross-reference claims against database registries rather than guessing based on writing style alone.
+
+### Core Mechanics
+- **Redaction Pen Document View**: Players review a press release document and click claim sentences to inspect them.
+- **Source Inspection Drawer (Fact / Claim Checker Tool)**:
+  - Interactive drawer where players click **"Cross-Reference Claim against Registries"**.
+  - **Dr. Aris Thorne Claim**: Querying MIT Directory reveals *"âŒ Database Alert: No researcher named Dr. Aris Thorne exists in MIT's database."*
+  - **5,000 Lumens Claim**: Querying optics registry reveals *"âŒ Infrastructure Alert: Physical optics limits plant luminescence output to <0.8% of a standard LED bulb."*
+  - **NSF Statement Claim**: Verified as genuine research context (*"âœ… Source Verified: NSF Official Statement"*).
+
+---
+
+## Case 002 — Photo Investigation (Forensic Lens & 3-Choice Tagging)
+
+### Learning Objective
+Inspect visual geometry, text rendering, and lighting consistency using forensic heatmaps.
+
+### Core Mechanics & Inspection Console
+- **Interactive Inspection Canvas**: 4-way Pan & Zoom controls (`react-zoom-pan-pinch`), **Visual Contrast Boost**, and **Grid Overlay**.
+- **ðŸ” Forensic Lens Heatmap Mode**: Toggle button (`ðŸ” Forensic Lens`) renders subtle dashed heatmap outlines around structural distortion zones so players don't click blindly.
+- **3-Choice Evidence Tagging Modal**: Clicking a hotspot presents 3 classification options:
+  1. `A) Anatomic Anomaly` (Extra limbs, fused skin)
+  2. `B) Geometric Distortion` (Melted window bars, perspective fault)
+  3. `C) Text Garbling` (Unreadable pseudo-script signage)
+
+---
+
+## Case 003 — Video Investigation (3-Round Progressive Forensics)
+
+### Learning Objective
+Analyze temporal video streams across multi-stage difficulty levels.
+
+### 3-Round Progressive Difficulty System
+- **ðŸŸ¢ Round 1 (Easy Mode — `cut_real.mp4` vs `cut_ai.mp4`)**:
+  - *Set*: Paper Cut / Fine Edge Interaction (`public/videos/set1/`)
+  - *Timer*: 60s
+  - *Forensics*: Facial mask boundary edge bleed & paper smudging under normal playback.
+- **ðŸŸ¡ Round 2 (Medium Mode — `race_real.mp4` vs `race_ai.mp4`)**:
+  - *Set*: Fast Motion Race (`public/videos/set2/`)
+  - *Timer*: 45s
+  - *Forensics*: High-speed motion blur & frame-rate jittering evaluated under **0.5x Slow-Mo**.
+- **ðŸ”´ Round 3 (Hard Mode — `sushi_real.mp4` vs `sushi_ai.mp4`)**:
+  - *Set*: Sushi Preparation (`public/videos/set3/`)
+  - *Timer*: 30s
+  - *Forensics*: Pupil catchlight refraction mismatch & knife-rice micro-grain merging evaluated using **Visual Boost** & **Grid Overlay**.
+
+---
+
+# Technical Stack
+
+| Technology | Purpose |
+|------------|----------|
+| Next.js 16 (Turbopack) | Application framework and routing |
+| React 19 | Component architecture |
+| TypeScript | Strict type safety |
+| Tailwind CSS | High-contrast dark responsive styling |
+| Zustand | Global investigation & route state |
+| Framer Motion | Fluid card swiping and modal animations |
+| Lucide React | Modern iconography system |
+| react-zoom-pan-pinch | Image pan/zoom inspection tools |
+
+No backend or external API is required. All static assets, video sets (`public/videos/set1`, `set2`, `set3`), and case definitions build cleanly into static HTML/JS pages.
+
+---
+
+# Verification & Build Guarantee
+
+The application maintains a strict **0-Error Build Guarantee**:
+```powershell
+npm run build
+```
+- All 11 static routes (`/`, `/how-to-play`, `/quiz/pre`, `/level/1`, `/level/2`, `/level/3`, `/results`, `/quiz/post`) build cleanly without warnings or type errors.
+
+---
+
 # A-Eye — Game Rules
 
 Core mechanical rules for all 3 cases. See A-Eye_cases.md for full story/evidence content.
@@ -36,15 +192,15 @@ No Real/Fake choice, no evidence-select step — every scenario is always "Fake,
 
 - Each round starts at 100 points.
 - **Combined Live Score Display:** The UI merges your permanent banked score and your current round's 100 points into a single live number.
-- Decoy click → -10 per decoy click (applies immediately to live score with a floating animation).
-- Failed round (wrong tactic) → -25 per failed attempt (applies immediately with floating animation).
+- Decoy click â†’ -10 per decoy click (applies immediately to live score with a floating animation).
+- Failed round (wrong tactic) â†’ -25 per failed attempt (applies immediately with floating animation).
 - Completing a round permanently banks that round's remaining score into the case total.
 - **Deductions:** Can be endless. If `roundScore` + `cumulativeScore` hits 0 or below, it's Game Over.
 - If the cumulative total score across all cases hits 0 (not just a single round — see cumulative scoring note at top of doc), the entire A-Eye experience resets — all cases (001/002/003) reset.
 
 ### Failure / Retry Rules
 
-- Wrong tactic → partial reset (keep clues found, clear tactic pick, can keep exploring before resubmitting).
+- Wrong tactic â†’ partial reset (keep clues found, clear tactic pick, can keep exploring before resubmitting).
 - Retries allowed until score hits 0 (see Scoring).
 - Failing an attempt applies the -25 flat deduction from the Scoring section above (not a separate penalty).
 - Show a short message explaining the reset, e.g. "That's not quite how this was faked. Take another look and try again."
@@ -81,7 +237,7 @@ Correct tactic?
 - [x] Source Check panel (toggle open/closed)
 - [x] Evidence Board with short explanations per flagged clue
 - [x] Gate: Required clues flagged (1 or 2 depending on round) (Source Check is optional)
-- [x] Decoy click → in-context warning shown, applies -10 deduction immediately
+- [x] Decoy click â†’ in-context warning shown, applies -10 deduction immediately
 - [x] Verdict Flow is tactic-ID only — no Real/Fake step, no evidence-select step
 - [x] 4 tactic options per round, 1 correct + 3 distinct non-overlapping distractors
 - [x] Scoring: round starts at 100
@@ -90,8 +246,8 @@ Correct tactic?
 - [x] Scoring: failed round (wrong tactic) = -25 (with floating deduction animation)
 - [x] Scoring: endless deductions, no flooring at 0
 - [x] Scoring: completed round's score adds to running case total
-- [x] Cumulative total (across all 3 cases) hitting 0 → resets entire A-Eye experience
-- [x] Wrong tactic → partial reset (keep clues found, clear tactic pick), same round repeats
+- [x] Cumulative total (across all 3 cases) hitting 0 â†’ resets entire A-Eye experience
+- [x] Wrong tactic â†’ partial reset (keep clues found, clear tactic pick), same round repeats
 - [x] Retries allowed until score hits 0 (not truly unlimited)
 - [x] Retry message shown before round resets
 
@@ -116,7 +272,7 @@ Photo(s) are always AI-generated — no "Real" branch, since that would be a fak
 
 - Each round has a 60-second timer.
 - Timer applies to Case 002 only — Case 001 has no timer.
-- Timer runs out → counts as a failed attempt (same -50 deduction as a wrong tactic — see Scoring). Player retries with a random round, not the same round that timed out — this applies no matter how much progress was made (even partial, e.g. only 1 of 2 clues found). This is different from a normal wrong-tactic failure: if the player found all the clues but still picked the wrong tactic, the round stays the same (per Failure/Retry Rules below) — randomizing only applies specifically to a timeout, not to a wrong-tactic fail.
+- Timer runs out â†’ counts as a failed attempt (same -50 deduction as a wrong tactic — see Scoring). Player retries with a random round, not the same round that timed out — this applies no matter how much progress was made (even partial, e.g. only 1 of 2 clues found). This is different from a normal wrong-tactic failure: if the player found all the clues but still picked the wrong tactic, the round stays the same (per Failure/Retry Rules below) — randomizing only applies specifically to a timeout, not to a wrong-tactic fail.
 
 ### Gate to unlock "File Verdict"
 
@@ -135,17 +291,17 @@ No evidence-select step — same reasoning as Case 001. With no decoys in Case 0
 All penalties below stack cumulatively and apply in real time as they happen during a round — e.g. 2 misclicks + a failed attempt + using +30 Seconds all subtract from the same round's score together, not just the single worst one.
 
 - Each round starts at 100 points.
-- Misclick (any click that isn't a real clue) → -10 per misclick.
-- Failed round (wrong tactic) → -50 per failed attempt (double Case 001's -25), doesn't just discard the attempt.
-- Timer runs out → same -50 deduction as a failed round.
-- +30 Seconds tool used → -80 (stacks with fail/misclick penalties, per stacking rule above).
+- Misclick (any click that isn't a real clue) â†’ -10 per misclick.
+- Failed round (wrong tactic) â†’ -50 per failed attempt (double Case 001's -25), doesn't just discard the attempt.
+- Timer runs out â†’ same -50 deduction as a failed round.
+- +30 Seconds tool used â†’ -80 (stacks with fail/misclick penalties, per stacking rule above).
 - Completing a round adds that round's score to a running case total.
 - Each round's score is floored at 0 — a deduction cannot push a round's score negative, and negative balance does not carry over into the next round.
 - If the cumulative total score across all cases hits 0, the entire A-Eye experience resets (same rule as Case 001 — see cumulative scoring note at top of doc).
 
 ### Failure / Retry Rules
 
-- Wrong tactic → partial reset (keep clues found, clear tactic pick, can keep exploring before resubmitting).
+- Wrong tactic â†’ partial reset (keep clues found, clear tactic pick, can keep exploring before resubmitting).
 - Retries allowed until score hits 0 (see Scoring).
 - Failing an attempt applies the -50 flat deduction from the Scoring section above (not a separate penalty).
 - Show a short message explaining the reset, e.g. "That's not quite how this was faked. Take another look and try again."
@@ -180,8 +336,8 @@ Correct tactic?
 - [x] Evidence Board — no hover-hint, player must genuinely spot the mistake
 - [x] +30 Seconds tool — 1 per round max, costs -80, checks player has enough score before allowing use, button disabled if not, does not reveal any answer
 - [x] 60-second timer per round (Case 002 only, not Case 001)
-- [x] Timer runs out → -50 deduction (same as failed round) AND retries with a RANDOM round, not the same round — applies even with partial progress
-- [x] Wrong tactic (not timeout) → same round repeats, partial reset, does NOT randomize
+- [x] Timer runs out â†’ -50 deduction (same as failed round) AND retries with a RANDOM round, not the same round — applies even with partial progress
+- [x] Wrong tactic (not timeout) â†’ same round repeats, partial reset, does NOT randomize
 - [x] Gate: 2+ real clues flagged (no Source Check requirement, no tool-use requirement beyond Magnifier)
 - [x] No decoys in Case 002 — any non-clue click is a misclick, not a decoy
 - [x] Verdict Flow is tactic-ID only — no evidence-select step, no exceptions
@@ -194,7 +350,7 @@ Correct tactic?
 - [x] Scoring: +30 Seconds tool used = -80
 - [x] Scoring: endless deductions, no flooring at 0
 - [x] Scoring: completed round's score adds to running case total
-- [x] Cumulative total (across all 3 cases) hitting 0 → resets entire A-Eye experience
+- [x] Cumulative total (across all 3 cases) hitting 0 â†’ resets entire A-Eye experience
 
 ---
 
@@ -211,26 +367,26 @@ Correct tactic?
 
 ### Timer
 - 60-second timer per round, same as Case 002.
-- Timer runs out → counts as a failed attempt (same penalty as picking the wrong panel — see Scoring). Retries with a random round, not the same one, same no-repeat-within-session rule as Case 002 (never re-show a round/theme already seen this session, swap only pulls from the session's 5 selected rounds).
+- Timer runs out â†’ counts as a failed attempt (same penalty as picking the wrong panel — see Scoring). Retries with a random round, not the same one, same no-repeat-within-session rule as Case 002 (never re-show a round/theme already seen this session, swap only pulls from the session's 5 selected rounds).
 
 ### Verdict Flow
 1. Player clicks the panel they believe is AI-generated.
 2. "Are you sure?" confirmation before locking in.
 3. Once confirmed, no more replays.
-4. Player picks a "tell" reason from a short list (e.g. "blinking looked off," "mouth didn't match," "hands/fingers looked wrong," "lighting was inconsistent") — this is the anti-guessing check.
+4. Player picks a "tell" reason from a short list (e.g. "blinking looked off," "face warped when turning," "hands/fingers looked wrong," "lighting was inconsistent") — this is the anti-guessing check.
 5. Reveal screen shows "AI" / "Real" labels directly on each panel, regardless of whether the player was right.
 
 ### Scoring
 - Each round starts at 100 points.
-- Wrong panel picked → -50 (matches Case 002's failed-round penalty).
-- Correct panel + wrong tell → -20 (partial penalty — got the harder part right, the panel, but couldn't explain why).
-- Timeout → -50 (same as wrong panel).
-- +30 Seconds tool used → -80.
-- Extra replay beyond the 5 free ones → -10 per extra replay.
+- Wrong panel picked â†’ -50 (matches Case 002's failed-round penalty).
+- Correct panel + wrong tell â†’ -20 (partial penalty — got the harder part right, the panel, but couldn't explain why).
+- Timeout â†’ -50 (same as wrong panel).
+- +30 Seconds tool used â†’ -80.
+- Extra replay beyond the 5 free ones â†’ -10 per extra replay.
 - All penalties stack cumulatively in real time, same rule as Case 002.
 - Round score floored at 0, no negative carryover.
 - Completed round's score adds to the running case total.
-- Cumulative total (across all cases) hitting 0 → resets entire A-Eye experience, same as Case 001/002.
+- Cumulative total (across all cases) hitting 0 â†’ resets entire A-Eye experience, same as Case 001/002.
 
 ### Failure / Retry Rules
 - Both wrong panel AND timeout randomize to a new round (not the same round) — this is different from Case 001/002, where only timeout randomizes and a normal wrong-tactic failure stays on the same round. Confirmed for Case 003: any failure (wrong panel or timeout) triggers a random swap.
@@ -267,8 +423,8 @@ Next round or end of case (scoring per above)
 - [x] 2 video panels, play side-by-side simultaneously
 - [x] "Which one is AI?" prompt shown
 - [x] 60-second timer per round
-- [x] Timeout → -50 penalty AND random round swap, no repeats within session, swap only from session's 5
-- [x] Wrong panel (not timeout) → -50 penalty, ALSO randomizes to a new round (unlike Case 001/002, both failure types randomize in Case 003)
+- [x] Timeout â†’ -50 penalty AND random round swap, no repeats within session, swap only from session's 5
+- [x] Wrong panel (not timeout) â†’ -50 penalty, ALSO randomizes to a new round (unlike Case 001/002, both failure types randomize in Case 003)
 - [x] No max-attempts cap — unlimited retries until score hits 0
 - [x] Tell-selection step kept as anti-guessing check
 - [x] Reveal screen shows AI/Real labels on both panels after answer
@@ -281,4 +437,5 @@ Next round or end of case (scoring per above)
 - [x] Scoring: extra replay beyond 5 free ones = -10 each
 - [x] All penalties stack cumulatively
 - [x] Round score floored at 0, no negative carryover
-- [x] Cumulative total across all cases hitting 0 → resets entire A-Eye experience
+- [x] Cumulative total across all cases hitting 0 â†’ resets entire A-Eye experience
+
