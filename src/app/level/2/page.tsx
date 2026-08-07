@@ -186,7 +186,7 @@ export default function Level2Page() {
   };
 
   useEffect(() => {
-    if (!isReady || !currentRound || isTourActive || showVerdictModal || feedback || currentRound.isTutorial) return;
+    if (!isReady || !currentRound || currentRound.isTutorial || showVerdictModal || feedback) return;
     
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -201,7 +201,7 @@ export default function Level2Page() {
     
     return () => clearInterval(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, currentRound, isTourActive, showVerdictModal, feedback]);
+  }, [isReady, currentRound, showVerdictModal, feedback]);
 
 
 
@@ -227,16 +227,24 @@ export default function Level2Page() {
               if (driverObjRef.current) {
                 driverObjRef.current.destroy();
               }
+              // Auto-advance past the tutorial round
+              setCurrentRoundIndex(1);
+              setFlaggedIds(new Set());
+              setFoundClues([]);
+              setFoundDecoys([]);
+              setFeedback(null);
+              setSelectedEvidenceId(null);
+              setSelectedTactic(null);
+              setShowVerdictModal(false);
+              setRoundScore(100);
+              setTimeLeft(60);
+              setToolUsed(false);
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
         },
         onDestroyStarted: () => {
-          if (driverObjRef.current?.hasNextStep()) {
-            driverObjRef.current.destroy();
-          } else {
-            driverObjRef.current.destroy();
-          }
+          driverObjRef.current?.destroy();
           setIsTourActive(false);
         },
         steps: [

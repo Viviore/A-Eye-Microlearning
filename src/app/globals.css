@@ -165,7 +165,6 @@
 }
 
 /* Driver.js Neo-Brutalist Overrides */
-@import "driver.js/dist/driver.css";
 
 @layer base {
   .driver-popover {
