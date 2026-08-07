@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Space_Mono } from "next/font/google";
+import { Space_Grotesk, Space_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { RouteGuard } from "@/components/game/RouteGuard";
@@ -10,8 +10,13 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
-const spaceMono = Space_Mono({
+const inter = Inter({
   variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const spaceMono = Space_Mono({
+  variable: "--font-mono",
   weight: ["400", "700"],
   subsets: ["latin"],
 });
@@ -29,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans">
         <Header />

@@ -36,20 +36,20 @@ export function LandingNavbar() {
         {/* Brand Mark */}
         <Link href="#hero" onClick={(e) => scrollToSection(e, "#hero")} className="flex items-center gap-3 group">
           <div 
-            className="p-2 bg-[#FFB800] border-[4px] border-[#0F172A] text-white shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105"
+            className="border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105 overflow-hidden flex items-center justify-center bg-[#FFB800]"
           >
-            <Shield className="w-6 h-6" />
+            <img src="/logo.png" alt="A-Eye Logo" className="w-10 h-10 object-cover" />
           </div>
           <div className="flex flex-col">
-            <span className="font-heading font-bold tracking-wide text-[#0F172A] uppercase text-2xl md:text-3xl group-hover:text-[#FFB800] transition-colors leading-none">
-              A-EYE
+            <span className="font-heading font-bold tracking-wide text-[#0F172A] uppercase text-xl sm:text-2xl md:text-3xl group-hover:text-[#FFB800] transition-colors leading-none whitespace-nowrap">
+              A-EYE <span className="text-[#0F172A]/60">| MIL SIMULATOR</span>
             </span>
           </div>
         </Link>
 
         {/* Mobile Hamburger Button */}
         <button 
-          className="md:hidden p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors"
+          className="md:hidden p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors cursor-pointer"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
