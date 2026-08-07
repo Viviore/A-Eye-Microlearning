@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import "driver.js/dist/driver.css";
 import { Header } from "@/components/layout/Header";
 import { RouteGuard } from "@/components/game/RouteGuard";
 

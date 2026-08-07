@@ -132,6 +132,14 @@ export default function Level1Page() {
               if (driverObjRef.current) {
                 driverObjRef.current.destroy();
               }
+              // Auto-advance past the tutorial round
+              setCurrentRoundIndex(1);
+              setRoundScore(100);
+              setFlaggedIds(new Set());
+              setFoundClues([]);
+              setFoundDecoys([]);
+              setSourceCheckOpen(false);
+              setFeedback(null);
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
@@ -139,11 +147,7 @@ export default function Level1Page() {
         onDestroyStarted: () => {
           setIsTourActive(false);
           setSourceCheckOpen(false);
-          if (driverObjRef.current?.hasNextStep()) {
-            driverObjRef.current.destroy();
-          } else {
-            driverObjRef.current.destroy();
-          }
+          driverObjRef.current?.destroy();
         },
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
@@ -290,7 +294,7 @@ export default function Level1Page() {
               >
                 {currentRoundIndex === 0
                   ? "TUTORIAL"
-                  : `POST ${currentRoundIndex} / ${TEXT_ROUNDS.length - 1}`}
+                  : `POST ${currentRoundIndex} / ${sessionRounds.length - 1}`}
               </span>
             </div>
             <div id="tutorial-score" className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
