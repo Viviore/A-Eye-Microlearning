@@ -261,24 +261,24 @@ Next round or end of case (scoring per above)
 ```
 
 ### Implementation Checklist
-- [ ] 10 total video pairs in pool, 5 shown per session
-- [ ] 5 free grace replays per round, resets to 5 fresh on every new round (including after a random swap), extra replays beyond 5 = -10 each
-- [ ] "Are you sure?" confirmation kept before locking in a panel pick
-- [ ] 2 video panels, play side-by-side simultaneously
-- [ ] "Which one is AI?" prompt shown
-- [ ] 60-second timer per round
-- [ ] Timeout → -50 penalty AND random round swap, no repeats within session, swap only from session's 5
-- [ ] Wrong panel (not timeout) → -50 penalty, ALSO randomizes to a new round (unlike Case 001/002, both failure types randomize in Case 003)
-- [ ] No max-attempts cap — unlimited retries until score hits 0
-- [ ] Tell-selection step kept as anti-guessing check
-- [ ] Reveal screen shows AI/Real labels on both panels after answer
-- [ ] +30 Seconds tool: adds 30 sec to the round timer, -80 cost, 1 per round, requires sufficient score
-- [ ] Scoring: round starts at 100
-- [ ] Scoring: wrong panel = -50
-- [ ] Scoring: correct panel + wrong tell = -20
-- [ ] Scoring: timeout = -50
-- [ ] Scoring: +30 Seconds = -80
-- [ ] Scoring: extra replay beyond 5 free ones = -10 each
-- [ ] All penalties stack cumulatively
-- [ ] Round score floored at 0, no negative carryover
-- [ ] Cumulative total across all cases hitting 0 → resets entire A-Eye experience
+- [x] 10 total video pairs in pool, 5 shown per session
+- [x] 5 free grace replays per round, resets to 5 fresh on every new round (including after a random swap), extra replays beyond 5 = -10 each
+- [x] "Are you sure?" confirmation kept before locking in a panel pick
+- [x] 2 video panels, play side-by-side simultaneously
+- [x] "Which one is AI?" prompt shown
+- [x] 60-second timer per round
+- [x] Timeout → -50 penalty AND random round swap, no repeats within session, swap only from session's 5
+- [x] Wrong panel (not timeout) → -50 penalty, ALSO randomizes to a new round (unlike Case 001/002, both failure types randomize in Case 003)
+- [x] No max-attempts cap — unlimited retries until score hits 0
+- [x] Tell-selection step kept as anti-guessing check
+- [x] Reveal screen shows AI/Real labels on both panels after answer
+- [x] +30 Seconds tool: adds 30 sec to the round timer, -80 cost, 1 per round, requires sufficient score
+- [x] Scoring: round starts at 100
+- [x] Scoring: wrong panel = -50
+- [x] Scoring: correct panel + wrong tell = -20
+- [x] Scoring: timeout = -50
+- [x] Scoring: +30 Seconds = -80
+- [x] Scoring: extra replay beyond 5 free ones = -10 each
+- [x] All penalties stack cumulatively
+- [x] Round score floored at 0, no negative carryover
+- [x] Cumulative total across all cases hitting 0 → resets entire A-Eye experience

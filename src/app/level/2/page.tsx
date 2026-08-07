@@ -18,6 +18,7 @@ import {
   ShieldAlert,
   Lightbulb,
   Plus,
+  FileCheck,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import case002Data from "@/data/case002.json";
@@ -160,7 +161,7 @@ export default function Level2Page() {
   };
 
   const [isTourActive, setIsTourActive] = useState(true);
-  const driverObjRef = useRef<unknown>(null);
+  const driverObjRef = useRef<any>(null);
   
   const [isHoveringImage, setIsHoveringImage] = useState(false);
   const [magnifier, setMagnifier] = useState({

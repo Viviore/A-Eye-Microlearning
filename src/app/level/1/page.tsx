@@ -103,7 +103,7 @@ export default function Level1Page() {
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
   
   const [isTourActive, setIsTourActive] = useState(true);
-  const driverObjRef = useRef<unknown>(null);
+  const driverObjRef = useRef<any>(null);
 
   const isDriverInitialized = useRef(false);
 

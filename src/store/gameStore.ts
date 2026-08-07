@@ -34,6 +34,8 @@ interface GameState {
   markCase001RoundPlayed: (roundId: number) => void;
   playedCase002Rounds: string[];
   markCase002RoundPlayed: (roundId: string) => void;
+  playedCase003Rounds: string[];
+  markCase003RoundPlayed: (roundId: string) => void;
 
   // Level 1 specific state
   level1FoundArtifacts: string[];
@@ -203,6 +205,13 @@ export const useGameStore = create<GameState>((set) => ({
       return { playedCase002Rounds: [...state.playedCase002Rounds, roundId] };
     }),
     
+  playedCase003Rounds: [],
+  markCase003RoundPlayed: (roundId) => 
+    set((state) => {
+      if (state.playedCase003Rounds.includes(roundId)) return state;
+      return { playedCase003Rounds: [...state.playedCase003Rounds, roundId] };
+    }),
+    
   resetGame: () =>
     set({
       preQuizScore: null,
@@ -220,6 +229,7 @@ export const useGameStore = create<GameState>((set) => ({
       level3Confidence: null,
       playedCase001Rounds: [],
       playedCase002Rounds: [],
+      playedCase003Rounds: [],
       sessions: initialSessions(),
     }),
 

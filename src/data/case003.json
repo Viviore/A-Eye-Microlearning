@@ -1,0 +1,92 @@
+[
+  {
+    "id": "v-round-1",
+    "isTutorial": true,
+    "videoA": "/videos/tutorial/cut_real.mp4",
+    "videoB": "/videos/tutorial/cut_ai.mp4",
+    "correctPanel": "B",
+    "tells": ["Unnatural blinking pattern"],
+    "distractorTells": ["Face warped when turning", "Lighting was inconsistent", "Hands/fingers looked wrong"]
+  },
+  {
+    "id": "v-round-2",
+    "isTutorial": false,
+    "videoA": "/videos/set1/race_ai.mp4",
+    "videoB": "/videos/set1/race_real.mp4",
+    "correctPanel": "A",
+    "tells": ["Lighting was inconsistent"],
+    "distractorTells": ["Unnatural blinking pattern", "Hands/fingers looked wrong", "Background objects morphing"]
+  },
+  {
+    "id": "v-round-3",
+    "isTutorial": false,
+    "videoA": "/videos/set2/sushi_real.mp4",
+    "videoB": "/videos/set2/sushi_ai.mp4",
+    "correctPanel": "B",
+    "tells": ["Face warped when turning"],
+    "distractorTells": ["Unnatural blinking pattern", "Hands/fingers looked wrong", "Lighting was inconsistent"]
+  },
+  {
+    "id": "v-round-4",
+    "isTutorial": false,
+    "videoA": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "videoB": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "correctPanel": "A",
+    "tells": ["Hands/fingers looked wrong"],
+    "distractorTells": ["Face warped when turning", "Unnatural blinking pattern", "Lighting was inconsistent"]
+  },
+  {
+    "id": "v-round-5",
+    "isTutorial": false,
+    "videoA": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "videoB": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "correctPanel": "A",
+    "tells": ["Background objects morphing"],
+    "distractorTells": ["Lighting was inconsistent", "Unnatural blinking pattern", "Hands/fingers looked wrong"]
+  },
+  {
+    "id": "v-round-6",
+    "isTutorial": false,
+    "videoA": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "videoB": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "correctPanel": "B",
+    "tells": ["Unnatural blinking pattern"],
+    "distractorTells": ["Lighting was inconsistent", "Face warped when turning", "Background objects morphing"]
+  },
+  {
+    "id": "v-round-7",
+    "isTutorial": false,
+    "videoA": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "videoB": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "correctPanel": "A",
+    "tells": ["Face warped when turning"],
+    "distractorTells": ["Hands/fingers looked wrong", "Background objects morphing", "Unnatural blinking pattern"]
+  },
+  {
+    "id": "v-round-8",
+    "isTutorial": false,
+    "videoA": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "videoB": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "correctPanel": "B",
+    "tells": ["Lighting was inconsistent"],
+    "distractorTells": ["Hands/fingers looked wrong", "Unnatural blinking pattern", "Background objects morphing"]
+  },
+  {
+    "id": "v-round-9",
+    "isTutorial": false,
+    "videoA": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "videoB": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "correctPanel": "A",
+    "tells": ["Hands/fingers looked wrong"],
+    "distractorTells": ["Face warped when turning", "Lighting was inconsistent", "Background objects morphing"]
+  },
+  {
+    "id": "v-round-10",
+    "isTutorial": false,
+    "videoA": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "videoB": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "correctPanel": "B",
+    "tells": ["Background objects morphing"],
+    "distractorTells": ["Lighting was inconsistent", "Hands/fingers looked wrong", "Face warped when turning"]
+  }
+]
