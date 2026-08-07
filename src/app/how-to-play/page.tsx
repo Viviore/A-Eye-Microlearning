@@ -37,13 +37,6 @@ const steps = [
 export default function HowToPlay() {
   return (
     <main className="min-h-[100dvh] relative overflow-hidden font-sans py-24">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-20 right-10 opacity-30 pointer-events-none rotate-12">
-        <svg width="150" height="150" viewBox="0 0 100 100" fill="none">
-          <path d="M10,10 L90,10 L10,30 L90,30" stroke="#0F172A" strokeWidth="2" strokeDasharray="5,5" />
-        </svg>
-      </div>
-
       <div className="max-w-[1400px] mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
           <div className="lg:col-span-8 flex flex-col items-start">
@@ -68,7 +61,6 @@ export default function HowToPlay() {
               Investigation <br />
               <span className="text-[#FFB800] relative inline-block">
                 Protocol
-                <div className="absolute -bottom-2 left-0 w-full h-[6px] bg-[#FFB800] border-2 border-[#0F172A]" />
               </span>
             </motion.h1>
             
@@ -126,7 +118,7 @@ export default function HowToPlay() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="flex justify-start relative mt-12"
+          className="flex justify-start items-center relative mt-12 gap-8"
         >
           <Link href="/quiz/pre" passHref>
             <Button 
@@ -138,13 +130,7 @@ export default function HowToPlay() {
             </Button>
           </Link>
 
-          {/* Squiggly arrow pointing to CTA */}
-          <div className="absolute left-64 top-4 hidden md:block rotate-[15deg] text-[#0F172A]">
-             <svg width="80" height="40" viewBox="0 0 100 50">
-               <path d="M10,25 Q30,10 50,25 T90,25" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-               <path d="M75,10 L90,25 L70,35" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-             </svg>
-          </div>
+
         </motion.div>
       </div>
     </main>

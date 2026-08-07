@@ -136,7 +136,7 @@ export default function Home() {
         <div className="max-w-[1400px] mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
             
-            <div className="flex flex-col">
+            <div className="flex flex-col lg:order-2">
               <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-[#0F172A] text-white font-heading text-lg font-bold border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#FFB800] rounded-none uppercase w-fit">
                 <Search className="w-5 h-5 text-[#FFB800]" />
                 <span>Terminology</span>
@@ -159,7 +159,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="relative mt-8 lg:mt-0">
+            <div className="relative mt-8 lg:mt-0 lg:order-1">
               <Card className="bg-[#FFB800] p-8 md:p-12 relative flex flex-col hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] transition-all shadow-[8px_8px_0px_0px_#0F172A] border-[4px] border-[#0F172A] rounded-none">
                 <div className="absolute top-0 left-0 w-full border-b-[4px] border-[#0F172A] bg-white p-2 flex gap-2">
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>

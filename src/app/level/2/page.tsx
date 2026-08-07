@@ -531,7 +531,7 @@ export default function Level2Page() {
                   key={clue.id}
                   className={`absolute transition-all z-20 ${
                     flaggedIds.has(clue.id)
-                      ? "border-[4px] border-[#0F172A] bg-[#FFB800]/50"
+                      ? "bg-[#FFB800]/50"
                       : "bg-transparent"
                   }`}
                   style={{
@@ -547,26 +547,13 @@ export default function Level2Page() {
                 />
               ))}
 
-              {/* Magnifier Shadow (Inside overflow-hidden to clip) */}
-              {magnifier.show && (
-                  <div
-                    className="absolute pointer-events-none z-30 rounded-full"
-                    style={{
-                      width: "250px",
-                      height: "250px",
-                      left: `${magnifier.x}px`,
-                      top: `${magnifier.y}px`,
-                      transform: "translate(-50%, -50%)",
-                      boxShadow: "0 0 0 2000px rgba(0,0,0,0.6)",
-                    }}
-                  />
-                )}
+
             </div>
 
             {/* Magnifier Lens (Outside overflow-hidden to float above) */}
             {magnifier.show && (
                 <div
-                  className="absolute pointer-events-none z-40 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] bg-white overflow-hidden"
+                  className="absolute pointer-events-none z-40 border-[4px] border-[#0F172A] bg-white overflow-hidden rounded-full"
                     style={{
                       width: "250px",
                       height: "250px",
@@ -600,7 +587,7 @@ export default function Level2Page() {
                           key={clue.id}
                           className={`absolute transition-all z-10 ${
                             flaggedIds.has(clue.id)
-                              ? "border-[8px] border-[#0F172A] bg-[#FFB800]/50"
+                              ? "bg-[#FFB800]/50"
                               : ""
                           }`}
                           style={{
@@ -612,7 +599,6 @@ export default function Level2Page() {
                         />
                       ))}
                     </div>
-                    <div className="absolute inset-0 ring-inset ring-2 ring-black/20 rounded-full z-20" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white/50 z-20">
                       
                       <svg
