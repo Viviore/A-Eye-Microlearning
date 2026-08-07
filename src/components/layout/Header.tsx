@@ -20,14 +20,7 @@ export function Header() {
   const isC2Done = completedLevels.includes(2) || level2Verdict !== null;
   const isC3Done = completedLevels.includes(3) || level3Verdict !== null;
 
-  const navItems = [
-    {
-      path: "/",
-      label: "Home",
-      icon: Home,
-      unlocked: true,
-      done: false,
-    },
+    const navItems = [
     {
       path: "/quiz/pre",
       label: "Pre-Test",
@@ -74,10 +67,10 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b-[4px] border-[#0F172A] bg-white">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-3 xl:h-20 xl:py-0 flex items-center justify-between gap-4 md:gap-8 relative">
+      <div className="max-w-[1600px] w-full mx-auto px-4 md:px-8 py-3 xl:h-20 xl:py-0 flex items-center gap-4 md:gap-8 relative">
         
         {/* Brand Mark */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-3 group shrink-0">
           <div 
             className="border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] transition-transform group-hover:-rotate-2 group-hover:scale-105 overflow-hidden flex items-center justify-center bg-[#FFB800]"
           >
@@ -92,56 +85,89 @@ export function Header() {
 
         {/* Mobile Hamburger Button */}
         <button 
-          className="xl:hidden p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors cursor-pointer"
+          className="xl:hidden ml-auto p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors cursor-pointer"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        {/* Navigation */}
-        <nav className={`${
+        {/* Navigation & Actions Wrapper */}
+        <div className={`${
           isMobileMenuOpen 
-            ? "flex absolute top-full left-0 right-0 bg-white border-b-[4px] border-[#0F172A] p-4 shadow-xl z-50 flex-col items-stretch" 
+            ? "flex absolute top-full left-0 right-0 bg-white border-b-[4px] border-[#0F172A] p-4 shadow-xl z-50 flex-col items-stretch gap-6" 
             : "hidden"
-        } xl:flex xl:static xl:flex-row xl:bg-transparent xl:border-none xl:p-0 xl:shadow-none xl:items-center gap-3 xl:gap-2 2xl:gap-4`}>
-          {navItems.map((item) => {
+        } xl:flex xl:flex-1 xl:static xl:flex-row xl:bg-transparent xl:border-none xl:p-0 xl:shadow-none xl:items-center xl:justify-end xl:gap-8`}>
+          
+          {/* Stepper (Side-by-side on Desktop) */}
+          <nav className="flex flex-col xl:flex-row items-stretch xl:items-center gap-3 xl:gap-0">
+            {navItems.map((item, index) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
             const isUnlocked = item.unlocked;
 
             if (isUnlocked) {
               return (
-                <Link
-                  key={item.path}
-                  href={item.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center justify-center xl:justify-start gap-2 px-4 xl:px-2 2xl:px-4 py-3 xl:py-2 text-sm font-sans font-bold transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
-                    isActive
-                      ? "bg-[#FFB800] text-[#0F172A]"
-                      : "bg-white text-[#0F172A] hover:bg-[#FFB800] hover:text-white"
-                  }`}
-                >
-                  <Icon className={`w-5 h-5 xl:w-4 xl:h-4 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`} />
-                  <span className="text-base xl:text-sm">{item.label}</span>
-                  {item.done && (
-                    <span className={`font-bold ml-1 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`}>✓</span>
+                <div key={item.path} className="flex flex-col xl:flex-row items-stretch xl:items-center gap-3 xl:gap-0">
+                  <Link
+                    href={item.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center justify-center gap-2 transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
+                      isActive
+                        ? "bg-[#FFB800] text-[#0F172A] px-4 py-3 xl:py-2"
+                        : "bg-white text-[#0F172A] hover:bg-[#FFB800] hover:text-white px-4 py-3 xl:p-2 xl:w-11 xl:h-11"
+                    }`}
+                    title={!isActive ? item.label : undefined}
+                  >
+                    {item.done && !isActive ? (
+                      <CheckCircle2 className="w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A] group-hover:text-white" />
+                    ) : (
+                      <Icon className={`w-5 h-5 xl:w-5 xl:h-5 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`} />
+                    )}
+                    
+                    <span className={`text-base xl:text-sm font-sans font-bold ${isActive ? "block" : "block xl:hidden"}`}>
+                      {item.label}
+                    </span>
+                  </Link>
+
+                  {/* Connector Line (Desktop Only) */}
+                  {index < navItems.length - 1 && (
+                    <div className="hidden xl:block w-3 2xl:w-6 h-[4px] bg-[#0F172A] relative z-0" />
                   )}
-                </Link>
+                </div>
               );
             }
 
             return (
-              <div
-                key={item.path}
-                className="flex items-center justify-center xl:justify-start gap-2 px-4 xl:px-2 2xl:px-4 py-3 xl:py-2 text-sm font-sans font-bold text-[#0F172A]/50 bg-gray-100 border-[4px] border-dashed border-[#0F172A]/50 cursor-not-allowed whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                title={`Locked: Complete previous step first`}
-              >
-                <Lock className="w-5 h-5 xl:w-4 xl:h-4 text-[#0F172A]/50" />
-                <span className="text-base xl:text-sm">{item.label}</span>
+              <div key={item.path} className="flex flex-col xl:flex-row items-stretch xl:items-center gap-3 xl:gap-0">
+                <div
+                  className="flex items-center justify-center gap-2 px-4 py-3 xl:p-2 xl:w-11 xl:h-11 bg-gray-100 border-[4px] border-dashed border-[#0F172A]/50 cursor-not-allowed whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
+                  title={`Locked: Complete previous step first`}
+                >
+                  <Lock className="w-5 h-5 text-[#0F172A]/50" />
+                  <span className="text-base xl:text-sm font-sans font-bold text-[#0F172A]/50 block xl:hidden">
+                    {item.label}
+                  </span>
+                </div>
+                
+                {index < navItems.length - 1 && (
+                  <div className="hidden xl:block w-3 2xl:w-6 h-[4px] border-b-[4px] border-dashed border-[#0F172A]/30 relative z-0" />
+                )}
               </div>
             );
           })}
-        </nav>
+          </nav>
+          
+          {/* Separate Return to Home Button */}
+          <Link
+            href="/"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="flex items-center justify-center gap-2 transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] bg-white text-[#0F172A] hover:bg-gray-100 px-4 py-3 xl:py-2 xl:shrink-0"
+          >
+            <Home className="w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A]" />
+            <span className="text-base xl:text-sm font-sans font-bold block xl:hidden 2xl:block">Return to Home</span>
+          </Link>
+
+        </div>
 
       </div>
     </header>
