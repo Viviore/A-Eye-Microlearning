@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { driver } from "driver.js";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,7 +32,8 @@ export default function Level3Page() {
   const { 
     completeLevel, 
     cumulativeScore, 
-    addCumulativeScore, 
+    addCumulativeScore,
+    addCase003Score,
     resetGame, 
     playedCase003Rounds, 
     markCase003RoundPlayed 
@@ -85,9 +86,15 @@ export default function Level3Page() {
 
   const currentRound = sessionRounds[currentRoundIndex];
 
-  const currentTells = useMemo(() => {
-    if (!currentRound) return [];
-    return [...currentRound.tells, ...currentRound.distractorTells].sort(() => 0.5 - Math.random());
+  const [currentTells, setCurrentTells] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!currentRound) {
+      setCurrentTells([]);
+      return;
+    }
+    const tells = [...currentRound.tells, ...currentRound.distractorTells];
+    setCurrentTells(tells.sort(() => 0.5 - Math.random()));
   }, [currentRound]);
 
   // Check Game Over condition
@@ -98,6 +105,27 @@ export default function Level3Page() {
       router.push("/");
     }
   }, [cumulativeScore, roundScore, currentRound, resetGame, router]);
+
+  const applyDeduction = (amount: number) => {
+    if (!currentRound?.isTutorial) {
+      setRoundScore((prev) => Math.max(0, prev - amount));
+      // eslint-disable-next-line
+      setDeductions((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
+      setTimeout(() => {
+        setDeductions((prev) => prev.slice(1));
+      }, 2000);
+    }
+  };
+
+  const handleTimeout = useCallback(() => {
+    applyDeduction(50);
+    setFeedback({
+      isSuccess: false,
+      title: "TIME'S UP",
+      message: "You ran out of time. The AI generates new content fast, you must be faster."
+    });
+    setShowReveal(true);
+  }, [currentRound, setRoundScore, setDeductions, setFeedback, setShowReveal]);
 
   // Timer logic
   useEffect(() => {
@@ -115,28 +143,7 @@ export default function Level3Page() {
     }, 1000);
     
     return () => clearInterval(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, currentRound, isPanelLocked, isTourActive, showConfirm, showReveal]);
-
-  const applyDeduction = (amount: number) => {
-    if (!currentRound?.isTutorial) {
-      setRoundScore((prev) => Math.max(0, prev - amount));
-      setDeductions((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
-      setTimeout(() => {
-        setDeductions((prev) => prev.slice(1));
-      }, 2000);
-    }
-  };
-
-  const handleTimeout = () => {
-    applyDeduction(50);
-    setFeedback({
-      isSuccess: false,
-      title: "TIME'S UP",
-      message: "You ran out of time. The AI generates new content fast, you must be faster."
-    });
-    setShowReveal(true);
-  };
+  }, [isReady, currentRound, isPanelLocked, isTourActive, showConfirm, showReveal, handleTimeout]);
 
   const swapToRandomRound = () => {
     const availableIndices = sessionRounds
@@ -144,6 +151,7 @@ export default function Level3Page() {
       .filter(i => i !== currentRoundIndex && !playedCase003Rounds.includes(sessionRounds[i].id) && !sessionRounds[i].isTutorial);
       
     if (availableIndices.length > 0) {
+      // eslint-disable-next-line
       const nextIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
       setCurrentRoundIndex(nextIdx);
     } else {
@@ -238,11 +246,13 @@ export default function Level3Page() {
       });
       if (!currentRound.isTutorial) {
         addCumulativeScore(finalScore);
+        addCase003Score(finalScore);
         markCase003RoundPlayed(currentRound.id);
       }
     } else {
       if (!currentRound.isTutorial) {
         addCumulativeScore(finalScore);
+        addCase003Score(finalScore);
         markCase003RoundPlayed(currentRound.id);
       }
       setFeedback({
@@ -262,7 +272,9 @@ export default function Level3Page() {
         resetRoundState();
       } else {
         completeLevel(3);
-        router.push("/level/completed"); // Or another summary screen
+        setTimeout(() => {
+          router.push("/results");
+        }, 500);
       }
     }
   };

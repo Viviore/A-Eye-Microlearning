@@ -48,6 +48,7 @@ export default function Level1Page() {
   const completeLevel = useGameStore((state) => state.completeLevel);
   const cumulativeScore = useGameStore((state) => state.cumulativeScore);
   const addCumulativeScore = useGameStore((state) => state.addCumulativeScore);
+  const addCase001Score = useGameStore((state) => state.addCase001Score);
   const resetGame = useGameStore((state) => state.resetGame);
   const playedCase001Rounds = useGameStore((state) => state.playedCase001Rounds);
   const markCase001RoundPlayed = useGameStore((state) => state.markCase001RoundPlayed);
@@ -239,6 +240,7 @@ export default function Level1Page() {
 
     if (currentRoundIndex !== 0) {
       addCumulativeScore(roundScore);
+      addCase001Score(roundScore);
       markCase001RoundPlayed(currentRound.id);
     }
 

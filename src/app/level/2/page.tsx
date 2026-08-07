@@ -93,7 +93,7 @@ const DETECTIVE_TIPS = [
 
 export default function Level2Page() {
   const router = useRouter();
-  const { completeLevel, cumulativeScore, addCumulativeScore, resetGame, playedCase002Rounds, markCase002RoundPlayed } = useGameStore();
+  const { completeLevel, cumulativeScore, addCumulativeScore, addCase002Score, resetGame, playedCase002Rounds, markCase002RoundPlayed } = useGameStore();
 
   
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
@@ -302,12 +302,12 @@ export default function Level2Page() {
   const handleSubmitVerdict = () => {
     if (!selectedTactic) return;
 
-    // Check if the selected tactic matches the tactic of the clues
     const correctTactic = currentRound.clues[0]?.tactic;
     
     if (selectedTactic === correctTactic) {
       if (!currentRound.isTutorial) {
         addCumulativeScore(roundScore);
+        addCase002Score(roundScore);
         markCase002RoundPlayed(currentRound.id);
       }
       

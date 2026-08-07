@@ -30,6 +30,13 @@ interface GameState {
   resetCumulativeScore: () => void;
   resetGame: () => void;
   
+  case001Score: number;
+  addCase001Score: (points: number) => void;
+  case002Score: number;
+  addCase002Score: (points: number) => void;
+  case003Score: number;
+  addCase003Score: (points: number) => void;
+  
   playedCase001Rounds: number[];
   markCase001RoundPlayed: (roundId: number) => void;
   playedCase002Rounds: string[];
@@ -191,6 +198,16 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => ({ cumulativeScore: state.cumulativeScore + points })),
   resetCumulativeScore: () => set({ cumulativeScore: 0 }),
   
+  case001Score: 0,
+  addCase001Score: (points) =>
+    set((state) => ({ case001Score: state.case001Score + points })),
+  case002Score: 0,
+  addCase002Score: (points) =>
+    set((state) => ({ case002Score: state.case002Score + points })),
+  case003Score: 0,
+  addCase003Score: (points) =>
+    set((state) => ({ case003Score: state.case003Score + points })),
+  
   playedCase001Rounds: [],
   markCase001RoundPlayed: (roundId) => 
     set((state) => {
@@ -218,6 +235,9 @@ export const useGameStore = create<GameState>((set) => ({
       postQuizScore: null,
       completedLevels: [],
       cumulativeScore: 0,
+      case001Score: 0,
+      case002Score: 0,
+      case003Score: 0,
       level1FoundArtifacts: [],
       level1Verdict: null,
       level1Confidence: null,

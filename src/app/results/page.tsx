@@ -4,66 +4,53 @@ import { motion } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Shield, Target, Activity, AlertTriangle, CheckCircle2, XCircle, ChevronRight, BarChart, FileText, Camera, Video } from "lucide-react";
+import { Shield, Target, Activity, AlertTriangle, CheckCircle2, ChevronRight, BarChart, FileText, Camera, Video, XCircle } from "lucide-react";
+import { ChartBarMultiple } from "@/components/charts/chart-bar-multiple";
 
 export default function ResultsDashboardPage() {
   const {
-    level1Verdict, level1Confidence,
-    level2Verdict, level2Confidence,
-    level3Verdict, level3Confidence,
-    sessions,
+    cumulativeScore,
+    case001Score,
+    case002Score,
+    case003Score,
   } = useGameStore();
 
-  const c1Verdict = level1Verdict || sessions['case-001']?.verdict || null;
-  const c1Conf = level1Confidence ?? sessions['case-001']?.confidence ?? null;
+  const maxCaseScore = 500;
+  const maxTotalScore = 1500;
 
-  const c2Verdict = level2Verdict || sessions['case-002']?.verdict || null;
-  const c2Conf = level2Confidence ?? sessions['case-002']?.confidence ?? null;
+  const getCasePercentage = (score: number) => Math.round((score / maxCaseScore) * 100);
+  const accuracyPercent = Math.round((cumulativeScore / maxTotalScore) * 100);
 
-  const c3Verdict = level3Verdict || sessions['case-003']?.verdict || null;
-  const c3Conf = level3Confidence ?? sessions['case-003']?.confidence ?? null;
-
-  const isC1Correct = c1Verdict === "Misleading" || c1Verdict === "AI-Generated";
-  const isC2Correct = c2Verdict === "AI-Generated Avatar";
-  const isC3Correct = c3Verdict === "Video Source B is AI" || c3Verdict === "Misleading";
-
-  const correctCount = [isC1Correct, isC2Correct, isC3Correct].filter(Boolean).length;
-  const totalCases = 3;
-  const accuracyPercent = Math.round((correctCount / totalCases) * 100);
-
-  const confidences = [c1Conf, c2Conf, c3Conf].filter((c): c is number => c !== null);
-  const avgConfidence = confidences.length > 0
-    ? Math.round(confidences.reduce((a, b) => a + b, 0) / confidences.length)
-    : 0;
+  const c1Percent = getCasePercentage(case001Score);
+  const c2Percent = getCasePercentage(case002Score);
+  const c3Percent = getCasePercentage(case003Score);
 
   // Calibration Profile calculation
-  let calibrationProfile = "In Training";
+  let calibrationProfile = "IN TRAINING";
   let calibrationDesc = "Complete your case reports to establish a full calibration profile.";
   let ProfileIcon = Activity;
-  let profileColor = "text-amber-400";
+  let profileColor = "bg-yellow-300";
 
-  if (confidences.length === 3) {
-    if (accuracyPercent >= 66 && avgConfidence >= 70) {
-      calibrationProfile = "Master Digital Investigator";
-      calibrationDesc = "High investigation accuracy with well-calibrated confidence. You accurately evaluate evidence and stand firm in your conclusions.";
-      ProfileIcon = Shield;
-      profileColor = "text-emerald-400";
-    } else if (accuracyPercent < 66 && avgConfidence >= 70) {
-      calibrationProfile = "Overconfident Trap";
-      calibrationDesc = "You expressed high certainty on inaccurate report conclusions. Beware of sensational language and cross-examine visual evidence.";
-      ProfileIcon = AlertTriangle;
-      profileColor = "text-red-500";
-    } else if (accuracyPercent >= 66 && avgConfidence < 70) {
-      calibrationProfile = "Hesitant Observer";
-      calibrationDesc = "Your investigation quality is high, but your confidence is conservative. Trust your evidence-based observations!";
-      ProfileIcon = Target;
-      profileColor = "text-blue-400";
-    } else {
-      calibrationProfile = "Cautious Skeptic";
-      calibrationDesc = "Low confidence and accuracy. Focus on cross-referencing claim wording, visual boundaries, and source credibility.";
-      ProfileIcon = Activity;
-      profileColor = "text-amber-400";
-    }
+  if (accuracyPercent >= 80) {
+    calibrationProfile = "MASTER INVESTIGATOR";
+    calibrationDesc = "Exceptional accuracy! You effectively cross-examine digital evidence and catch subtle AI anomalies across all mediums.";
+    ProfileIcon = Shield;
+    profileColor = "bg-emerald-400";
+  } else if (accuracyPercent >= 60) {
+    calibrationProfile = "COMPETENT OBSERVER";
+    calibrationDesc = "Solid foundational skills. You catch most obvious manipulations, but advanced AI trickery sometimes slips through the cracks.";
+    ProfileIcon = Target;
+    profileColor = "bg-blue-400";
+  } else if (accuracyPercent >= 40) {
+    calibrationProfile = "HESITANT SKEPTIC";
+    calibrationDesc = "You are developing your eye for AI, but you struggle with consistency. Remember to isolate variables and check spatial logic.";
+    ProfileIcon = AlertTriangle;
+    profileColor = "bg-amber-400";
+  } else {
+    calibrationProfile = "VULNERABLE TARGET";
+    calibrationDesc = "Low accuracy. You frequently misclassify manipulated media. Focus on cross-referencing visual boundaries and source credibility.";
+    ProfileIcon = XCircle;
+    profileColor = "bg-red-400";
   }
 
   const containerVariants = {
@@ -80,9 +67,8 @@ export default function ResultsDashboardPage() {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-zinc-950 text-zinc-50 p-6 md:p-12 relative overflow-x-hidden font-sans pb-32">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-zinc-950 pointer-events-none" />
-
+    <main className="min-h-[100dvh] bg-[#FAFAFA] text-[#0F172A] p-6 md:p-12 relative font-sans pb-32 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-opacity-20">
+      
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -90,158 +76,134 @@ export default function ResultsDashboardPage() {
         className="max-w-[1200px] mx-auto relative z-10 space-y-8"
       >
         {/* Header */}
-        <motion.div variants={itemVariants} className="border-b border-zinc-800 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-[4px] border-[#0F172A] pb-8">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <BarChart className="w-6 h-6 text-emerald-500" />
-              <h1 className="text-3xl md:text-4xl font-black font-heading tracking-widest uppercase">
-                Learning Report & Debrief
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+                <BarChart className="w-8 h-8 text-[#0F172A]" strokeWidth={3} />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black font-heading tracking-widest uppercase text-[#0F172A] drop-shadow-[4px_4px_0_rgba(255,184,0,1)]">
+                LEARNING DEBRIEF
               </h1>
             </div>
-            <p className="text-zinc-400 font-mono text-xs tracking-widest uppercase">
-              UNESCO Digital Intelligence Simulator // Final Case Analysis
+            <p className="text-[#0F172A] font-bold font-mono text-sm tracking-widest uppercase bg-white border-2 border-[#0F172A] inline-block px-3 py-1 shadow-[2px_2px_0px_0px_#0F172A]">
+              UNESCO Digital Intelligence Simulator // Final Analysis
             </p>
           </div>
 
           <Link href="/quiz/post" passHref>
-            <Button className="h-12 px-6 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-heading uppercase tracking-widest rounded-none border-b-4 border-r-4 border-emerald-700 hover:border-emerald-600">
-              Take Post-Assessment Quiz <ChevronRight className="ml-2 w-4 h-4" />
+            <Button className="py-4 px-8 h-auto bg-[#FFB800] hover:bg-[#FFB800] text-[#0F172A] font-heading font-black text-lg uppercase tracking-widest rounded-none border-[4px] border-[#0F172A] hover:-translate-y-1 transition-transform shadow-[6px_6px_0px_0px_#0F172A] active:shadow-none active:translate-y-[6px] active:translate-x-[6px]">
+              TAKE POST-QUIZ <ChevronRight className="ml-2 w-6 h-6" strokeWidth={3} />
             </Button>
           </Link>
         </motion.div>
 
         {/* Global Overview Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Key Metrics */}
+          
+          {/* Total Score Block */}
           <motion.div variants={itemVariants} className="lg:col-span-5 flex flex-col gap-6">
-            <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-sm backdrop-blur-sm shadow-2xl relative overflow-hidden group">
-              <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">Investigation Quality</div>
-              <div className="text-5xl font-black font-heading text-zinc-100 mb-1">{accuracyPercent}%</div>
-              <div className="text-xs text-zinc-400">Successfully verified {correctCount} out of {totalCases} target cases with evidence.</div>
+            <div className="bg-white border-[4px] border-[#0F172A] p-8 shadow-[8px_8px_0px_0px_#0F172A] relative flex flex-col items-center justify-center text-center">
+              <div className="absolute top-0 left-0 bg-[#0F172A] text-white font-mono font-bold text-xs px-3 py-1 uppercase border-r-[4px] border-b-[4px] border-[#0F172A]">
+                TOTAL MISSION SCORE
+              </div>
+              
+              <div className="mt-8 flex items-baseline gap-2 justify-center">
+                <span className="text-8xl font-black font-heading text-[#FFB800] drop-shadow-[4px_4px_0_rgba(15,23,42,1)]">{cumulativeScore}</span>
+              </div>
+              <div className="text-xl font-black font-heading text-[#0F172A] uppercase border-t-[4px] border-[#0F172A] pt-4 mt-4 w-full">
+                OUT OF {maxTotalScore} POINTS
+              </div>
             </div>
-
-            <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-sm backdrop-blur-sm shadow-2xl relative overflow-hidden group">
-              <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">Avg. Confidence Calibration</div>
-              <div className="text-5xl font-black font-heading text-emerald-400 mb-1">{avgConfidence}%</div>
-              <div className="text-xs text-zinc-400">Your self-reported certainty rating committed prior to report submission.</div>
+            
+            <div className="bg-white border-[4px] border-[#0F172A] p-6 shadow-[8px_8px_0px_0px_#0F172A] relative">
+              <div className="text-sm font-black font-heading uppercase tracking-widest text-[#0F172A] mb-4">
+                INVESTIGATION ACCURACY
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-5xl font-black font-heading text-[#0F172A]">{accuracyPercent}%</div>
+                <div className="flex-1 h-8 bg-gray-200 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] relative overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.max(2, accuracyPercent)}%` }}
+                    transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+                    className="absolute top-0 left-0 h-full bg-[#FFB800] border-r-[3px] border-[#0F172A]"
+                  />
+                </div>
+              </div>
             </div>
           </motion.div>
 
-          {/* Calibration Profile */}
-          <motion.div variants={itemVariants} className="lg:col-span-7 bg-zinc-900/40 border border-zinc-800 p-8 rounded-sm backdrop-blur-sm shadow-2xl flex flex-col justify-between">
-            <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-6 border-b border-zinc-800 pb-3">
-              Psychological Confidence Calibration Profile
+          {/* Profile & Neo-Brutalist Bar Chart */}
+          <motion.div variants={itemVariants} className="lg:col-span-7 flex flex-col gap-6">
+            
+            {/* Calibration Profile */}
+            <div className={`border-[4px] border-[#0F172A] p-8 shadow-[8px_8px_0px_0px_#0F172A] flex flex-col justify-between ${profileColor}`}>
+              <div className="flex items-center justify-between border-b-[4px] border-[#0F172A] pb-4 mb-6">
+                <div className="font-black font-heading uppercase tracking-widest text-[#0F172A] text-xl">
+                  PROFICIENCY PROFILE
+                </div>
+                <ProfileIcon className="w-10 h-10 text-[#0F172A]" strokeWidth={2.5} />
+              </div>
+
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl font-black font-heading uppercase tracking-widest text-white drop-shadow-[2px_2px_0_rgba(15,23,42,1)]">
+                  {calibrationProfile}
+                </h2>
+                <p className="text-[#0F172A] font-bold text-sm bg-white/80 p-4 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] inline-block">
+                  {calibrationDesc}
+                </p>
+              </div>
             </div>
 
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4">
-              <div className="relative">
-                <div className={`absolute inset-0 blur-2xl opacity-20 bg-current ${profileColor}`} />
-                <ProfileIcon className={`w-20 h-20 relative z-10 ${profileColor}`} />
-              </div>
-              <h2 className={`text-2xl font-black font-heading uppercase tracking-widest ${profileColor}`}>
-                {calibrationProfile}
-              </h2>
-              <p className="text-zinc-300 text-xs max-w-md leading-relaxed">
-                {calibrationDesc}
-              </p>
-            </div>
+            {/* Neo-brutalist Bar Chart (Recharts) */}
+            <ChartBarMultiple c1={case001Score} c2={case002Score} c3={case003Score} />
+
           </motion.div>
         </div>
 
-        {/* Case File Breakdown per ARCHITECTURE.md */}
-        <motion.div variants={itemVariants} className="space-y-6">
-          <h3 className="text-lg font-bold font-heading uppercase tracking-widest text-zinc-100 border-b border-zinc-800 pb-3">
-            Investigation Case Breakdown
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Case 001 */}
-            <div className={`p-6 border rounded-sm relative space-y-4 ${isC1Correct ? 'bg-emerald-950/20 border-emerald-900/50' : 'bg-red-950/20 border-red-900/50'}`}>
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <div className="text-[10px] font-mono text-zinc-500 uppercase">Case 001</div>
-                    <div className="font-bold text-zinc-100 text-sm">Text Investigation</div>
-                  </div>
-                </div>
-                {isC1Correct ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <XCircle className="w-5 h-5 text-red-500" />}
+        {/* Breakdown Cards */}
+        <motion.div variants={itemVariants} className="pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            {/* Case 001 Card */}
+            <div className={`p-6 pt-8 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] bg-white relative`}>
+              <div className="absolute -top-[4px] -right-[4px] bg-[#FF4A4A] border-[4px] border-[#0F172A] p-2 z-10 shadow-[4px_4px_0px_0px_#0F172A]">
+                {c1Percent >= 60 ? <CheckCircle2 className="w-6 h-6 text-white" strokeWidth={3} /> : <AlertTriangle className="w-6 h-6 text-[#0F172A]" strokeWidth={3} />}
               </div>
-
-              <div className="space-y-2 text-xs text-zinc-400">
-                <div className="flex justify-between">
-                  <span>Verdict:</span>
-                  <span className="font-bold text-zinc-200">{c1Verdict || "Not Completed"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Confidence:</span>
-                  <span className="font-mono text-zinc-300">{c1Conf !== null ? `${c1Conf}%` : "N/A"}</span>
-                </div>
+              <div className="mb-4">
+                <div className="text-xs font-bold font-mono text-[#0F172A]/60 uppercase">CASE 001</div>
+                <div className="text-2xl font-black font-heading uppercase">TEXT ANALYSIS</div>
               </div>
-
-              <div className="p-3 bg-zinc-950/60 border border-zinc-800 rounded-sm text-[11px] text-zinc-400 leading-relaxed space-y-1">
-                <strong className="text-zinc-200 block text-xs font-bold font-heading uppercase">MIL Takeaway:</strong>
-                Evaluate whether online claims are grounded in physical reality rather than sensational copy.
+              <div className="text-sm font-bold bg-gray-100 p-3 border-[2px] border-[#0F172A] mb-2 text-[#0F172A]">
+                Examine claims vs. physical reality.
               </div>
             </div>
 
-            {/* Case 002 */}
-            <div className={`p-6 border rounded-sm relative space-y-4 ${isC2Correct ? 'bg-emerald-950/20 border-emerald-900/50' : 'bg-red-950/20 border-red-900/50'}`}>
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-2">
-                  <Camera className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <div className="text-[10px] font-mono text-zinc-500 uppercase">Case 002</div>
-                    <div className="font-bold text-zinc-100 text-sm">Photo Investigation</div>
-                  </div>
-                </div>
-                {isC2Correct ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <XCircle className="w-5 h-5 text-red-500" />}
+            {/* Case 002 Card */}
+            <div className={`p-6 pt-8 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] bg-white relative`}>
+              <div className="absolute -top-[4px] -right-[4px] bg-[#00E599] border-[4px] border-[#0F172A] p-2 z-10 shadow-[4px_4px_0px_0px_#0F172A]">
+                {c2Percent >= 60 ? <CheckCircle2 className="w-6 h-6 text-[#0F172A]" strokeWidth={3} /> : <AlertTriangle className="w-6 h-6 text-[#0F172A]" strokeWidth={3} />}
               </div>
-
-              <div className="space-y-2 text-xs text-zinc-400">
-                <div className="flex justify-between">
-                  <span>Verdict:</span>
-                  <span className="font-bold text-zinc-200">{c2Verdict || "Not Completed"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Confidence:</span>
-                  <span className="font-mono text-zinc-300">{c2Conf !== null ? `${c2Conf}%` : "N/A"}</span>
-                </div>
+              <div className="mb-4">
+                <div className="text-xs font-bold font-mono text-[#0F172A]/60 uppercase">CASE 002</div>
+                <div className="text-2xl font-black font-heading uppercase">PHOTO ANALYSIS</div>
               </div>
-
-              <div className="p-3 bg-zinc-950/60 border border-zinc-800 rounded-sm text-[11px] text-zinc-400 leading-relaxed space-y-1">
-                <strong className="text-zinc-200 block text-xs font-bold font-heading uppercase">MIL Takeaway:</strong>
-                Inspect peripheral environmental details (warped geometry, distorted signage) rather than focusing solely on central subjects.
+              <div className="text-sm font-bold bg-gray-100 p-3 border-[2px] border-[#0F172A] mb-2 text-[#0F172A]">
+                Inspect peripheral environmental details.
               </div>
             </div>
 
-            {/* Case 003 */}
-            <div className={`p-6 border rounded-sm relative space-y-4 ${isC3Correct ? 'bg-emerald-950/20 border-emerald-900/50' : 'bg-red-950/20 border-red-900/50'}`}>
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-2">
-                  <Video className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <div className="text-[10px] font-mono text-zinc-500 uppercase">Case 003</div>
-                    <div className="font-bold text-zinc-100 text-sm">Video Investigation</div>
-                  </div>
-                </div>
-                {isC3Correct ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <XCircle className="w-5 h-5 text-red-500" />}
+            {/* Case 003 Card */}
+            <div className={`p-6 pt-8 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] bg-white relative`}>
+              <div className="absolute -top-[4px] -right-[4px] bg-[#4A90E2] border-[4px] border-[#0F172A] p-2 z-10 shadow-[4px_4px_0px_0px_#0F172A]">
+                {c3Percent >= 60 ? <CheckCircle2 className="w-6 h-6 text-white" strokeWidth={3} /> : <AlertTriangle className="w-6 h-6 text-[#0F172A]" strokeWidth={3} />}
               </div>
-
-              <div className="space-y-2 text-xs text-zinc-400">
-                <div className="flex justify-between">
-                  <span>Verdict:</span>
-                  <span className="font-bold text-zinc-200">{c3Verdict || "Not Completed"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Confidence:</span>
-                  <span className="font-mono text-zinc-300">{c3Conf !== null ? `${c3Conf}%` : "N/A"}</span>
-                </div>
+              <div className="mb-4">
+                <div className="text-xs font-bold font-mono text-[#0F172A]/60 uppercase">CASE 003</div>
+                <div className="text-2xl font-black font-heading uppercase">VIDEO ANALYSIS</div>
               </div>
-
-              <div className="p-3 bg-zinc-950/60 border border-zinc-800 rounded-sm text-[11px] text-zinc-400 leading-relaxed space-y-1">
-                <strong className="text-zinc-200 block text-xs font-bold font-heading uppercase">MIL Takeaway:</strong>
-                Use slow-motion inspection (0.5x) to spot frame-by-frame temporal flickering along facial mask and jawline boundaries.
+              <div className="text-sm font-bold bg-gray-100 p-3 border-[2px] border-[#0F172A] mb-2 text-[#0F172A]">
+                Spot temporal flickering & facial masks.
               </div>
             </div>
           </div>
