@@ -5,6 +5,8 @@ import { driver } from "driver.js";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import case001Data from "@/data/case001.json";
@@ -324,9 +326,9 @@ export default function Level1Page() {
           </div>
           
           {/* Mock Social Post */}
-          <div 
+          <Card 
             id="tutorial-post"
-            className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
+            className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div 
@@ -389,7 +391,7 @@ export default function Level1Page() {
                 <p><strong>Careful!</strong> You flagged something that looks suspicious but is actually true. That&apos;s a decoy. Focus on the core claims.</p>
               </motion.div>
             )}
-          </div>
+          </Card>
 
 
         </div>
@@ -409,9 +411,9 @@ export default function Level1Page() {
             </p>
           </div>
 
-          <div 
+          <Card 
             id="tutorial-evidence"
-            className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
+            className="p-6 bg-white shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-3xl font-black font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
@@ -464,8 +466,7 @@ export default function Level1Page() {
                   sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
                 }`}
               >
-                <Search className="mr-2 w-5 h-5" strokeWidth={2.5} /> 
-                {sourceCheckOpen ? "Close Source Check" : "Open Source Check"}
+                <Search className="mr-2 w-5 h-5" strokeWidth={2.5} />                {sourceCheckOpen ? "Close Source Check" : "Open Source Check"}
               </Button>
               
               <AnimatePresence>
@@ -476,8 +477,8 @@ export default function Level1Page() {
                     exit={{ opacity: 0, height: 0 }}
                     className="overflow-hidden"
                   >
-                    <div 
-                      className="p-5 bg-white border-[4px] border-[#0F172A] mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative"
+                    <Card 
+                      className="p-5 bg-white mt-2 font-sans text-lg text-[#0F172A] transition-all duration-500 relative"
                     >
                       <div className="space-y-3 font-sans">
                         <h4 className="font-bold border-b-2 border-dashed border-[#0F172A] pb-2 text-[#0F172A]">Verified Sources:</h4>
@@ -485,7 +486,7 @@ export default function Level1Page() {
                           <p key={i} className="text-[#0F172A]"><strong>{source.name}:</strong> {source.text}</p>
                         ))}
                       </div>
-                    </div>
+                    </Card>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -503,10 +504,10 @@ export default function Level1Page() {
                 disabled={!canFileVerdict}
                 className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
               >
-                {canFileVerdict ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
+                {canFileVerdict ? <><CheckCircle2 className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
               </Button>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
       

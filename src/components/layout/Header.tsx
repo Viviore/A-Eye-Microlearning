@@ -73,7 +73,7 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b-[4px] border-dashed border-[#0F172A] bg-white">
+    <header className="sticky top-0 z-40 w-full border-b-[4px] border-[#0F172A] bg-white">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-3 xl:h-20 xl:py-0 flex items-center justify-between relative">
         
         {/* Brand Mark */}
@@ -104,7 +104,7 @@ export function Header() {
         {/* Navigation */}
         <nav className={`${
           isMobileMenuOpen 
-            ? "flex absolute top-full left-0 right-0 bg-white border-b-[4px] border-dashed border-[#0F172A] p-4 shadow-xl z-50 flex-col items-stretch" 
+            ? "flex absolute top-full left-0 right-0 bg-white border-b-[4px] border-[#0F172A] p-4 shadow-xl z-50 flex-col items-stretch" 
             : "hidden"
         } xl:flex xl:static xl:flex-row xl:bg-transparent xl:border-none xl:p-0 xl:shadow-none xl:items-center gap-3 xl:gap-4`}>
           {navItems.map((item) => {
