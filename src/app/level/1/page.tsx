@@ -69,10 +69,10 @@ export default function Level1Page() {
     }
     
     const shuffled = [...unplayed].sort(() => 0.5 - Math.random());
+    const tutorial = TEXT_ROUNDS.find(r => r.id === 0);
     const selected = shuffled.slice(0, 5);
     
     // Always start with tutorial
-    const tutorial = TEXT_ROUNDS.find(r => r.id === 0);
     if (tutorial) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionRounds([tutorial, ...selected]);

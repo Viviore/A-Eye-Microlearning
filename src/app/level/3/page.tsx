@@ -290,6 +290,20 @@ export default function Level3Page() {
               if (driverObjRef.current) {
                 driverObjRef.current.destroy();
               }
+              // Auto-advance past the tutorial round
+              setCurrentRoundIndex(1);
+              setRoundScore(100);
+              setTimeLeft(60);
+              setToolUsed(false);
+              setReplaysUsed(0);
+              setDeductions([]);
+              setSelectedPanel(null);
+              setIsPanelLocked(false);
+              setShowConfirm(false);
+              setSelectedTell(null);
+              setShowReveal(false);
+              setFeedback(null);
+              setHoveredTell(null);
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
@@ -433,6 +447,7 @@ export default function Level3Page() {
                 ref={videoARef} 
                 src={currentRound.videoA} 
                 className="w-full h-auto object-cover aspect-video" 
+                autoPlay
                 loop 
                 muted 
                 playsInline
@@ -457,6 +472,7 @@ export default function Level3Page() {
                 ref={videoBRef} 
                 src={currentRound.videoB} 
                 className="w-full h-auto object-cover aspect-video" 
+                autoPlay
                 loop 
                 muted 
                 playsInline
