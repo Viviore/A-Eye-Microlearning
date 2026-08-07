@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Search, MousePointerClick, BrainCircuit, ShieldCheck, Play, NotebookPen } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const steps = [
   {
@@ -11,28 +13,24 @@ const steps = [
     title: "Observe",
     description: "Scan captions, check context, and look for anomalies in the data stream.",
     colSpan: "md:col-span-2 lg:col-span-3",
-    rotation: "rotate-1",
   },
   {
     icon: MousePointerClick,
     title: "Locate",
     description: "Click on suspicious glitches to drop investigation markers.",
     colSpan: "md:col-span-2 lg:col-span-2",
-    rotation: "-rotate-2",
   },
   {
     icon: BrainCircuit,
     title: "Verdict",
     description: "Analyze the evidence: Is this Real, Generated, or Unconfirmed?",
     colSpan: "md:col-span-2 lg:col-span-2",
-    rotation: "rotate-2",
   },
   {
     icon: ShieldCheck,
     title: "Calibrate",
     description: "Rate your certainty. Top investigators know when they need more data.",
     colSpan: "md:col-span-2 lg:col-span-3",
-    rotation: "-rotate-1",
   },
 ];
 
@@ -50,14 +48,15 @@ export default function HowToPlay() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
           <div className="lg:col-span-8 flex flex-col items-start">
             <motion.div
-              initial={{ opacity: 0, y: 20, rotate: -5 }}
-              animate={{ opacity: 1, y: 0, rotate: -2 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2 px-4 py-2 mb-8 bg-[#FFB800] text-[#0F172A] font-heading text-lg font-bold border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A]"
-              style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              className="mb-8"
             >
-              <NotebookPen className="w-5 h-5 text-[#FFB800]" />
-              <span>TUTORIAL LOADED</span>
+              <Badge className="bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] px-4 py-2 font-mono font-bold tracking-widest text-sm shadow-[4px_4px_0px_0px_#0F172A] flex items-center gap-2">
+                <NotebookPen className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} />
+                <span>TUTORIAL LOADED</span>
+              </Badge>
             </motion.div>
             
             <motion.h1
@@ -67,11 +66,10 @@ export default function HowToPlay() {
               className="text-5xl md:text-7xl font-black tracking-tight leading-[0.9] text-[#0F172A] font-heading mb-6 relative inline-block"
             >
               Investigation <br />
-              <span className="text-[#FFB800]">Protocol</span>
-              {/* Hand-drawn underline */}
-              <svg className="absolute -bottom-4 left-0 w-full h-6 text-[#FFB800]" viewBox="0 0 200 20" preserveAspectRatio="none">
-                <path d="M0,10 Q50,20 100,5 T200,10" fill="none" stroke="currentColor" strokeWidth="4" />
-              </svg>
+              <span className="text-[#FFB800] relative inline-block">
+                Protocol
+                <div className="absolute -bottom-2 left-0 w-full h-[6px] bg-[#FFB800] border-2 border-[#0F172A]" />
+              </span>
             </motion.h1>
             
             <motion.p
@@ -94,31 +92,31 @@ export default function HowToPlay() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`glass-panel p-8 flex flex-col justify-between group relative overflow-hidden ${step.colSpan} ${step.rotation}`}
+              className={`${step.colSpan}`}
             >
-              {/* Tape at the top */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black/10 -rotate-3 backdrop-blur-[2px] z-20" />
-              
-              <div className="flex justify-between items-start mb-8 relative z-10">
-                <div 
-                  className="p-3 bg-[#FFB800] border-[3px] border-[#0F172A] text-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] group-hover:bg-[#FFB800] group-hover:text-white transition-colors duration-300"
-                  style={{ borderRadius: "225px 25px 215px 25px / 25px 215px 25px 225px" }}
-                >
-                  <step.icon className="w-6 h-6" />
-                </div>
-                <div className="font-heading text-xl text-[#0F172A] font-bold border-b-2 border-dashed border-[#0F172A] px-2 rotate-6">
-                  0{index + 1}
-                </div>
-              </div>
+              <Card className="bg-white p-8 flex flex-col justify-between h-full group hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] shadow-[8px_8px_0px_0px_#0F172A] transition-all">
+                <CardContent className="p-0">
+                  <div className="flex justify-between items-start mb-8">
+                    <div 
+                      className="p-3 bg-[#FFB800] border-[4px] border-[#0F172A] text-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] group-hover:bg-[#FFB800] transition-colors duration-300"
+                    >
+                      <step.icon className="w-8 h-8" strokeWidth={2.5} />
+                    </div>
+                    <div className="font-heading text-2xl text-[#0F172A] font-black bg-[#FFB800] border-[4px] border-[#0F172A] px-3 shadow-[4px_4px_0px_0px_#0F172A]">
+                      0{index + 1}
+                    </div>
+                  </div>
 
-              <div className="relative z-10">
-                <h3 className="text-3xl font-bold text-[#0F172A] mb-3 font-heading group-hover:text-[#FFB800] transition-colors duration-300">
-                  {step.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-lg max-w-[40ch]">
-                  {step.description}
-                </p>
-              </div>
+                  <div>
+                    <h3 className="text-3xl font-black text-[#0F172A] mb-3 font-heading uppercase tracking-wide">
+                      {step.title}
+                    </h3>
+                    <p className="text-[#0F172A] leading-relaxed text-lg max-w-[40ch] font-sans font-bold">
+                      {step.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
         </div>
@@ -133,9 +131,9 @@ export default function HowToPlay() {
           <Link href="/quiz/pre" passHref>
             <Button 
               size="lg" 
-              className="btn-primary text-xl px-10 h-16 group"
+              className="bg-white hover:bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px] h-20 px-16 text-2xl font-heading font-black tracking-wider uppercase transition-all group"
             >
-              <Play className="mr-3 w-6 h-6" />
+              <Play className="mr-4 w-8 h-8" />
               Init Assessment
             </Button>
           </Link>

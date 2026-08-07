@@ -46,6 +46,15 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-main: var(--main);
+  --color-main-foreground: var(--main-foreground);
+  --color-secondary-background: var(--secondary-background);
+  --shadow-shadow: var(--shadow);
+  --shadow-nav: var(--shadow-nav);
+  --spacing-boxShadowX: 4px;
+  --spacing-boxShadowY: 4px;
+  --spacing-reverseBoxShadowX: -4px;
+  --spacing-reverseBoxShadowY: -4px;
 }
 
 :root {
@@ -85,6 +94,12 @@
   --shadow-hard: 6px 6px 0px 0px #0F172A;
   --shadow-hard-hover: 3px 3px 0px 0px #0F172A;
   --shadow-hard-active: 0px 0px 0px 0px #0F172A;
+
+  --main: #FFB800;
+  --main-foreground: #0F172A;
+  --secondary-background: #ffffff;
+  --shadow: 4px 4px 0px 0px #0F172A;
+  --shadow-nav: 4px 4px 0px 0px #0F172A;
 }
 
 @layer base {

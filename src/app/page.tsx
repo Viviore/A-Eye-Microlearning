@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Search, Play, NotebookPen, FileText, Camera, Video, ShieldAlert, BadgeCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { LandingNavbar } from "@/components/layout/LandingNavbar";
 
 export default function Home() {
@@ -91,9 +93,8 @@ export default function Home() {
                   initial={{ scale: 0, rotate: 0 }}
                   animate={{ scale: 1, rotate: 6 }}
                   transition={{ type: "spring", bounce: 0.6, delay: 0.8 }}
-                  className="text-right font-heading text-xl text-[#FFB800] font-bold border-2 border-[#FFB800] px-3 py-1 rounded-sm bg-white"
                 >
-                  TOP SECRET
+                  <Badge className="text-xl bg-white text-primary border-primary">TOP SECRET</Badge>
                 </motion.div>
               </div>
 
@@ -160,23 +161,24 @@ export default function Home() {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              className="bg-white text-[#0F172A] border-[4px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] flex flex-col hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#FFB800] transition-all"
             >
-              <div className="border-b-[4px] border-[#FFB800] bg-[#FFB800] p-2 flex gap-1.5">
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
-              </div>
-              <div className="p-8 relative overflow-hidden">
-                <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
-                <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
-                  <FileText className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
+                <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                 </div>
-                <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 001: Text Forensics</h3>
-                <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
-                  Analyze suspicious social feeds, flag deceptive claims, and cross-reference them against verified sources. Learn to spot the tactics behind disinformation.
-                </p>
-              </div>
+                <CardContent className="p-8 relative overflow-hidden flex-1">
+                  <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
+                  <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-shadow">
+                    <FileText className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+                  </div>
+                  <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 001: Text Forensics</h3>
+                  <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
+                    Analyze suspicious social feeds, flag deceptive claims, and cross-reference them against verified sources. Learn to spot the tactics behind disinformation.
+                  </p>
+                </CardContent>
+              </Card>
             </motion.div>
 
             {/* Feature 2 */}
@@ -185,23 +187,25 @@ export default function Home() {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              className="bg-white text-[#0F172A] border-[4px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] flex flex-col mt-4 md:mt-0 hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#FFB800] transition-all"
+              className="mt-4 md:mt-0"
             >
-              <div className="border-b-[4px] border-[#FFB800] bg-[#FFB800] p-2 flex gap-1.5">
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
-              </div>
-              <div className="p-8 relative overflow-hidden">
-                <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
-                <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
-                  <Camera className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
+                <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                 </div>
-                <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 002: Image Analysis</h3>
-                <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
-                  Use the digital magnifier to scan viral photos for AI-generated artifacts. Hands missing fingers, melting backgrounds, and impossible physics.
-                </p>
-              </div>
+                <CardContent className="p-8 relative overflow-hidden flex-1">
+                  <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
+                  <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-shadow">
+                    <Camera className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+                  </div>
+                  <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 002: Image Analysis</h3>
+                  <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
+                    Use the digital magnifier to scan viral photos for AI-generated artifacts. Hands missing fingers, melting backgrounds, and impossible physics.
+                  </p>
+                </CardContent>
+              </Card>
             </motion.div>
 
             {/* Feature 3 */}
@@ -210,23 +214,25 @@ export default function Home() {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              className="bg-white text-[#0F172A] border-[4px] border-[#FFB800] shadow-[8px_8px_0px_0px_#FFB800] flex flex-col mt-8 md:mt-0 hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#FFB800] transition-all"
+              className="mt-8 md:mt-0"
             >
-              <div className="border-b-[4px] border-[#FFB800] bg-[#FFB800] p-2 flex gap-1.5">
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
-                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
-              </div>
-              <div className="p-8 relative overflow-hidden">
-                <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
-                <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
-                  <Video className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
+                <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+                  <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                 </div>
-                <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 003: Video Deepfakes</h3>
-                <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
-                  Scrub through video feeds frame by frame to detect temporal inconsistencies, audio-sync failures, and digital masks.
-                </p>
-              </div>
+                <CardContent className="p-8 relative overflow-hidden flex-1">
+                  <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
+                  <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-shadow">
+                    <Video className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+                  </div>
+                  <h3 className="text-2xl font-black font-heading mb-3 uppercase tracking-wide">Case 003: Video Deepfakes</h3>
+                  <p className="font-sans text-lg font-bold leading-relaxed opacity-90">
+                    Scrub through video feeds frame by frame to detect temporal inconsistencies, audio-sync failures, and digital masks.
+                  </p>
+                </CardContent>
+              </Card>
             </motion.div>
           </motion.div>
         </div>
@@ -245,46 +251,48 @@ export default function Home() {
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, type: "spring", bounce: 0.3 }}
-            className="max-w-4xl w-full bg-[#FFB800] p-10 md:p-16 border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative flex flex-col hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_#0F172A] transition-all"
+            className="max-w-4xl w-full"
           >
-            <div className="absolute top-0 left-0 w-full border-b-[4px] border-[#0F172A] bg-white p-2 flex gap-2">
-              <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#FFB800]"></div>
-              <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
-              <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
-            </div>
-            
-            <div className="flex items-center justify-center mb-8 gap-4 border-b-[4px] border-[#0F172A] pb-8 pt-6">
-              <ShieldAlert className="w-12 h-12 text-[#0F172A]" />
-              <h2 className="text-4xl md:text-5xl font-black font-heading tracking-tight uppercase text-[#0F172A]">
-                Mission Briefing
-              </h2>
-            </div>
+            <Card className="bg-primary p-10 md:p-16 relative flex flex-col hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_#0F172A] transition-all shadow-[12px_12px_0px_0px_#0F172A]">
+              <div className="absolute top-0 left-0 w-full border-b-[4px] border-[#0F172A] bg-white p-2 flex gap-2">
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#FFB800]"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
+                <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
+              </div>
+              
+              <div className="flex items-center justify-center mb-8 gap-4 border-b-[4px] border-[#0F172A] pb-8 pt-6">
+                <ShieldAlert className="w-12 h-12 text-[#0F172A]" />
+                <h2 className="text-4xl md:text-5xl font-black font-heading tracking-tight uppercase text-[#0F172A]">
+                  Mission Briefing
+                </h2>
+              </div>
 
-            <div className="space-y-6 font-sans text-xl font-bold text-[#0F172A] leading-relaxed">
-              <p>
-                The digital landscape is becoming increasingly deceptive. Synthetic media, disinformation campaigns, and AI-generated hallucinations are everywhere.
-              </p>
-              <p>
-                A-Eye is a state-of-the-art Media Information Literacy (MIL) simulator designed to train the next generation of digital investigators. 
-              </p>
-              <ul className="list-none space-y-4 my-6 pl-4">
-                <li className="flex items-start gap-3">
-                  <BadgeCheck className="w-6 h-6 mt-1 shrink-0" />
-                  <span>Build immunity against highly sophisticated disinformation tactics.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <BadgeCheck className="w-6 h-6 mt-1 shrink-0" />
-                  <span>Learn how to effectively cross-reference and verify source material.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <BadgeCheck className="w-6 h-6 mt-1 shrink-0" />
-                  <span>Recognize the telltale visual artifacts of AI generation.</span>
-                </li>
-              </ul>
-              <p className="pt-4 border-t-2 border-dashed border-[#0F172A]/50">
-                Your score tracks your deductive reasoning. Mistakes cost points. Finding the truth secures your rank.
-              </p>
-            </div>
+              <CardContent className="p-0 space-y-6 font-sans text-xl font-bold text-[#0F172A] leading-relaxed">
+                <p>
+                  The digital landscape is becoming increasingly deceptive. Synthetic media, disinformation campaigns, and AI-generated hallucinations are everywhere.
+                </p>
+                <p>
+                  A-Eye is a state-of-the-art Media Information Literacy (MIL) simulator designed to train the next generation of digital investigators. 
+                </p>
+                <ul className="list-none space-y-4 my-6 pl-4">
+                  <li className="flex items-start gap-3">
+                    <BadgeCheck className="w-6 h-6 mt-1 shrink-0" />
+                    <span>Build immunity against highly sophisticated disinformation tactics.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <BadgeCheck className="w-6 h-6 mt-1 shrink-0" />
+                    <span>Learn how to effectively cross-reference and verify source material.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <BadgeCheck className="w-6 h-6 mt-1 shrink-0" />
+                    <span>Recognize the telltale visual artifacts of AI generation.</span>
+                  </li>
+                </ul>
+                <p className="pt-4 border-t-2 border-dashed border-[#0F172A]/50">
+                  Your score tracks your deductive reasoning. Mistakes cost points. Finding the truth secures your rank.
+                </p>
+              </CardContent>
+            </Card>
           </motion.div>
           
         </div>
