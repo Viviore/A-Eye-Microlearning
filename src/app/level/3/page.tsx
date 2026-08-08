@@ -13,8 +13,10 @@ import {
   XCircle,
   Plus,
   RotateCcw,
+  ArrowRight
 } from "lucide-react";
 import case003Data from "@/data/case003.json";
+import { AnimatedBackground } from "@/components/ui/animated-background";
 
 type VideoRound = {
   id: string;
@@ -27,6 +29,23 @@ type VideoRound = {
 };
 
 const VIDEO_ROUNDS: VideoRound[] = case003Data as VideoRound[];
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+  },
+};
 
 export default function Level3Page() {
   const router = useRouter();
@@ -58,7 +77,7 @@ export default function Level3Page() {
   
   const [selectedTell, setSelectedTell] = useState<string | null>(null);
   const [showReveal, setShowReveal] = useState(false);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string; penalty?: number } | null>(null);
   const [hoveredTell, setHoveredTell] = useState<string | null>(null);
 
   const videoARef = useRef<HTMLVideoElement>(null);
@@ -124,7 +143,8 @@ export default function Level3Page() {
     setFeedback({
       isSuccess: false,
       title: "TIME'S UP",
-      message: "You ran out of time. The AI generates new content fast, you must be faster."
+      message: "You ran out of time. The AI generates new content fast, you must be faster.",
+      penalty: 50,
     });
     setShowReveal(true);
   }, [currentRound, setRoundScore, setDeductions, setFeedback, setShowReveal]);
@@ -237,6 +257,7 @@ export default function Level3Page() {
         isSuccess: false,
         title: "WRONG PANEL",
         message: "You picked the wrong panel. The other video was the AI-generated one.",
+        penalty: 50,
       });
     } else if (!isCorrectTell) {
       applyDeduction(20);
@@ -245,6 +266,7 @@ export default function Level3Page() {
         isSuccess: false,
         title: "LUCKY GUESS",
         message: "You picked the correct panel, but your reasoning was wrong.",
+        penalty: 20,
       });
       if (!currentRound.isTutorial) {
         addCumulativeScore(finalScore);
@@ -349,12 +371,13 @@ export default function Level3Page() {
 
   return (
     <main
-      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
+      className="min-h-[100dvh] bg-[#FAFAFA] text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
-      <div className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
+      <AnimatedBackground theme="light" />
+      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
+        <motion.div variants={fadeUp} className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
           <div className="flex items-center gap-3">
             <div className="px-3 py-1.5 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2">
               <FileVideo className="w-4 h-4 text-[#0F172A]" />
@@ -432,13 +455,21 @@ export default function Level3Page() {
               </AnimatePresence>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Video Area */}
-        <div id="tutorial-videos" className="bg-white border-[4px] border-[#0F172A] p-6 shadow-[8px_8px_0px_0px_#0F172A]">
-          <h2 className="text-3xl font-black font-heading text-center mb-6 uppercase">Which one is AI?</h2>
+        <motion.div variants={fadeUp} id="tutorial-videos" className="bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col">
+          <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-3 flex justify-between items-center shrink-0">
+            <div className="flex gap-2">
+              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-white" />
+              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-[#0F172A]" />
+              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-white" />
+            </div>
+            <h2 className="text-xl md:text-2xl font-black font-heading uppercase tracking-widest text-[#0F172A]">Which one is AI?</h2>
+            <div className="w-20"></div>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#FAFAFA]">
             {/* Panel A */}
             {(() => {
               const isCorrect = currentRound.correctPanel === "A";
@@ -539,7 +570,7 @@ export default function Level3Page() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="mt-8 p-6 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex flex-col items-center gap-4"
+                className="mx-6 md:mx-8 mb-6 mt-2 p-6 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex flex-col items-center gap-4"
               >
                 <h3 className="font-heading font-black text-2xl uppercase">Are you sure?</h3>
                 <p className="font-sans font-bold text-center">You selected Panel {selectedPanel} as the AI fake. Locking this in will consume your answer.</p>
@@ -550,20 +581,22 @@ export default function Level3Page() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
 
         {/* Verdict Form Area */}
         <AnimatePresence>
           {isPanelLocked && !showReveal && (
             <motion.div 
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white p-8 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, y: 50 }}
+              className="bg-white p-8 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col"
             >
               <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-2 uppercase tracking-wider text-center">
                 Explain Your Tell
               </h2>
-              <p className="text-center font-bold text-[#0F172A]/70 mb-6">Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.</p>
+              <p className="text-center font-bold text-[#0F172A]/70 mb-8">Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentTells.map((tell) => {
@@ -572,14 +605,14 @@ export default function Level3Page() {
                   const isDisabled = isTutorial && !isCorrect;
                   const showPulse = isTutorial && isCorrect;
 
-                  let btnClass = "relative p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer ";
+                  let btnClass = "relative px-6 py-4 border-[4px] font-black font-heading uppercase text-lg md:text-xl transition-all text-[#0F172A] cursor-pointer text-center flex items-center justify-center min-h-[5rem] ";
                   
                   if (isDisabled) {
                     btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 !cursor-not-allowed ";
                   } else if (showPulse) {
-                    btnClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                    btnClass += "bg-[#FFB800] border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#0F172A] ";
                   } else {
-                    btnClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:bg-[#FFB800] hover:shadow-[4px_4px_0px_0px_#0F172A] ";
+                    btnClass += "bg-white border-solid border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:bg-[#FFB800] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#0F172A] active:translate-y-[2px] active:shadow-none ";
                   }
 
                   return (
@@ -604,21 +637,31 @@ export default function Level3Page() {
         <AnimatePresence>
           {showReveal && feedback && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className={`p-6 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${feedback.isSuccess ? "bg-green-100" : "bg-red-100"}`}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className={`p-8 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col ${feedback.isSuccess ? "bg-green-400" : "bg-[#FF3366]"}`}
             >
-              <div className="flex items-center gap-3 mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-4">
+              <div className="flex items-center gap-4 mb-6 border-b-[4px] border-solid border-[#0F172A] pb-6">
                 {feedback.isSuccess ? (
-                  <CheckCircle2 className="w-10 h-10 text-green-600" strokeWidth={3} />
+                  <div className="w-16 h-16 bg-white border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center rotate-3 shrink-0">
+                    <CheckCircle2 className="w-10 h-10 text-green-600" strokeWidth={4} />
+                  </div>
                 ) : (
-                  <XCircle className="w-10 h-10 text-red-600" strokeWidth={3} />
+                  <div className="w-16 h-16 bg-white border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center -rotate-3 shrink-0">
+                    <XCircle className="w-10 h-10 text-red-600" strokeWidth={4} />
+                  </div>
                 )}
-                <h3 className="font-heading font-black text-3xl text-[#0F172A] uppercase tracking-wider">
+                <h3 className="font-heading font-black text-3xl md:text-5xl text-[#0F172A] uppercase tracking-wider drop-shadow-[2px_2px_0px_white]">
                   {feedback.title}
                 </h3>
+                {feedback.penalty && (
+                  <div className="ml-auto bg-[#0F172A] text-white px-3 py-1 font-mono font-bold text-lg md:text-xl border-2 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] rotate-2">
+                    -{feedback.penalty} PTS
+                  </div>
+                )}
               </div>
-              <p className="text-xl font-sans font-bold text-[#0F172A] mb-8">
+              <p className="text-xl md:text-2xl font-sans font-bold text-[#0F172A] mb-8 bg-white p-4 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
                 {feedback.message}
               </p>
               
@@ -626,14 +669,15 @@ export default function Level3Page() {
                 onClick={handleNextAction}
                 variant="dark"
                 size="lg"
-                className="w-full h-16"
+                className="w-full h-16 md:h-20 text-xl md:text-2xl group"
               >
                 {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
+                <ArrowRight className="ml-4 w-8 h-8 transition-transform group-hover:translate-x-2" strokeWidth={3} />
               </BrutalButton>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </main>
   );
 }
