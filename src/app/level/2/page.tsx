@@ -33,6 +33,8 @@ import { PostAuthorHeader } from "@/components/game/PostAuthorHeader";
 import { SocialEngagementFooter } from "@/components/game/SocialEngagementFooter";
 import { ObjectivePanel } from "@/components/game/ObjectivePanel";
 import { EvidenceBoard } from "@/components/game/EvidenceBoard";
+import { VerdictModalContainer, VerdictFeedback } from "@/components/game/VerdictModal";
+import { useLevelScoring } from "@/hooks/useLevelScoring";
 
 type VisualClue = {
   id: string;
@@ -111,13 +113,7 @@ export default function Level2Page() {
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [sessionRounds, setSessionRounds] = useState<ImageRound[]>([]);
   const [isReady, setIsReady] = useState(false);
-  
-  const [timeLeft, setTimeLeft] = useState(60);
   const [toolUsed, setToolUsed] = useState(false);
-  
-  const [roundScore, setRoundScore] = useState(100);
-  const [deductions, setDeductions] = useState<{id: number, amount: number}[]>([]);
-
   useEffect(() => {
     const tutorial = IMAGE_ROUNDS.find(r => r.isTutorial);
     let unplayed = IMAGE_ROUNDS.filter(r => !r.isTutorial && !playedCase002Rounds.includes(r.id));
@@ -171,6 +167,30 @@ export default function Level2Page() {
   const [foundDecoys, setFoundDecoys] = useState<VisualClue[]>([]);
 
   const [isTourActive, setIsTourActive] = useState(true);
+  
+  const {
+    roundScore,
+    setRoundScore,
+    timeLeft,
+    setTimeLeft,
+    clickPopups: deductions, // Map clickPopups to deductions for UI compatibility
+    triggerScoreAnimation,
+    applyDeduction,
+    resetScoring,
+  } = useLevelScoring({
+    isReady,
+    hasTimer: true,
+    isPaused: currentRound?.isTutorial || showVerdictModal || feedback !== null,
+    onTimeout: () => {
+      applyDeduction(50);
+      setFeedback({
+        isSuccess: false,
+        title: "TIME'S UP",
+        message: "You ran out of time. The AI generates new content fast, you must be faster."
+      });
+    }
+  });
+
   const driverObjRef = useRef<any>(null);
   
   const [isHoveringImage, setIsHoveringImage] = useState(false);
@@ -185,45 +205,6 @@ export default function Level2Page() {
   });
 
   const isDriverInitialized = useRef(false);
-  const applyDeduction = (amount: number) => {
-    if (!currentRound?.isTutorial) {
-      setRoundScore((prev) => prev - amount);
-      setDeductions((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
-      setTimeout(() => {
-        setDeductions((prev) => prev.slice(1));
-      }, 2000);
-    }
-  };
-
-  const handleTimeout = () => {
-    applyDeduction(50);
-    setTimeLeft(0);
-    setFeedback({
-      isSuccess: false,
-      title: "TIME'S UP",
-      message: "You ran out of time. The AI generates new content fast, you must be faster."
-    });
-  };
-
-  useEffect(() => {
-    if (!isReady || !currentRound || currentRound.isTutorial || showVerdictModal || feedback) return;
-    
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleTimeout();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, currentRound, showVerdictModal, feedback]);
-
-
 
   useEffect(() => {
     if (currentRound?.isTutorial && !isDriverInitialized.current && !isTransitioning) {
@@ -255,6 +236,7 @@ export default function Level2Page() {
               }
               // Auto-advance past the tutorial round
               setCurrentRoundIndex(1);
+              resetScoring();
               setFlaggedIds(new Set());
               setFoundClues([]);
               setFoundDecoys([]);
@@ -262,8 +244,6 @@ export default function Level2Page() {
               setSelectedEvidenceId(null);
               setSelectedTactic(null);
               setShowVerdictModal(false);
-              setRoundScore(100);
-              setTimeLeft(60);
               setToolUsed(false);
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
@@ -344,6 +324,7 @@ export default function Level2Page() {
     
     if (selectedTactic === correctTactic) {
       if (!currentRound.isTutorial) {
+        triggerScoreAnimation(roundScore);
         addCumulativeScore(roundScore);
         addCase002Score(roundScore);
         markCase002RoundPlayed(currentRound.id);
@@ -389,9 +370,8 @@ export default function Level2Page() {
 
       setFlaggedIds(new Set());
       setFoundClues([]);
-      setTimeLeft(60);
+      resetScoring();
       setToolUsed(false);
-      setRoundScore(100);
     }
   };
 
@@ -400,6 +380,8 @@ export default function Level2Page() {
   const handleNextRound = () => {
     if (currentRoundIndex < sessionRounds.length - 1) {
       setCurrentRoundIndex((prev) => prev + 1);
+      resetScoring();
+      setToolUsed(false);
       setFlaggedIds(new Set());
       setFoundClues([]);
       setFoundDecoys([]);
@@ -741,221 +723,144 @@ export default function Level2Page() {
 
 
       {/* Verdict Modal */}
-      <AnimatePresence>
-        {showVerdictModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className={`p-5 md:p-6 w-full max-w-2xl overflow-y-auto overflow-x-hidden bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative ${
-                currentRoundIndex === 0 ? "max-h-[calc(100vh-320px)] md:max-h-[calc(100vh-280px)]" : "max-h-[90vh]"
-              }`}
-            >
-              {!feedback ? (
-                <>
+      <VerdictModalContainer
+        isOpen={showVerdictModal}
+        alignTop={currentRoundIndex === 0}
+      >
+        {!feedback ? (
+          <>
+            <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
+              Final Verdict Form
+            </h2>
 
+            <div className="space-y-4 font-sans">
+              {verdictStep === 1 ? (
+                <div>
+                  <h3 className="font-bold text-xl mb-3 font-heading">
+                    Which clue do you want to explain?
+                  </h3>
+                  <div className="flex flex-col gap-3">
+                    {foundClues.map((clue) => {
+                      let buttonClass = `p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer text-left `;
+                      
+                      if (selectedEvidenceId === clue.id) {
+                        buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
+                      } else if (currentRound.isTutorial) {
+                        buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                      } else {
+                        buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
+                      }
 
-                  <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
-                    Final Verdict Form
-                  </h2>
-
-                  <div className="space-y-4 font-sans">
-                    {verdictStep === 1 ? (
-                      <div>
-                        <h3 className="font-bold text-xl mb-3 font-heading">
-                          Which clue do you want to explain?
-                        </h3>
-                        <div className="flex flex-col gap-3">
-                          {foundClues.map((clue) => {
-                            let buttonClass = `p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer text-left `;
-                            
-                            if (selectedEvidenceId === clue.id) {
-                              buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
-                            } else if (currentRound.isTutorial) {
-                              buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
-                            } else {
-                              buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
-                            }
-
-                            return (
-                              <button
-                                key={clue.id}
-                                onClick={() => setSelectedEvidenceId(clue.id)}
-                                className={buttonClass}
-                              >
-                                <div className="text-lg">{clue.title}</div>
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        <div className="flex gap-4 pt-6 mt-4 border-t-[3px] border-dashed border-[#0F172A]/30">
-                          <BrutalButton
-                            onClick={() => setShowVerdictModal(false)}
-                            variant="secondary"
-                            className="flex-1"
-                          >
-                            Cancel
-                          </BrutalButton>
-                          <BrutalButton
-                            onClick={() => setVerdictStep(2)}
-                            disabled={!selectedEvidenceId}
-                            variant="primary"
-                            className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
-                          >
-                            Next Step
-                          </BrutalButton>
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <h3 className="font-bold text-xl mb-3 font-heading">
-                          How Was This Faked?
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {shuffledTactics.map((tactic) => {
-                            const correctTactic = currentRound.clues.find(c => c.id === selectedEvidenceId)?.tactic;
-                            const isCorrect = tactic === correctTactic;
-                            const isTutorial = currentRound.isTutorial && !isTourActive;
-                            const isDisabled = isTutorial && !isCorrect;
-                            
-                            let buttonClass = `p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer `;
-                            if (isDisabled) {
-                              buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
-                            } else if (selectedTactic === tactic) {
-                              buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
-                            } else if (isTutorial && isCorrect) {
-                              buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
-                            } else {
-                              buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
-                            }
-
-                            return (
-                              <button
-                                key={tactic}
-                                onClick={() => !isDisabled && setSelectedTactic(tactic)}
-                                onMouseEnter={() => !isDisabled && setHoveredTactic(tactic)}
-                                onMouseLeave={() => !isDisabled && setHoveredTactic(null)}
-                                disabled={isDisabled}
-                                className={buttonClass}
-                              >
-                                {tactic}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
-                          {hoveredTactic
-                            ? TACTIC_DESCRIPTIONS[hoveredTactic]
-                            : "Hover over a tactic to see its definition."}
-                        </div>
-
-                        <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
-                          <BrutalButton
-                            onClick={() => {
-                              setVerdictStep(1);
-                              setSelectedTactic(null);
-                            }}
-                            variant="secondary"
-                            className="flex-1"
-                          >
-                            Back
-                          </BrutalButton>
-                          <BrutalButton
-                            onClick={handleSubmitVerdict}
-                            disabled={!selectedTactic}
-                            variant="primary"
-                            className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
-                          >
-                            Submit Report
-                          </BrutalButton>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-8 space-y-6">
-                  <div className="flex justify-center">
-                    {feedback.isSuccess ? (
-                      <div
-                        className="w-24 h-24 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A]"
-                      >
-                        <CheckCircle2
-                          className="w-12 h-12 text-[#0F172A]"
-                          strokeWidth={2.5}
-                        />
-                      </div>
-                    ) : (
-                      <div className="relative inline-block w-24 h-24 mb-2">
-                        <div 
-                          className="absolute inset-0 bg-[#F59E0B] rounded-sm transform translate-x-1.5 translate-y-1.5 rotate-3"
-                        />
-                        <div 
-                          className="absolute inset-0 bg-[#FEF3C7] border-[4px] border-[#F59E0B] rounded-sm flex items-center justify-center transform -rotate-1"
+                      return (
+                        <button
+                          key={clue.id}
+                          onClick={() => setSelectedEvidenceId(clue.id)}
+                          className={buttonClass}
                         >
-                          <XCircle
-                            className="w-12 h-12 text-[#F59E0B]"
-                            strokeWidth={3}
-                          />
-                        </div>
-                      </div>
-                    )}
+                          <div className="text-lg">{clue.title}</div>
+                        </button>
+                      );
+                    })}
                   </div>
-                  <h2
-                    className={`text-5xl font-black font-heading tracking-wider ${feedback.isSuccess ? "uppercase text-[#0F172A]" : "text-[#F59E0B]"}`}
-                  >
-                    {feedback.title}
-                  </h2>
-                  <p className={`text-xl font-bold max-w-md mx-auto ${feedback.isSuccess ? "font-sans text-[#0F172A]/80" : "font-heading text-[#334155] leading-relaxed"}`}>
-                    {feedback.message}
-                  </p>
 
-                  <div className="pt-8">
-                    {feedback.isSuccess ? (
-                      <BrutalButton
-                        onClick={handleNextRound}
-                        variant="primary"
-                        size="lg"
-                        className="bg-[#10B981] hover:bg-[#10B981]/90"
-                      >
-                        {currentRoundIndex < IMAGE_ROUNDS.length - 1 ? (
-                          <>
-                            Next Photo{" "}
-                            <ArrowRight
-                              className="ml-3 w-7 h-7"
-                              strokeWidth={2.5}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            Complete Case 002{" "}
-                            <Trophy
-                              className="ml-3 w-7 h-7"
-                              strokeWidth={2.5}
-                            />
-                          </>
-                        )}
-                      </BrutalButton>
-                    ) : (
-                      <BrutalButton
-                        onClick={handleRetryRound}
-                        variant="secondary"
-                        size="lg"
-                      >
-                        <RotateCcw className="mr-3 w-7 h-7" strokeWidth={2.5} />{" "}
-                        Retry Verdict
-                      </BrutalButton>
-                    )}
+                  <div className="flex gap-4 pt-6 mt-4 border-t-[3px] border-dashed border-[#0F172A]/30">
+                    <BrutalButton
+                      onClick={() => setShowVerdictModal(false)}
+                      variant="secondary"
+                      className="flex-1"
+                    >
+                      Cancel
+                    </BrutalButton>
+                    <BrutalButton
+                      onClick={() => setVerdictStep(2)}
+                      disabled={!selectedEvidenceId}
+                      variant="primary"
+                      className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
+                    >
+                      Next Step
+                    </BrutalButton>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <h3 className="font-bold text-xl mb-3 font-heading">
+                    How Was This Faked?
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {shuffledTactics.map((tactic) => {
+                      const correctTactic = currentRound.clues.find(c => c.id === selectedEvidenceId)?.tactic;
+                      const isCorrect = tactic === correctTactic;
+                      const isTutorial = currentRound.isTutorial && !isTourActive;
+                      const isDisabled = isTutorial && !isCorrect;
+                      
+                      let buttonClass = `p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer `;
+                      if (isDisabled) {
+                        buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
+                      } else if (selectedTactic === tactic) {
+                        buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
+                      } else if (isTutorial && isCorrect) {
+                        buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                      } else {
+                        buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
+                      }
+
+                      return (
+                        <button
+                          key={tactic}
+                          onClick={() => !isDisabled && setSelectedTactic(tactic)}
+                          onMouseEnter={() => !isDisabled && setHoveredTactic(tactic)}
+                          onMouseLeave={() => !isDisabled && setHoveredTactic(null)}
+                          disabled={isDisabled}
+                          className={buttonClass}
+                        >
+                          {tactic}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
+                    {hoveredTactic
+                      ? TACTIC_DESCRIPTIONS[hoveredTactic]
+                      : "Hover over a tactic to see its definition."}
+                  </div>
+
+                  <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
+                    <BrutalButton
+                      onClick={() => {
+                        setVerdictStep(1);
+                        setSelectedTactic(null);
+                      }}
+                      variant="secondary"
+                      className="flex-1"
+                    >
+                      Back
+                    </BrutalButton>
+                    <BrutalButton
+                      onClick={handleSubmitVerdict}
+                      disabled={!selectedTactic}
+                      variant="primary"
+                      className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
+                    >
+                      Submit Report
+                    </BrutalButton>
                   </div>
                 </div>
               )}
-            </motion.div>
-          </div>
+            </div>
+          </>
+        ) : (
+          <VerdictFeedback
+            isSuccess={feedback.isSuccess}
+            title={feedback.title}
+            message={feedback.message}
+            onNext={handleNextRound}
+            onRetry={handleRetryRound}
+            nextButtonText="Next Photo"
+            isFinalRound={currentRoundIndex === IMAGE_ROUNDS.length - 1}
+          />
         )}
-      </AnimatePresence>
+      </VerdictModalContainer>
 
 
     </main>

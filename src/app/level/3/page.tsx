@@ -18,6 +18,7 @@ import {
 import case003Data from "@/data/case003.json";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { CaseHeader } from "@/components/game/CaseHeader";
+import { useLevelScoring } from "@/hooks/useLevelScoring";
 
 type VideoRound = {
   id: string;
@@ -65,13 +66,8 @@ export default function Level3Page() {
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
-  const [timeLeft, setTimeLeft] = useState(60);
   const [toolUsed, setToolUsed] = useState(false);
   const [replaysUsed, setReplaysUsed] = useState(0);
-  
-  const [roundScore, setRoundScore] = useState(100);
-  const [deductions, setDeductions] = useState<{id: number, amount: number}[]>([]);
-
   const [selectedPanel, setSelectedPanel] = useState<"A" | "B" | null>(null);
   const [isPanelLocked, setIsPanelLocked] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -86,6 +82,31 @@ export default function Level3Page() {
   const isDriverInitialized = useRef(false);
   const driverObjRef = useRef<any>(null);
   const [isTourActive, setIsTourActive] = useState(true);
+  
+  const {
+    roundScore,
+    setRoundScore,
+    timeLeft,
+    setTimeLeft,
+    clickPopups: deductions,
+    triggerScoreAnimation,
+    applyDeduction,
+    resetScoring,
+  } = useLevelScoring({
+    isReady,
+    hasTimer: true,
+    isPaused: isPanelLocked || isTourActive || showConfirm || showReveal,
+    onTimeout: () => {
+      applyDeduction(50);
+      setFeedback({
+        isSuccess: false,
+        title: "TIME'S UP",
+        message: "You ran out of time. The AI generates new content fast, you must be faster.",
+        penalty: 50,
+      });
+      setShowReveal(true);
+    }
+  });
 
   useEffect(() => {
     const tutorial = VIDEO_ROUNDS.find(r => r.isTutorial);
@@ -128,45 +149,7 @@ export default function Level3Page() {
     }
   }, [cumulativeScore, roundScore, currentRound, resetGame, router]);
 
-  const applyDeduction = (amount: number) => {
-    if (!currentRound?.isTutorial) {
-      setRoundScore((prev) => Math.max(0, prev - amount));
-      // eslint-disable-next-line
-      setDeductions((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
-      setTimeout(() => {
-        setDeductions((prev) => prev.slice(1));
-      }, 2000);
-    }
-  };
-
-  const handleTimeout = useCallback(() => {
-    applyDeduction(50);
-    setFeedback({
-      isSuccess: false,
-      title: "TIME'S UP",
-      message: "You ran out of time. The AI generates new content fast, you must be faster.",
-      penalty: 50,
-    });
-    setShowReveal(true);
-  }, [currentRound, setRoundScore, setDeductions, setFeedback, setShowReveal]);
-
-  // Timer logic
-  useEffect(() => {
-    if (!isReady || !currentRound || isPanelLocked || isTourActive || showConfirm || showReveal) return;
-    
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleTimeout();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  }, [isReady, currentRound, isPanelLocked, isTourActive, showConfirm, showReveal, handleTimeout]);
+  // Timer and deduct logic replaced by useLevelScoring hook
 
   const swapToRandomRound = () => {
     const availableIndices = sessionRounds
@@ -190,9 +173,8 @@ export default function Level3Page() {
     setSelectedTell(null);
     setShowReveal(false);
     setFeedback(null);
-    setTimeLeft(60);
     setToolUsed(false);
-    setRoundScore(100);
+    resetScoring();
     setReplaysUsed(0);
     
     if (videoARef.current && videoBRef.current) {
@@ -261,13 +243,13 @@ export default function Level3Page() {
         penalty: 50,
       });
     } else if (!isCorrectTell) {
-      applyDeduction(20);
-      finalScore = Math.max(0, finalScore - 20);
+      applyDeduction(25);
+      finalScore = Math.max(0, finalScore - 25);
       setFeedback({
         isSuccess: false,
         title: "LUCKY GUESS",
         message: "You picked the correct panel, but your reasoning was wrong.",
-        penalty: 20,
+        penalty: 25,
       });
       if (!currentRound.isTutorial) {
         addCumulativeScore(finalScore);
@@ -335,9 +317,10 @@ export default function Level3Page() {
               }
               // Auto-advance past the tutorial round
               setCurrentRoundIndex(1);
+              resetScoring();
+              setToolUsed(false);
+              setSelectedTell(null);
               resetRoundState();
-              setDeductions([]);
-              setHoveredTell(null);
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }

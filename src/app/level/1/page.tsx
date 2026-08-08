@@ -16,6 +16,9 @@ import { PostAuthorHeader } from "@/components/game/PostAuthorHeader";
 import { SocialEngagementFooter } from "@/components/game/SocialEngagementFooter";
 import { ObjectivePanel } from "@/components/game/ObjectivePanel";
 import { EvidenceBoard } from "@/components/game/EvidenceBoard";
+import { VerifiedSourcesModal } from "@/components/game/VerifiedSourcesModal";
+import { VerdictModalContainer, VerdictFeedback } from "@/components/game/VerdictModal";
+import { useLevelScoring } from "@/hooks/useLevelScoring";
 
 export type TextSegment = {
   id: string;
@@ -61,7 +64,6 @@ export default function Level1Page() {
   const markCase001RoundPlayed = useGameStore((state) => state.markCase001RoundPlayed);
   
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0);
-  const [roundScore, setRoundScore] = useState<number>(100);
   
   const [sessionRounds, setSessionRounds] = useState<TextRound[]>([]);
   const [isReady, setIsReady] = useState(false);
@@ -102,19 +104,23 @@ export default function Level1Page() {
   const [showVerdictModal, setShowVerdictModal] = useState(false);
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
-  const [scorePopups, setScorePopups] = useState<{ id: number; amount: number }[]>([]);
-  const [clickPopups, setClickPopups] = useState<{ id: number; amount: number; x: number; y: number }[]>([]);
-  
-  const triggerScoreAnimation = (amount: number) => {
-    setScorePopups((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
-    setTimeout(() => {
-      setScorePopups((prev) => prev.slice(1));
-    }, 2000);
-  };
-  
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
-  
+
   const [isTourActive, setIsTourActive] = useState(true);
+  
+  const {
+    roundScore,
+    setRoundScore,
+    scorePopups,
+    clickPopups,
+    triggerScoreAnimation,
+    applyDeduction,
+    resetScoring,
+  } = useLevelScoring({
+    isReady,
+    isPaused: showVerdictModal || isTourActive,
+  });
+  
   const driverObjRef = useRef<any>(null);
 
   const isDriverInitialized = useRef(false);
@@ -149,7 +155,7 @@ export default function Level1Page() {
               }
               // Auto-advance past the tutorial round
               setCurrentRoundIndex(1);
-              setRoundScore(100);
+              resetScoring();
               setFlaggedIds(new Set());
               setFoundClues([]);
               setFoundDecoys([]);
@@ -211,15 +217,8 @@ export default function Level1Page() {
       setFoundClues((prev) => [...prev, segment]);
     } else {
       setFoundDecoys((prev) => [...prev, segment]);
-      if (currentRoundIndex !== 0) {
-        setRoundScore(prev => prev - 10);
-        triggerScoreAnimation(-10);
-        
-        const popupId = Date.now() + Math.random();
-        setClickPopups(prev => [...prev, { id: popupId, amount: 10, x: e.clientX, y: e.clientY }]);
-        setTimeout(() => {
-          setClickPopups(prev => prev.filter(p => p.id !== popupId));
-        }, 1000);
+      if (currentRound.difficulty !== "Tutorial") {
+        applyDeduction(10, e.clientX, e.clientY);
       }
     }
   };
@@ -237,7 +236,7 @@ export default function Level1Page() {
     const isCorrect = correctTactics.includes(selectedTactic);
     
     if (isCorrect) {
-      if (currentRoundIndex !== 0) {
+      if (currentRound.difficulty !== "Tutorial") {
         triggerScoreAnimation(roundScore);
       }
       setFeedback({
@@ -248,9 +247,8 @@ export default function Level1Page() {
           : `Great job! You correctly identified the fake post and the tactic used. (+${roundScore} Points)`
       });
     } else {
-      if (currentRoundIndex !== 0) {
-        setRoundScore(prev => prev - 25);
-        triggerScoreAnimation(-25);
+      if (currentRound.difficulty !== "Tutorial") {
+        applyDeduction(25);
       }
       setFeedback({
         isSuccess: false,
@@ -277,7 +275,7 @@ export default function Level1Page() {
 
     if (currentRoundIndex < sessionRounds.length - 1) {
       setCurrentRoundIndex(prev => prev + 1);
-      setRoundScore(100);
+      resetScoring();
       setFlaggedIds(new Set());
       setFoundClues([]);
       setFoundDecoys([]);
@@ -470,193 +468,102 @@ export default function Level1Page() {
             )}
           </EvidenceBoard>
 
-          <AnimatePresence>
-            {sourceCheckOpen && (
-              <div className="fixed inset-0 z-[100] flex justify-center items-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  className="p-5 md:p-6 w-full max-w-2xl bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative max-h-[90vh] overflow-y-auto"
-                >
-                  <div className="flex justify-between items-center mb-6 border-b-[4px] border-dashed border-[#0F172A]/30 pb-4">
-                    <h2 className="text-3xl font-black font-heading text-[#0F172A] uppercase tracking-wider flex items-center gap-3">
-                      <Search className="w-8 h-8 text-[#0F172A]" strokeWidth={3} />
-                      Verified Sources
-                    </h2>
-                    <button 
-                      onClick={() => setSourceCheckOpen(false)}
-                      className="text-[#0F172A] hover:text-[#FF3366] transition-colors"
-                    >
-                      <XCircle className="w-8 h-8" strokeWidth={2.5} />
-                    </button>
-                  </div>
-                  
-                  <div className="space-y-4 font-sans text-lg">
-                    {currentRound.verifiedSources && currentRound.verifiedSources.map((source: VerifiedSource, i: number) => (
-                      <div key={i} className="p-4 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
-                        <h4 className="font-bold text-[#2563EB] mb-2 font-mono uppercase tracking-widest text-sm">{source.name}</h4>
-                        <p className="text-[#0F172A] font-bold leading-relaxed">{source.text}</p>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-8 pt-4">
-                    <BrutalButton
-                      onClick={() => setSourceCheckOpen(false)}
-                      variant="secondary"
-                      className="w-full"
-                    >
-                      Close Sources
-                    </BrutalButton>
-                  </div>
-                </motion.div>
-              </div>
-            )}
-          </AnimatePresence>
+          <VerifiedSourcesModal
+            isOpen={sourceCheckOpen}
+            onClose={() => setSourceCheckOpen(false)}
+            sources={currentRound.verifiedSources}
+          />
         </div>
       </div>
     </div>
       
       {/* Verdict Modal */}
-      <AnimatePresence>
-        {showVerdictModal && (
-          <div className={`fixed inset-0 z-50 flex justify-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm ${currentRoundIndex === 0 ? "items-start pt-4 md:pt-12" : "items-center"}`}>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className={`p-5 md:p-6 w-full max-w-2xl overflow-y-auto overflow-x-hidden bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative ${
-                currentRoundIndex === 0 ? "max-h-[calc(100vh-320px)] md:max-h-[calc(100vh-280px)]" : "max-h-[90vh]"
-              }`}
-            >
-              {!feedback ? (
-                <>
+      <VerdictModalContainer
+        isOpen={showVerdictModal}
+        alignTop={currentRoundIndex === 0}
+      >
+        {!feedback ? (
+          <>
+            <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
+              Final Verdict Form
+            </h2>
+            
+            <div className="space-y-4 font-sans">
+              <div className="pt-2">
+                <h3 className="font-bold text-xl mb-3 font-heading">How Was This Faked?</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {currentRound.tacticOptions.map(tactic => {
+                    const correctTactics = currentRound.segments.filter(s => s.isClue && s.tactic).map(s => s.tactic);
+                    const isCorrect = correctTactics.includes(tactic);
+                    const isTutorial = currentRound.difficulty === "Tutorial" && !isTourActive;
+                    const isDisabled = isTutorial && !isCorrect;
 
-                  
-                  <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
-                    Final Verdict Form
-                  </h2>
-                  
-                  <div className="space-y-4 font-sans">
-                    <div className="pt-2">
-                      <h3 className="font-bold text-xl mb-3 font-heading">How Was This Faked?</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {currentRound.tacticOptions.map(tactic => {
-                          const correctTactics = currentRound.segments.filter(s => s.isClue && s.tactic).map(s => s.tactic);
-                          const isCorrect = correctTactics.includes(tactic);
-                          const isTutorial = currentRound.difficulty === "Tutorial" && !isTourActive;
-                          const isDisabled = isTutorial && !isCorrect;
-
-                          let buttonClass = `p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer `;
-                          
-                          if (isDisabled) {
-                            buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
-                          } else if (selectedTactic === tactic) {
-                            buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
-                          } else if (isTutorial && isCorrect) {
-                            buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
-                          } else {
-                            buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
-                          }
-
-                          return (
-                            <button
-                              key={tactic}
-                              onClick={() => !isDisabled && setSelectedTactic(tactic)}
-                              onMouseEnter={() => !isDisabled && setHoveredTactic(tactic)}
-                              onMouseLeave={() => !isDisabled && setHoveredTactic(null)}
-                              disabled={isDisabled}
-                              className={buttonClass}
-                            >
-                              {tactic}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      
-                      <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
-                        {hoveredTactic 
-                          ? TACTIC_DESCRIPTIONS[hoveredTactic] 
-                          : "Hover over a tactic to see its definition."}
-                      </div>
-                    </div>
+                    let buttonClass = `p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer `;
                     
-                    {/* Submit */}
-                    <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
-                      <BrutalButton
-                        onClick={() => setShowVerdictModal(false)}
-                        variant="secondary"
-                        className="flex-1"
+                    if (isDisabled) {
+                      buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
+                    } else if (selectedTactic === tactic) {
+                      buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
+                    } else if (isTutorial && isCorrect) {
+                      buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                    } else {
+                      buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
+                    }
+
+                    return (
+                      <button
+                        key={tactic}
+                        onClick={() => !isDisabled && setSelectedTactic(tactic)}
+                        onMouseEnter={() => !isDisabled && setHoveredTactic(tactic)}
+                        onMouseLeave={() => !isDisabled && setHoveredTactic(null)}
+                        disabled={isDisabled}
+                        className={buttonClass}
                       >
-                        Cancel
-                      </BrutalButton>
-                      <BrutalButton
-                        onClick={handleSubmitVerdict}
-                        disabled={!selectedTactic}
-                        variant="primary"
-                        className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
-                      >
-                        Submit Report
-                      </BrutalButton>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-8 space-y-6">
-                  <div className="flex justify-center">
-                    {feedback.isSuccess ? (
-                      <div 
-                        className="w-24 h-24 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A]"
-                      >
-                        <CheckCircle2 className="w-12 h-12 text-[#0F172A]" strokeWidth={2.5} />
-                      </div>
-                    ) : (
-                      <div 
-                        className="w-24 h-24 bg-white border-[4px] border-[#FFB800] flex items-center justify-center shadow-[6px_6px_0px_0px_#FFB800]"
-                      >
-                        <XCircle className="w-12 h-12 text-[#FFB800]" strokeWidth={2.5} />
-                      </div>
-                    )}
-                  </div>
-                  
-                  <h2 className={`text-5xl font-black font-heading ${feedback.isSuccess ? 'text-[#0F172A]' : 'text-[#FFB800]'}`}>
-                    {feedback.title}
-                  </h2>
-                  <p className="text-xl font-sans font-bold text-[#0F172A]/80 max-w-md mx-auto">
-                    {feedback.message}
-                  </p>
-                  
-                  <div className="pt-8">
-                    {feedback.isSuccess ? (
-                      <BrutalButton
-                        onClick={handleNextRound}
-                        variant="primary"
-                        size="lg"
-                        className={currentRoundIndex === 0 ? "bg-[#10B981] hover:bg-[#10B981]/90" : ""}
-                      >
-                        {currentRoundIndex < sessionRounds.length - 1 ? (
-                          <span className="flex items-center justify-center">{currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"} <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
-                        ) : (
-                          <span className="flex items-center justify-center">Complete Case 001 <Trophy className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
-                        )}
-                      </BrutalButton>
-                    ) : (
-                      <BrutalButton
-                        onClick={handleRetryRound}
-                        variant="secondary"
-                        size="lg"
-                      >
-                        <RotateCcw className="mr-3 w-7 h-7" strokeWidth={2.5} /> Retry Verdict
-                      </BrutalButton>
-                    )}
-                  </div>
+                        {tactic}
+                      </button>
+                    );
+                  })}
                 </div>
-              )}
-            </motion.div>
-          </div>
+                
+                <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
+                  {hoveredTactic 
+                    ? TACTIC_DESCRIPTIONS[hoveredTactic] 
+                    : "Hover over a tactic to see its definition."}
+                </div>
+              </div>
+              
+              {/* Submit */}
+              <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
+                <BrutalButton
+                  onClick={() => setShowVerdictModal(false)}
+                  variant="secondary"
+                  className="flex-1"
+                >
+                  Cancel
+                </BrutalButton>
+                <BrutalButton
+                  onClick={handleSubmitVerdict}
+                  disabled={!selectedTactic}
+                  variant="primary"
+                  className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
+                >
+                  Submit Report
+                </BrutalButton>
+              </div>
+            </div>
+          </>
+        ) : (
+          <VerdictFeedback
+            isSuccess={feedback.isSuccess}
+            title={feedback.title}
+            message={feedback.message}
+            onNext={handleNextRound}
+            onRetry={handleRetryRound}
+            nextButtonText={currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"}
+            isFinalRound={currentRoundIndex === sessionRounds.length - 1}
+          />
         )}
-      </AnimatePresence>
+      </VerdictModalContainer>
 
       {/* Click Animations */}
       <AnimatePresence>
