@@ -143,9 +143,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       <AnimatePresence>
         {isTransitioning && (
           <motion.div
-            initial={{ top: "-100vh" }}
+            initial={{ top: "-120vh" }}
             animate={{ top: "0" }}
-            exit={{ top: "100vh" }}
+            exit={{ top: "120vh" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className={`fixed left-0 w-full h-[100vh] ${config.bg} z-[99999] border-y-[8px] ${config.border} flex flex-col items-center justify-center pointer-events-none gap-4`}
             style={{ margin: 0, padding: 0 }}

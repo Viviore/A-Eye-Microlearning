@@ -130,7 +130,7 @@ export default function HowToPlay() {
             <BrutalButton 
               onClick={() => {
                 const preloadPromise = import("@/utils/preloader").then(m => m.preloadGameAssets());
-                startTransition("/quiz/pre", { variant: 'init', waitFor: preloadPromise });
+                startTransition("/level/1", { variant: 'init', waitFor: preloadPromise });
               }}
               size="xl" 
               variant="hero"

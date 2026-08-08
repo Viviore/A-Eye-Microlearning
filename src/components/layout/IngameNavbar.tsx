@@ -23,14 +23,7 @@ export function IngameNavbar() {
   const isC2Done = completedLevels.includes(2) || level2Verdict !== null;
   const isC3Done = completedLevels.includes(3) || level3Verdict !== null;
 
-    const navItems = [
-    {
-      path: "/quiz/pre",
-      label: "Pre-Test",
-      icon: HelpCircle,
-      unlocked: true,
-      done: isPreQuizDone,
-    },
+  const navItems = [
     {
       path: "/level/1",
       label: "Case 001",
@@ -51,13 +44,6 @@ export function IngameNavbar() {
       icon: Video,
       unlocked: true,
       done: isC3Done,
-    },
-    {
-      path: "/quiz/post",
-      label: "Post-Test",
-      icon: CheckCircle2,
-      unlocked: true,
-      done: postQuizScore !== null,
     },
     {
       path: "/results",

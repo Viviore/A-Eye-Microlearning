@@ -297,7 +297,7 @@ export default function Level3Page() {
       } else {
         completeLevel(3);
         setTimeout(() => {
-          startTransition("/quiz/post", { variant: 'next-case' });
+          startTransition("/results", { variant: 'results' });
         }, 1500);
       }
     }
