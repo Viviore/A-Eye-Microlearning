@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Shield, FileText, Camera, Video, BarChart, Home, Lock, CheckCircle2, HelpCircle, Menu, X, Power, AlertOctagon } from "lucide-react";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import { useGameStore } from "@/store/gameStore";
 
 export function IngameNavbar() {
@@ -11,7 +12,7 @@ export function IngameNavbar() {
   const [isConfirmTerminate, setIsConfirmTerminate] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { preQuizScore, postQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict } = useGameStore();
+  const { preQuizScore, postQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict, resetGame } = useGameStore();
 
   if (pathname === "/") {
     return null;
@@ -160,50 +161,62 @@ export function IngameNavbar() {
           </nav>
           
           {/* Separate Return to Home Button */}
-          <button
+          <BrutalButton
+            variant="secondary"
+            size="nav"
             onClick={() => {
               setIsMobileMenuOpen(false);
               setIsConfirmTerminate(true);
             }}
-            className="group flex items-center justify-center gap-2 transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] bg-white text-[#0F172A] hover:bg-[#FF3366] hover:border-[#0F172A] px-4 py-3 xl:py-2 xl:shrink-0 font-sans font-bold"
+            className="group hover:bg-[#FF3366] hover:text-white"
           >
-            <Home className="w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A] group-hover:hidden" />
-            <Power className="w-5 h-5 xl:w-5 xl:h-5 text-white hidden group-hover:block" />
-            <span className="grid text-base xl:text-sm xl:hidden 2xl:grid items-center text-center">
-              <span className="col-start-1 row-start-1 group-hover:opacity-0 transition-opacity">Return to Home</span>
-              <span className="col-start-1 row-start-1 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest text-white">Terminate</span>
+            <Home className="w-4 h-4 mr-2 group-hover:hidden" />
+            <Power className="w-4 h-4 mr-2 hidden group-hover:block text-white" />
+            <span className="grid items-center text-center">
+              <span className="col-start-1 row-start-1 group-hover:opacity-0 transition-opacity whitespace-nowrap">Home</span>
+              <span className="col-start-1 row-start-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-white">Abort</span>
             </span>
-          </button>
+          </BrutalButton>
         </div>
       </div>
 
       {/* Confirmation Modal */}
       {isConfirmTerminate && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white border-[4px] border-[#0F172A] p-6 md:p-8 shadow-[12px_12px_0px_0px_#0F172A] max-w-md w-full animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-4 mb-4 text-[#FF3366]">
-              <AlertOctagon className="w-10 h-10" strokeWidth={2.5} />
-              <h3 className="font-heading font-black text-2xl uppercase text-[#0F172A]">Terminate Session?</h3>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#0F172A]/80 backdrop-blur-md transition-all">
+          <div className="relative bg-[#FAFAFA] border-[4px] border-[#0F172A] p-6 md:p-10 shadow-[12px_12px_0px_0px_#0F172A] max-w-lg w-full animate-in fade-in zoom-in-95 duration-200">
+            {/* Warning badge */}
+            <div className="absolute -top-6 -left-4 md:-left-6 bg-[#FF3366] border-[4px] border-[#0F172A] p-3 shadow-[4px_4px_0px_0px_#0F172A] rotate-[-5deg] z-10">
+              <AlertOctagon className="w-8 h-8 text-white" strokeWidth={3} />
             </div>
-            <p className="font-sans font-bold text-[#0F172A]/70 mb-8 border-l-[4px] border-[#FF3366] pl-4">
-              Are you sure you want to abort the current mission? Any unsaved progress will be kept in your current state, but you will return to headquarters.
+
+            <div className="mt-4 mb-6">
+              <h3 className="font-heading font-black text-3xl md:text-4xl uppercase text-[#0F172A] mb-3 tracking-tight">Terminate Session?</h3>
+              <div className="w-16 h-2 bg-[#FF3366] border-2 border-[#0F172A]"></div>
+            </div>
+            
+            <p className="font-sans font-bold text-[#0F172A]/80 text-base md:text-lg leading-relaxed mb-8 bg-white p-4 md:p-5 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_rgba(15,23,42,0.1)] relative">
+              Are you sure you want to abort the current mission? <span className="text-[#FF3366] font-black uppercase underline decoration-2 underline-offset-4">ALL progress</span>, including your pre-quiz and previous missions, will be <span className="text-[#0F172A] font-black uppercase">permanently deleted</span>.
             </p>
+
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
+              <BrutalButton
+                variant="secondary"
                 onClick={() => setIsConfirmTerminate(false)}
-                className="flex-1 px-4 py-3 bg-gray-100 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all font-heading font-black tracking-wider uppercase text-[#0F172A]"
+                className="flex-1 text-base md:text-lg"
               >
                 Cancel
-              </button>
-              <button
+              </BrutalButton>
+              <BrutalButton
+                variant="primary"
                 onClick={() => {
+                  resetGame();
                   setIsConfirmTerminate(false);
                   router.push("/");
                 }}
-                className="flex-1 px-4 py-3 bg-[#FF3366] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all font-heading font-black tracking-wider uppercase text-white"
+                className="flex-1 bg-[#FF3366] hover:bg-[#FF3366]/90 text-white text-base md:text-lg"
               >
                 Confirm
-              </button>
+              </BrutalButton>
             </div>
           </div>
         </div>
