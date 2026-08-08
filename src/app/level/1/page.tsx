@@ -98,6 +98,7 @@ export default function Level1Page() {
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
   const [scorePopups, setScorePopups] = useState<{ id: number; amount: number }[]>([]);
+  const [clickPopups, setClickPopups] = useState<{ id: number; amount: number; x: number; y: number }[]>([]);
   
   const triggerScoreAnimation = (amount: number) => {
     setScorePopups((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
@@ -195,7 +196,7 @@ export default function Level1Page() {
   
   if (!isReady || !currentRound) return null;
   
-  const handleFlagSegment = (segment: TextSegment) => {
+  const handleFlagSegment = (segment: TextSegment, e: React.MouseEvent) => {
     if (currentRoundIndex === 0 && isTourActive) return;
     if (flaggedIds.has(segment.id)) return;
     if (foundClues.length >= currentRound.cluesNeeded) return;
@@ -209,6 +210,12 @@ export default function Level1Page() {
       if (currentRoundIndex !== 0) {
         setRoundScore(prev => prev - 10);
         triggerScoreAnimation(-10);
+        
+        const popupId = Date.now() + Math.random();
+        setClickPopups(prev => [...prev, { id: popupId, amount: 10, x: e.clientX, y: e.clientY }]);
+        setTimeout(() => {
+          setClickPopups(prev => prev.filter(p => p.id !== popupId));
+        }, 1000);
       }
     }
   };
@@ -381,7 +388,7 @@ export default function Level1Page() {
                   <span
                     key={segment.id}
                     id={`segment-${segment.id}`}
-                    onClick={() => handleFlagSegment(segment)}
+                    onClick={(e) => handleFlagSegment(segment, e)}
                     className={`cursor-pointer transition-all px-1 py-0.5 inline box-decoration-clone rounded-sm leading-relaxed ${
                       isFlagged 
                         ? (segment.isClue 
@@ -559,20 +566,18 @@ export default function Level1Page() {
               id="tutorial-verdict"
               className="mt-auto pt-8 border-t-[4px] border-dashed border-[#0F172A]/30 transition-all duration-500 shrink-0"
             >
-              <button
+              <BrutalButton
                 id="tutorial-verdict-btn"
                 onClick={() => {
                   setShowVerdictModal(true);
                 }}
                 disabled={!canFileVerdict}
-                className={`w-full p-4 border-[4px] border-[#0F172A] font-heading font-black text-xl tracking-widest uppercase transition-all flex items-center justify-center ${
-                  canFileVerdict 
-                    ? "bg-[#2563EB] text-white shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none"
-                    : "bg-[#FAFAFA] text-[#0F172A]/40 shadow-none cursor-not-allowed bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#0F172A08_10px,#0F172A08_20px)]"
-                }`}
+                variant="blue"
+                size="lg"
+                className="w-full flex items-center justify-center"
               >
                 {canFileVerdict ? <><CheckCircle2 className="mr-3 w-7 h-7 inline" strokeWidth={3} /> File Verdict</> : "Gather Evidence First"}
-              </button>
+              </BrutalButton>
             </div>
           </Card>
           </div>
@@ -717,6 +722,23 @@ export default function Level1Page() {
             </motion.div>
           </div>
         )}
+      </AnimatePresence>
+
+      {/* Click Animations */}
+      <AnimatePresence>
+        {clickPopups.map((popup) => (
+          <div key={popup.id} className="fixed z-[150] pointer-events-none -translate-x-1/2 -translate-y-1/2" style={{ left: popup.x, top: popup.y }}>
+            <motion.div
+              initial={{ opacity: 1, y: -20, scale: 0.8 }}
+              animate={{ opacity: 0, y: -80, scale: 1.5 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="text-red-500 font-black font-heading text-4xl whitespace-nowrap drop-shadow-[2px_2px_0_rgba(15,23,42,1)]"
+            >
+              -{popup.amount}
+            </motion.div>
+          </div>
+        ))}
       </AnimatePresence>
 
       </main>
