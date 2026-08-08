@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import case003Data from "@/data/case003.json";
 import { AnimatedBackground } from "@/components/ui/animated-background";
+import { CaseHeader } from "@/components/game/CaseHeader";
 
 type VideoRound = {
   id: string;
@@ -377,25 +378,17 @@ export default function Level3Page() {
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
         
         {/* Header Section */}
-        <motion.div variants={fadeUp} className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
-          <div className="flex items-center gap-3">
-            <div className="px-3 py-1.5 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2">
-              <FileVideo className="w-4 h-4 text-[#0F172A]" />
-              <span>CASE 003 // VIDEO INVESTIGATION</span>
-            </div>
-            
-            <span
-              className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] border-[#0F172A] ${
-                currentRound.isTutorial ? "bg-white text-[#0F172A]" : "bg-[#FFB800] text-[#0F172A]"
-              }`}
-            >
-              {currentRound.isTutorial
-                ? "TUTORIAL"
-                : `VIDEO ${sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1} / ${sessionRounds.filter(r => !r.isTutorial).length}`}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
+        <motion.div variants={fadeUp} className="w-full">
+          <CaseHeader 
+            caseNumber="CASE 003"
+            caseTitle="VIDEO INVESTIGATION"
+            isTutorial={currentRound.isTutorial}
+            currentRoundNumber={sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1}
+            totalRounds={sessionRounds.filter(r => !r.isTutorial).length}
+            score={cumulativeScore + roundScore}
+            scorePopups={deductions}
+            icon="fileVideo"
+          >
             <div className="relative group">
               <button
                 disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
@@ -433,28 +426,7 @@ export default function Level3Page() {
               <div className="text-sm font-bold uppercase text-red-500">Timer</div>
               <div className="text-3xl font-black font-heading">{timeLeft}s</div>
             </div>
-
-            <div className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative">
-              <span>Score: </span>
-              <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
-                {cumulativeScore + roundScore}
-              </span>
-              <AnimatePresence>
-                {deductions.map((d) => (
-                  <motion.div
-                    key={d.id}
-                    initial={{ opacity: 1, y: 0, scale: 0.8 }}
-                    animate={{ opacity: 0, y: -40, scale: 1.2 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-500 font-black font-heading text-2xl z-50 whitespace-nowrap pointer-events-none"
-                  >
-                    -{d.amount}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
+          </CaseHeader>
         </motion.div>
 
         {/* Video Area */}

@@ -11,6 +11,11 @@ import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, Arrow
 import { useRouter } from "next/navigation";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
 import case001Data from "@/data/case001.json";
+import { CaseHeader } from "@/components/game/CaseHeader";
+import { PostAuthorHeader } from "@/components/game/PostAuthorHeader";
+import { SocialEngagementFooter } from "@/components/game/SocialEngagementFooter";
+import { ObjectivePanel } from "@/components/game/ObjectivePanel";
+import { EvidenceBoard } from "@/components/game/EvidenceBoard";
 
 export type TextSegment = {
   id: string;
@@ -302,51 +307,16 @@ export default function Level1Page() {
       <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8 pb-20">
         
         {/* Header Info */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
-            <div className="flex items-center gap-3">
-              <div 
-                className="px-3 py-1.5 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2"
-              >
-                <FileText className="w-4 h-4 text-[#0F172A]" />
-                <span>CASE 001 // TEXT FEED</span>
-              </div>
-              <span 
-                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] border-[#0F172A] ${
-                  currentRoundIndex === 0 ? "bg-white text-[#0F172A]" : "bg-[#FFB800] text-[#0F172A]"
-                }`}
-              >
-                {currentRoundIndex === 0
-                  ? "TUTORIAL"
-                  : `POST ${currentRoundIndex} / ${sessionRounds.length - 1}`}
-              </span>
-            </div>
-            <div id="tutorial-score" className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
-              <span>Score: </span>
-              <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
-                {currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
-                
-                <AnimatePresence>
-                  {scorePopups.map((popup) => (
-                    <motion.div 
-                      key={popup.id}
-                      initial={{ opacity: 0, y: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, y: -30, scale: 1.2 }}
-                      exit={{ opacity: 0, y: -45, scale: 0.8 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className={`absolute left-1/2 -translate-x-1/2 top-0 pointer-events-none font-black whitespace-nowrap ${
-                        popup.amount > 0 
-                          ? "text-[#FFB800] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]" 
-                          : "text-[#FF3366] drop-shadow-[2px_2px_0px_rgba(15,23,42,1)]"
-                      }`}
-                    >
-                      {popup.amount > 0 ? `+${popup.amount}` : popup.amount}
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </span>
-            </div>
-            
-          </div>
+        <CaseHeader 
+          caseNumber="CASE 001"
+          caseTitle="TEXT FEED"
+          isTutorial={currentRoundIndex === 0}
+          currentRoundNumber={currentRoundIndex}
+          totalRounds={sessionRounds.length - 1}
+          score={currentRoundIndex === 0 ? roundScore : cumulativeScore + roundScore}
+          scorePopups={scorePopups}
+          icon="fileText"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
@@ -367,17 +337,11 @@ export default function Level1Page() {
               </div>
               
               <div className="p-6 md:p-8 md:pt-10 flex flex-col flex-1">
-                <div className="flex items-start md:items-center gap-5 mb-8 border-b-[4px] border-dashed border-[#0F172A]/30 pb-6">
-                  <div 
-                    className="w-16 h-16 bg-[#2563EB] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center overflow-hidden shrink-0"
-                  >
-                    <img src={`https://api.dicebear.com/10.x/critters/svg?seed=${encodeURIComponent(currentRound.postAuthor)}`} alt="avatar" className="w-full h-full object-cover bg-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-heading font-black text-2xl md:text-3xl leading-tight text-[#0F172A] uppercase tracking-wide">{currentRound.postAuthor}</h4>
-                    <p className="text-base font-mono font-bold text-[#0F172A]/70 mt-1">{currentRound.postHandle} • <span className="bg-[#FFB800]/30 px-2 py-0.5">{currentRound.postTime}</span></p>
-                  </div>
-                </div>
+                <PostAuthorHeader 
+                  authorName={currentRound.postAuthor}
+                  handle={currentRound.postHandle}
+                  time={currentRound.postTime}
+                />
                 
                 <div className="text-xl md:text-[22px] font-sans font-bold leading-[2.2] text-[#0F172A]">
               {currentRound.segments.map((segment) => {
@@ -429,27 +393,7 @@ export default function Level1Page() {
             )}
             
             {/* Social Engagement Footer */}
-            <div className="mt-auto pt-6 flex items-center justify-between text-[#0F172A]/50 font-bold font-mono text-sm sm:text-base border-t-[3px] border-dashed border-[#0F172A]/20">
-              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{124 + (currentRound.id * 17) % 500}</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-[#10B981] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#10B981]/10 transition-colors"><Repeat2 className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{(2.1 + (currentRound.id * 0.3) % 15).toFixed(1)}K</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-[#FF3366] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#FF3366]/10 transition-colors"><Heart className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{(18.4 + (currentRound.id * 2.7) % 80).toFixed(1)}K</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group hidden sm:flex">
-                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><Eye className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{(142 + (currentRound.id * 31) % 900).toFixed(1)}K</span>
-              </div>
-              <div className="flex items-center hover:text-[#0F172A] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#0F172A]/10 transition-colors"><Share className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-              </div>
-            </div>
+            <SocialEngagementFooter seed={currentRound.id} />
             
             </div>
             </Card>
@@ -461,151 +405,118 @@ export default function Level1Page() {
         {/* Right Column: Evidence Board & Source Check */}
         <div className={`lg:col-span-5 flex flex-col gap-6 h-full ${currentRoundIndex === 0 ? "" : "sticky top-28"}`}>
           
-          <div 
-            className="bg-[#FFB800] p-6 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative overflow-hidden shrink-0"
-          >
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0F172A 2px, transparent 2px)', backgroundSize: '16px 16px' }}></div>
-            
-            <div className="relative z-10">
-              <h3 className="font-heading font-black text-3xl mb-3 flex items-center gap-3 text-[#0F172A] uppercase tracking-wide">
-                <span className="bg-[#0F172A] p-1 text-[#FFB800]"><Search className="w-6 h-6" strokeWidth={3} /></span> Objective
-              </h3>
-              <p className="text-lg md:text-[19px] text-[#0F172A] font-bold font-sans leading-relaxed">
-                Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
-                Find at least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] ml-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong></span> to proceed.
-              </p>
-            </div>
-          </div>
+          <ObjectivePanel>
+            Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
+            Find at least <span className="bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] ml-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong></span> to proceed.
+          </ObjectivePanel>
 
-          <Card 
-            id="tutorial-evidence"
-            className="p-6 bg-[#FAFAFA] border-[4px] border-[#0F172A] rounded-none shadow-[12px_12px_0px_0px_#0F172A] flex-1 flex flex-col"
+          <EvidenceBoard
+            flaggedCount={foundClues.length}
+            requiredCount={currentRound.cluesNeeded}
+            toolsSlot={
+              <>
+                <BrutalButton
+                  id="btn-source-check"
+                  onClick={handleOpenSourceCheck}
+                  disabled={currentRoundIndex === 0 && isTourActive}
+                  variant={sourceCheckOpen ? "primary" : "secondary"}
+                  className={`w-full ${sourceCheckOpen ? "bg-[#FF3366] text-white hover:bg-[#FF3366]/90" : "bg-[#0F172A] text-white hover:bg-[#FFB800] hover:text-[#0F172A]"}`}
+                >
+                  <Search className="mr-3 w-6 h-6" strokeWidth={3} />
+                  {sourceCheckOpen ? "CLOSE SOURCE CHECK" : "OPEN SOURCE CHECK"}
+                </BrutalButton>
+                
+                <BrutalButton
+                  id="tutorial-verdict-btn"
+                  onClick={() => {
+                    setShowVerdictModal(true);
+                  }}
+                  disabled={!canFileVerdict}
+                  variant="blue"
+                  size="lg"
+                  className="w-full flex items-center justify-center"
+                >
+                  {canFileVerdict ? <><CheckCircle2 className="mr-3 w-7 h-7 inline" strokeWidth={3} /> File Verdict</> : "Gather Evidence First"}
+                </BrutalButton>
+              </>
+            }
           >
-            <div className="flex items-center justify-between mb-6 pb-4 border-b-[4px] border-[#0F172A] shrink-0">
-              <h2 className="text-3xl md:text-4xl font-black font-heading uppercase tracking-wide flex items-center gap-3 text-[#0F172A]">
-                <Flag className="w-8 h-8 text-[#FF3366]" strokeWidth={3} /> Evidence
-              </h2>
-              <span 
-                className="font-mono text-lg font-black bg-white border-[4px] border-[#0F172A] text-[#0F172A] px-4 py-1.5 shadow-[4px_4px_0px_0px_#0F172A]"
-              >
-                {foundClues.length} / {currentRound.cluesNeeded}
-              </span>
-            </div>
-            
-            <div className="min-h-[160px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-4 bg-white transition-all duration-500 relative shadow-inner"
-            >
-              {foundClues.length === 0 ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/30">
-                  <Flag className="w-10 h-10 mb-2 opacity-50" strokeWidth={2} />
-                  <p className="font-heading font-bold text-lg uppercase tracking-widest text-center">
-                    [ No clues flagged yet ]
-                  </p>
-                </div>
-              ) : (
-                <AnimatePresence>
-                  {foundClues.map((clue, idx) => (
-                    <motion.div
-                      key={clue.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="bg-[#FFB800] p-3 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative"
-                    >
-                      <p className="text-xs font-bold font-mono text-[#0F172A]/70 mb-1 uppercase tracking-widest">Found Clue:</p>
-                      <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">&quot;{clue.text.substring(0, 50)}...&quot;</p>
-                      {clue.explanation && (
-                        <p className="text-[15px] text-[#1D2A3C] font-sans font-bold mt-2 pt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
-                          {clue.explanation}
-                        </p>
-                      )}
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              )}
-            </div>
-            
-            <div 
-              id="tutorial-source"
-              className="mt-8 space-y-4 transition-all duration-500 shrink-0"
-            >
-              <BrutalButton
-                id="btn-source-check"
-                onClick={handleOpenSourceCheck}
-                disabled={currentRoundIndex === 0 && isTourActive}
-                variant={sourceCheckOpen ? "primary" : "secondary"}
-                className={`w-full ${sourceCheckOpen ? "bg-[#FF3366] text-white hover:bg-[#FF3366]/90" : "bg-[#0F172A] text-white hover:bg-[#FFB800] hover:text-[#0F172A]"}`}
-              >
-                <Search className="mr-3 w-6 h-6" strokeWidth={3} />
-                {sourceCheckOpen ? "CLOSE SOURCE CHECK" : "OPEN SOURCE CHECK"}
-              </BrutalButton>
-              
+            {foundClues.length === 0 ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/30 mt-16">
+                <Flag className="w-10 h-10 mb-2 opacity-50" strokeWidth={2} />
+                <p className="font-heading font-bold text-lg uppercase tracking-widest text-center">
+                  [ No clues flagged yet ]
+                </p>
+              </div>
+            ) : (
               <AnimatePresence>
-                {sourceCheckOpen && (
-                  <div className="fixed inset-0 z-[100] flex justify-center items-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                      className="p-5 md:p-6 w-full max-w-2xl bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative max-h-[90vh] overflow-y-auto"
-                    >
-                      <div className="flex justify-between items-center mb-6 border-b-[4px] border-dashed border-[#0F172A]/30 pb-4">
-                        <h2 className="text-3xl font-black font-heading text-[#0F172A] uppercase tracking-wider flex items-center gap-3">
-                          <Search className="w-8 h-8 text-[#0F172A]" strokeWidth={3} />
-                          Verified Sources
-                        </h2>
-                        <button 
-                          onClick={() => setSourceCheckOpen(false)}
-                          className="text-[#0F172A] hover:text-[#FF3366] transition-colors"
-                        >
-                          <XCircle className="w-8 h-8" strokeWidth={2.5} />
-                        </button>
-                      </div>
-                      
-                      <div className="space-y-4 font-sans text-lg">
-                        {currentRound.verifiedSources && currentRound.verifiedSources.map((source: VerifiedSource, i: number) => (
-                          <div key={i} className="p-4 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
-                            <h4 className="font-bold text-[#2563EB] mb-2 font-mono uppercase tracking-widest text-sm">{source.name}</h4>
-                            <p className="text-[#0F172A] font-bold leading-relaxed">{source.text}</p>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <div className="mt-8 pt-4">
-                        <BrutalButton
-                          onClick={() => setSourceCheckOpen(false)}
-                          variant="secondary"
-                          className="w-full"
-                        >
-                          Close Sources
-                        </BrutalButton>
-                      </div>
-                    </motion.div>
-                  </div>
-                )}
+                {foundClues.map((clue, idx) => (
+                  <motion.div
+                    key={clue.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-[#FFB800] p-3 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative"
+                  >
+                    <p className="text-xs font-bold font-mono text-[#0F172A]/70 mb-1 uppercase tracking-widest">Found Clue:</p>
+                    <p className="text-lg font-sans font-bold leading-snug text-[#0F172A]">&quot;{clue.text.substring(0, 50)}...&quot;</p>
+                    {clue.explanation && (
+                      <p className="text-[15px] text-[#1D2A3C] font-sans font-bold mt-2 pt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
+                        {clue.explanation}
+                      </p>
+                    )}
+                  </motion.div>
+                ))}
               </AnimatePresence>
-            </div>
-            
-            <div 
-              id="tutorial-verdict"
-              className="mt-auto pt-8 border-t-[4px] border-dashed border-[#0F172A]/30 transition-all duration-500 shrink-0"
-            >
-              <BrutalButton
-                id="tutorial-verdict-btn"
-                onClick={() => {
-                  setShowVerdictModal(true);
-                }}
-                disabled={!canFileVerdict}
-                variant="blue"
-                size="lg"
-                className="w-full flex items-center justify-center"
-              >
-                {canFileVerdict ? <><CheckCircle2 className="mr-3 w-7 h-7 inline" strokeWidth={3} /> File Verdict</> : "Gather Evidence First"}
-              </BrutalButton>
-            </div>
-          </Card>
-          </div>
+            )}
+          </EvidenceBoard>
+
+          <AnimatePresence>
+            {sourceCheckOpen && (
+              <div className="fixed inset-0 z-[100] flex justify-center items-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  className="p-5 md:p-6 w-full max-w-2xl bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative max-h-[90vh] overflow-y-auto"
+                >
+                  <div className="flex justify-between items-center mb-6 border-b-[4px] border-dashed border-[#0F172A]/30 pb-4">
+                    <h2 className="text-3xl font-black font-heading text-[#0F172A] uppercase tracking-wider flex items-center gap-3">
+                      <Search className="w-8 h-8 text-[#0F172A]" strokeWidth={3} />
+                      Verified Sources
+                    </h2>
+                    <button 
+                      onClick={() => setSourceCheckOpen(false)}
+                      className="text-[#0F172A] hover:text-[#FF3366] transition-colors"
+                    >
+                      <XCircle className="w-8 h-8" strokeWidth={2.5} />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4 font-sans text-lg">
+                    {currentRound.verifiedSources && currentRound.verifiedSources.map((source: VerifiedSource, i: number) => (
+                      <div key={i} className="p-4 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+                        <h4 className="font-bold text-[#2563EB] mb-2 font-mono uppercase tracking-widest text-sm">{source.name}</h4>
+                        <p className="text-[#0F172A] font-bold leading-relaxed">{source.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-8 pt-4">
+                    <BrutalButton
+                      onClick={() => setSourceCheckOpen(false)}
+                      variant="secondary"
+                      className="w-full"
+                    >
+                      Close Sources
+                    </BrutalButton>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
+    </div>
       
       {/* Verdict Modal */}
       <AnimatePresence>

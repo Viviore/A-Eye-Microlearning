@@ -28,6 +28,11 @@ import {
 import { useRouter } from "next/navigation";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
 import case002Data from "@/data/case002.json";
+import { CaseHeader } from "@/components/game/CaseHeader";
+import { PostAuthorHeader } from "@/components/game/PostAuthorHeader";
+import { SocialEngagementFooter } from "@/components/game/SocialEngagementFooter";
+import { ObjectivePanel } from "@/components/game/ObjectivePanel";
+import { EvidenceBoard } from "@/components/game/EvidenceBoard";
 
 type VisualClue = {
   id: string;
@@ -431,52 +436,16 @@ export default function Level2Page() {
       <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8 pb-20">
         
         {/* Header Info */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
-            <div className="flex items-center gap-3">
-              <div
-                className="px-3 py-1.5 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2"
-              >
-                
-                <FileText className="w-4 h-4 text-[#0F172A]" />
-                <span>CASE 002 // PHOTO INVESTIGATION</span>
-              </div>
-              
-              <span
-                className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] border-[#0F172A] ${
-                  currentRound.isTutorial ? "bg-white text-[#0F172A]" : "bg-[#FFB800] text-[#0F172A]"
-                }`}
-              >
-                {currentRound.isTutorial
-                  ? "TUTORIAL"
-                  : `PHOTO ${sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1} / ${sessionRounds.filter(r => !r.isTutorial).length}`}
-              </span>
-            </div>
-
-            <div
-              id="tutorial-score"
-              className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative"
-            >
-              <span>Score: </span>
-              <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
-                {cumulativeScore + roundScore}
-              </span>
-
-              <AnimatePresence>
-                {deductions.map((d) => (
-                  <motion.div
-                    key={d.id}
-                    initial={{ opacity: 1, y: 0, scale: 0.8 }}
-                    animate={{ opacity: 0, y: -40, scale: 1.2 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-500 font-black font-heading text-2xl z-50 whitespace-nowrap pointer-events-none"
-                  >
-                    -{d.amount}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
+        <CaseHeader 
+          caseNumber="CASE 002"
+          caseTitle="PHOTO INVESTIGATION"
+          isTutorial={currentRound.isTutorial}
+          currentRoundNumber={sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1}
+          totalRounds={sessionRounds.filter(r => !r.isTutorial).length}
+          score={cumulativeScore + roundScore}
+          scorePopups={deductions}
+          icon="fileText"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Photo Feed */}
@@ -488,53 +457,40 @@ export default function Level2Page() {
             id="tutorial-post"
             className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex-1 flex flex-col"
           >
-            <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
-              <div
-                className="w-14 h-14 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center overflow-hidden"
-              >
-                <img src={`https://api.dicebear.com/10.x/critters/svg?seed=${encodeURIComponent(currentRound.postAuthorName)}`} alt="avatar" className="w-full h-full object-cover" />
-              </div>
-              <div>
-                <h4 className="font-heading font-bold text-2xl leading-tight text-[#0F172A] tracking-wide">
-                  {currentRound.postAuthorName}
-                </h4>
-                
-                <p className="text-[15px] font-sans font-bold text-[#0F172A]/60">
-                  {currentRound.postHandle}
-                </p>
-              </div>
-              
-              <div className="ml-auto flex items-center gap-4 transition-all duration-300">
-                <div id="tutorial-tool" className="relative group">
-                  <button
-                    disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
-                    onClick={() => {
-                      if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
-                        setToolUsed(true);
-                        applyDeduction(80);
-                        setTimeLeft((prev) => prev + 30);
-                      }
-                    }}
-                    className="w-10 h-10 p-0 rounded-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center justify-center text-[#0F172A] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FFB800]"
-                    title="+30 Seconds (-80 pts)"
-                  >
-                    <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
-                  </button>
-                  {/* Tooltip */}
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg">
-                    +30s (-80 pts)
-                  </div>
-                </div>
-
-                <div 
-                  id="tutorial-timer" 
-                  className="text-right transition-all duration-500"
+            <PostAuthorHeader 
+              authorName={currentRound.postAuthorName}
+              handle={currentRound.postHandle}
+              avatarColor="bg-[#FFB800]"
+            >
+              <div id="tutorial-tool" className="relative group">
+                <button
+                  disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
+                  onClick={() => {
+                    if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
+                      setToolUsed(true);
+                      applyDeduction(80);
+                      setTimeLeft((prev) => prev + 30);
+                    }
+                  }}
+                  className="w-10 h-10 p-0 rounded-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center justify-center text-[#0F172A] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FFB800]"
+                  title="+30 Seconds (-80 pts)"
                 >
-                  <div className="text-sm font-bold uppercase text-red-500">Timer</div>
-                  <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+                  <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
+                </button>
+                {/* Tooltip */}
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg">
+                  +30s (-80 pts)
                 </div>
               </div>
-            </div>
+
+              <div 
+                id="tutorial-timer" 
+                className="text-right transition-all duration-500"
+              >
+                <div className="text-sm font-bold uppercase text-red-500">Timer</div>
+                <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+              </div>
+            </PostAuthorHeader>
 
 
             <p className="text-xl font-sans leading-relaxed text-[#0F172A] mb-6">
@@ -690,116 +646,28 @@ export default function Level2Page() {
             )}
 
             {/* Social Engagement Footer */}
-            <div className="mt-auto pt-8 flex items-center justify-between text-[#0F172A]/50 font-bold font-mono text-sm sm:text-base border-t-[3px] border-dashed border-[#0F172A]/20">
-              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{124 + ((currentRoundIndex + 1) * 17) % 500}</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-[#10B981] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#10B981]/10 transition-colors"><Repeat2 className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{(2.1 + ((currentRoundIndex + 1) * 0.3) % 15).toFixed(1)}K</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-[#FF3366] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#FF3366]/10 transition-colors"><Heart className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{(18.4 + ((currentRoundIndex + 1) * 2.7) % 80).toFixed(1)}K</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group hidden sm:flex">
-                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><Eye className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-                <span>{(142 + ((currentRoundIndex + 1) * 31) % 900).toFixed(1)}K</span>
-              </div>
-              <div className="flex items-center hover:text-[#0F172A] cursor-pointer transition-colors group">
-                <div className="p-2 rounded-full group-hover:bg-[#0F172A]/10 transition-colors"><Share className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
-              </div>
-            </div>
+            <SocialEngagementFooter seed={currentRoundIndex + 1} />
           </div>
         </div>
 
         {/* Right Column: Evidence Board */}
         <div className={`lg:col-span-5 flex flex-col gap-6 ${currentRound.isTutorial ? "" : "sticky top-28"}`}>
           
-          <div
-            className="bg-[#FFB800] p-5 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] relative"
-          >
-            <h3 className="font-heading font-black text-2xl mb-1 flex items-center gap-2 text-[#0F172A] uppercase tracking-wider">
-              <Search className="w-5 h-5 text-[#0F172A]" strokeWidth={2.5} />{" "}
-              Objective:
-            </h3>
-            <p className="text-[17px] text-[#0F172A]/90 font-bold font-sans leading-relaxed">
-              Use the Magnifier Tool to inspect the viral photo. Click on any
-              areas that look like AI generation mistakes to flag them. Find at
-              least{" "}
-              <strong className="text-[#0F172A] font-black underline decoration-solid decoration-2 underline-offset-4">
-                {currentRound.cluesNeeded} visual clue
-                {currentRound.cluesNeeded !== 1 ? "s" : ""}
-              </strong>{" "}
-              to proceed.
-            </p>
-          </div>
+          <ObjectivePanel>
+            Use the Magnifier Tool to inspect the viral photo. Click on any
+            areas that look like AI generation mistakes to flag them. Find at
+            least{" "}
+            <strong className="text-[#0F172A] font-black underline decoration-solid decoration-2 underline-offset-4">
+              {currentRound.cluesNeeded} visual clue
+              {currentRound.cluesNeeded !== 1 ? "s" : ""}
+            </strong>{" "}
+            to proceed.
+          </ObjectivePanel>
 
-          <div
-            id="tutorial-evidence"
-            className="p-6 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
-          >
-
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-3xl font-black font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">
-                <Flag className="w-7 h-7 text-[#0F172A]" strokeWidth={2.5} /> Evidence
-              </h2>
-              <span 
-                className="font-mono text-sm font-bold bg-[#FFB800] border-[4px] border-[#0F172A] text-[#0F172A] px-3 py-1 shadow-[4px_4px_0px_0px_#0F172A]"
-              >
-                {foundClues.length} / {currentRound.cluesNeeded}
-              </span>
-            </div>
-
-            <div className="min-h-[150px] border-[4px] border-dashed border-[#0F172A] p-4 space-y-3 bg-[linear-gradient(45deg,#0F172A11_25%,transparent_25%,transparent_50%,#0F172A11_50%,#0F172A11_75%,transparent_75%,transparent)] bg-[length:16px_16px] transition-all duration-500 relative"
-            >
-              {foundClues.length === 0 && foundDecoys.length === 0 ? (
-                <p className="text-center text-[#0F172A]/40 font-mono text-sm absolute inset-0 flex items-center justify-center">
-                  [ No clues flagged yet ]
-                </p>
-              ) : (
-                <AnimatePresence>
-                  {[...foundClues, ...foundDecoys].map((clue, idx) => (
-                    <motion.div
-                      key={clue.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                      }}
-                      className={`p-3 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative ${clue.isDecoy ? "bg-red-400" : "bg-[#FFB800]"}`}
-                    >
-                      <div className="flex items-start gap-2">
-                        {clue.isDecoy ? (
-                          <XCircle className="w-5 h-5 text-[#0F172A] shrink-0 mt-0.5" strokeWidth={2.5} />
-                        ) : (
-                          <CheckCircle2 className="w-5 h-5 text-[#0F172A] shrink-0 mt-0.5" strokeWidth={2.5} />
-                        )}
-                        <div>
-                          <p className="text-xs font-bold font-mono text-[#0F172A]/70 uppercase tracking-widest mb-1">
-                            {clue.isDecoy ? "Decoy Logged" : "Clue Flagged"}
-                          </p>
-                          <p className="text-lg font-sans font-black leading-snug text-[#0F172A]">
-                            {clue.title}
-                          </p>
-                          
-                          <p className="text-[14px] text-[#0F172A]/90 font-sans font-bold mt-1">
-                            {showVerdictModal || feedback ? clue.explanation : "Analyze the image to determine why this is suspicious."}
-                          </p>
-
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              )}
-            </div>
-
-            <div 
-              id="tutorial-verdict"
-              className="mt-6 pt-6 border-t-[4px] border-dashed border-[#0F172A] transition-all duration-500"
-            >
+          <EvidenceBoard
+            flaggedCount={foundClues.length}
+            requiredCount={currentRound.cluesNeeded}
+            toolsSlot={
               <BrutalButton
                 id="tutorial-verdict-btn"
                 onClick={() => {
@@ -812,8 +680,48 @@ export default function Level2Page() {
               >
                 {foundClues.length >= currentRound.cluesNeeded ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
               </BrutalButton>
-            </div>
-          </div>
+            }
+          >
+            {foundClues.length === 0 && foundDecoys.length === 0 ? (
+              <p className="text-center text-[#0F172A]/40 font-mono text-sm absolute inset-0 flex items-center justify-center">
+                [ No clues flagged yet ]
+              </p>
+            ) : (
+              <AnimatePresence>
+                {[...foundClues, ...foundDecoys].map((clue, idx) => (
+                  <motion.div
+                    key={clue.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                    }}
+                    className={`p-3 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative ${clue.isDecoy ? "bg-red-400" : "bg-[#FFB800]"}`}
+                  >
+                    <div className="flex items-start gap-2">
+                      {clue.isDecoy ? (
+                        <XCircle className="w-5 h-5 text-[#0F172A] shrink-0 mt-0.5" strokeWidth={2.5} />
+                      ) : (
+                        <CheckCircle2 className="w-5 h-5 text-[#0F172A] shrink-0 mt-0.5" strokeWidth={2.5} />
+                      )}
+                      <div>
+                        <p className="text-xs font-bold font-mono text-[#0F172A]/70 uppercase tracking-widest mb-1">
+                          {clue.isDecoy ? "Decoy Logged" : "Clue Flagged"}
+                        </p>
+                        <p className="text-lg font-sans font-black leading-snug text-[#0F172A]">
+                          {clue.title}
+                        </p>
+                        
+                        <p className="text-[14px] text-[#0F172A]/90 font-sans font-bold mt-1">
+                          {showVerdictModal || feedback ? clue.explanation : "Analyze the image to determine why this is suspicious."}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )}
+          </EvidenceBoard>
 
           {/* Detective's Handbook / Tip of the Day */}
           <div
