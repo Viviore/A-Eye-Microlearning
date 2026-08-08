@@ -624,12 +624,9 @@ export default function Level2Page() {
           <ObjectivePanel>
             Use the Magnifier Tool to inspect the viral photo. Click on any
             areas that look like AI generation mistakes to flag them. Find at
-            least{" "}
-            <strong className="text-[#0F172A] font-black underline decoration-solid decoration-2 underline-offset-4">
-              {currentRound.cluesNeeded} visual clue
-              {currentRound.cluesNeeded !== 1 ? "s" : ""}
-            </strong>{" "}
-            to proceed.
+            least <span className="bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] ml-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">
+              {currentRound.cluesNeeded} visual clue{currentRound.cluesNeeded !== 1 ? "s" : ""}
+            </strong></span> to proceed.
           </ObjectivePanel>
 
           <EvidenceBoard
