@@ -326,16 +326,11 @@ export default function Level3Page() {
           { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "You have 60 seconds per round. Running out of time means a -50 penalty and a new round." } },
           { popover: { title: 'A-Eye Agent', description: "Click the panel you think is AI. After confirming, you must explain WHY. Good luck!", doneBtnText: "Start Playing" } }
         ],
-        onDestroyStarted: () => {
+        onDestroyed: () => {
           setIsTourActive(false);
           if (videoARef.current && videoBRef.current) {
               videoARef.current.play().catch(e => console.log(e));
               videoBRef.current.play().catch(e => console.log(e));
-          }
-          if (driverObjRef.current?.hasNextStep()) {
-            driverObjRef.current.destroy();
-          } else {
-            driverObjRef.current.destroy();
           }
         }
       });
