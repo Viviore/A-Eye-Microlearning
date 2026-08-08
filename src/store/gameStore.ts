@@ -271,7 +271,6 @@ export const useGameStore = create<GameState>((set) => ({
       playedCase001Rounds: [],
       playedCase002Rounds: [],
       playedCase003Rounds: [],
-      sessions: initialSessions(),
     }),
 
   // Level 1 state initialization
