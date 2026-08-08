@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BrutalButton } from "@/components/ui/brutal-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck } from "lucide-react";
+import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck, MessageCircle, Repeat2, Heart, Eye, Share } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
 import case001Data from "@/data/case001.json";
@@ -367,7 +367,7 @@ export default function Level1Page() {
                 <div className="w-3 h-3 rounded-full bg-green-500 border-2 border-[#0F172A]"></div>
               </div>
               
-              <div className="p-6 md:p-8 md:pt-10">
+              <div className="p-6 md:p-8 md:pt-10 flex flex-col flex-1">
                 <div className="flex items-start md:items-center gap-5 mb-8 border-b-[4px] border-dashed border-[#0F172A]/30 pb-6">
                   <div 
                     className="w-16 h-16 bg-[#2563EB] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center overflow-hidden shrink-0"
@@ -428,6 +428,30 @@ export default function Level1Page() {
                 <p className="text-sm md:text-base"><strong className="font-heading uppercase tracking-widest text-lg block mb-1">Careful!</strong> You flagged something that looks suspicious but is actually true. That&apos;s a decoy. Focus on the core claims.</p>
               </motion.div>
             )}
+            
+            {/* Social Engagement Footer */}
+            <div className="mt-auto pt-6 flex items-center justify-between text-[#0F172A]/50 font-bold font-mono text-sm sm:text-base border-t-[3px] border-dashed border-[#0F172A]/20">
+              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{124 + (currentRound.id * 17) % 500}</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-[#10B981] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#10B981]/10 transition-colors"><Repeat2 className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{(2.1 + (currentRound.id * 0.3) % 15).toFixed(1)}K</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-[#FF3366] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#FF3366]/10 transition-colors"><Heart className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{(18.4 + (currentRound.id * 2.7) % 80).toFixed(1)}K</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group hidden sm:flex">
+                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><Eye className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{(142 + (currentRound.id * 31) % 900).toFixed(1)}K</span>
+              </div>
+              <div className="flex items-center hover:text-[#0F172A] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#0F172A]/10 transition-colors"><Share className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+              </div>
+            </div>
+            
             </div>
             </Card>
           </div>
