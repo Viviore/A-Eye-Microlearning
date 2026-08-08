@@ -219,14 +219,13 @@ export default function Home() {
               }}
               className="h-full"
             >
-              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
-                <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
+              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800] rounded-none">
+                <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-2 flex gap-1.5">
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                 </div>
                 <CardContent className="p-8 relative overflow-hidden flex-1">
-                  <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
                   <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-shadow">
                     <FileText className="w-10 h-10 text-[#0F172A]" strokeWidth={2.5} />
                   </div>
@@ -246,14 +245,13 @@ export default function Home() {
               }}
               className="mt-4 md:mt-0 h-full"
             >
-              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
-                <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
+              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800] rounded-none">
+                <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-2 flex gap-1.5">
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                 </div>
                 <CardContent className="p-8 relative overflow-hidden flex-1">
-                  <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
                   <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-shadow">
                     <Camera className="w-10 h-10 text-[#0F172A]" strokeWidth={2.5} />
                   </div>
@@ -273,14 +271,13 @@ export default function Home() {
               }}
               className="mt-8 md:mt-0 h-full"
             >
-              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
-                <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
+              <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800] rounded-none">
+                <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-2 flex gap-1.5">
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                 </div>
                 <CardContent className="p-8 relative overflow-hidden flex-1">
-                  <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-xl pointer-events-none"></div>
                   <div className="w-16 h-16 bg-[#FFB800] flex items-center justify-center mb-6 border-[4px] border-[#0F172A] shadow-shadow">
                     <Video className="w-10 h-10 text-[#0F172A]" strokeWidth={2.5} />
                   </div>

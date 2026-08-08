@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Shield, FileText, Camera, Video, BarChart, Home, Lock, CheckCircle2, HelpCircle, Menu, X } from "lucide-react";
 import { useGameStore } from "@/store/gameStore";
 
-export function Header() {
+export function IngameNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { preQuizScore, postQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict } = useGameStore();
@@ -67,7 +67,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b-[4px] border-[#0F172A] bg-white">
-      <div className="max-w-[1600px] w-full mx-auto px-4 md:px-8 py-3 xl:h-20 xl:py-0 flex items-center gap-4 md:gap-8 relative">
+      <div className="max-w-[1400px] w-full mx-auto px-4 md:px-6 py-3 xl:h-20 xl:py-0 flex items-center justify-between relative">
         
         {/* Brand Mark */}
         <Link href="/" className="flex items-center gap-3 group shrink-0">

@@ -66,7 +66,7 @@ export function LandingNavbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full border-b-[4px] border-[#0F172A] bg-white/95 backdrop-blur-sm">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-3 xl:h-20 xl:py-0 flex items-center justify-between relative">
+      <div className="max-w-[1400px] w-full mx-auto px-4 md:px-6 py-3 xl:h-20 xl:py-0 flex items-center justify-between relative">
         
         {/* Brand Mark */}
         <Link href="/#hero" onClick={(e) => scrollToSection(e, "/#hero")} className="flex items-center gap-2 sm:gap-3 group shrink-0">

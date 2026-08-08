@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import "driver.js/dist/driver.css";
-import { Header } from "@/components/layout/Header";
+import { IngameNavbar } from "@/components/layout/IngameNavbar";
 import { RouteGuard } from "@/components/game/RouteGuard";
 
 const spaceGrotesk = Space_Grotesk({
@@ -41,7 +41,7 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans">
         <TransitionProvider>
-          <Header />
+          <IngameNavbar />
           <RouteGuard>
             <div className="flex-1">{children}</div>
           </RouteGuard>
