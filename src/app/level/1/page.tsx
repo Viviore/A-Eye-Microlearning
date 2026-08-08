@@ -17,7 +17,7 @@ import { SocialEngagementFooter } from "@/components/game/SocialEngagementFooter
 import { ObjectivePanel } from "@/components/game/ObjectivePanel";
 import { EvidenceBoard } from "@/components/game/EvidenceBoard";
 import { VerifiedSourcesModal } from "@/components/game/VerifiedSourcesModal";
-import { VerdictModalContainer, VerdictFeedback } from "@/components/game/VerdictModal";
+import { VerdictModalContainer, VerdictFeedback, GameOverModal } from "@/components/game/VerdictModal";
 import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
 
@@ -103,6 +103,7 @@ export default function Level1Page() {
   const [sourceCheckOpen, setSourceCheckOpen] = useState(false);
   
   const [showVerdictModal, setShowVerdictModal] = useState(false);
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode } | null>(null);
@@ -219,6 +220,13 @@ export default function Level1Page() {
       return () => clearTimeout(timeout);
     }
   }, [isTourActive, currentRoundIndex, flaggedIds.size, showVerdictModal]);
+
+  // Check Game Over condition immediately
+  useEffect(() => {
+    if (currentRoundIndex !== 0 && cumulativeScore + roundScore <= 0) {
+      setShowGameOverModal(true);
+    }
+  }, [roundScore, cumulativeScore, currentRoundIndex]);
   
   if (!isReady || !currentRound) return null;
   
@@ -287,12 +295,6 @@ export default function Level1Page() {
   const handleNextRound = () => {
     const newTotal = currentRoundIndex === 0 ? cumulativeScore : cumulativeScore + roundScore;
     
-    if (currentRoundIndex !== 0 && newTotal <= 0) {
-      resetGame();
-      router.push('/');
-      return;
-    }
-
     if (currentRoundIndex !== 0) {
       addCumulativeScore(roundScore);
       addCase001Score(roundScore);
@@ -600,6 +602,14 @@ export default function Level1Page() {
           </div>
         ))}
       </AnimatePresence>
+
+      <GameOverModal
+        isOpen={showGameOverModal}
+        onRestart={() => {
+          resetGame();
+          startTransition('/', { variant: 'default' });
+        }}
+      />
 
       </main>
   );

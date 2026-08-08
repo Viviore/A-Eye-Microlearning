@@ -33,7 +33,7 @@ import { PostAuthorHeader } from "@/components/game/PostAuthorHeader";
 import { SocialEngagementFooter } from "@/components/game/SocialEngagementFooter";
 import { ObjectivePanel } from "@/components/game/ObjectivePanel";
 import { EvidenceBoard } from "@/components/game/EvidenceBoard";
-import { VerdictModalContainer, VerdictFeedback } from "@/components/game/VerdictModal";
+import { VerdictModalContainer, VerdictFeedback, GameOverModal } from "@/components/game/VerdictModal";
 import { DecoyWarning } from "@/components/game/DecoyWarning";
 import { DetectiveHandbook } from "@/components/game/DetectiveHandbook";
 import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";
@@ -158,6 +158,7 @@ export default function Level2Page() {
   const [foundClues, setFoundClues] = useState<VisualClue[]>([]);
   const [showVerdictModal, setShowVerdictModal] = useState(false);
   const [verdictStep, setVerdictStep] = useState<1 | 2>(1);
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
   
   const [shuffledTactics, setShuffledTactics] = useState<string[]>(TACTIC_OPTIONS);
@@ -299,6 +300,12 @@ export default function Level2Page() {
     }
   }, [isTourActive, currentRound, flaggedIds.size, showVerdictModal]);
 
+  useEffect(() => {
+    if (currentRoundIndex !== 0 && cumulativeScore + roundScore <= 0) {
+      setShowGameOverModal(true);
+    }
+  }, [roundScore, cumulativeScore, currentRoundIndex]);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -376,6 +383,7 @@ export default function Level2Page() {
     setFeedback(null);
     setSelectedTactic(null);
     setShowVerdictModal(false);
+    setShowGameOverModal(false);
     setShuffledTactics(prev => {
       const arr = [...prev];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -385,7 +393,7 @@ export default function Level2Page() {
       return arr;
     });
     
-    if (timeLeft === 0) {
+    if (timeLeft === 0 || cumulativeScore + roundScore <= 0) {
       const availableReplacementRounds = IMAGE_ROUNDS.filter(
         (r) => !r.isTutorial && !sessionRounds.some((sr) => sr.id === r.id)
       );
@@ -864,6 +872,13 @@ export default function Level2Page() {
         )}
       </VerdictModalContainer>
 
+      <GameOverModal
+        isOpen={showGameOverModal}
+        onRestart={() => {
+          resetGame();
+          startTransition('/', { variant: 'default' });
+        }}
+      />
 
     </main>
   );

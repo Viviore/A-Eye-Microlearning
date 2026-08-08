@@ -122,3 +122,44 @@ export function VerdictFeedback({
     </div>
   );
 }
+
+export function GameOverModal({
+  isOpen,
+  onRestart
+}: {
+  isOpen: boolean;
+  onRestart: () => void;
+}) {
+  return (
+    <VerdictModalContainer isOpen={isOpen}>
+      <div className="py-4 space-y-6 relative text-left">
+        <div className="absolute -top-10 -left-10 z-10">
+          <div className="w-16 h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+            <XCircle className="w-8 h-8 text-white" strokeWidth={3} />
+          </div>
+        </div>
+
+        <div className="pl-6 pt-6">
+          <h2 className="text-4xl md:text-5xl font-black font-heading tracking-wider uppercase text-[#0F172A] mb-3">
+            GAME OVER
+          </h2>
+          <div className="w-16 h-2 bg-[#E11D48]"></div>
+        </div>
+
+        <div className="px-6 pb-2 mt-2">
+          <div className="border-[3px] border-[#0F172A] p-6 bg-white shadow-[6px_6px_0px_0px_#E2E8F0]">
+            <p className="text-xl md:text-2xl font-bold font-sans text-[#0F172A] leading-relaxed text-left">
+              Your score has dropped to zero. You have failed the assessment. You must return to the beginning and restart your training.
+            </p>
+          </div>
+        </div>
+
+        <div className="px-6 pt-2 flex gap-4">
+          <BrutalButton onClick={onRestart} variant="secondary" size="lg" className="w-full">
+            <RotateCcw className="mr-3 w-6 h-6" strokeWidth={2.5} /> Restart Training
+          </BrutalButton>
+        </div>
+      </div>
+    </VerdictModalContainer>
+  );
+}
