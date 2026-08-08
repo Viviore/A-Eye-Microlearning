@@ -607,7 +607,7 @@ export default function Level1Page() {
         isOpen={showGameOverModal}
         onRestart={() => {
           resetGame();
-          startTransition('/', { variant: 'default' });
+          startTransition('/', { variant: 'init' });
         }}
       />
 

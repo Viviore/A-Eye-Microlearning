@@ -19,6 +19,7 @@ import case003Data from "@/data/case003.json";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
+import { GameOverModal } from "@/components/game/VerdictModal";
 
 type VideoRound = {
   id: string;
@@ -76,6 +77,7 @@ export default function Level3Page() {
   const [showReveal, setShowReveal] = useState(false);
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; penalty?: number; scoreBadge?: React.ReactNode } | null>(null);
   const [hoveredTell, setHoveredTell] = useState<string | null>(null);
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
 
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
@@ -146,11 +148,9 @@ export default function Level3Page() {
   // Check Game Over condition
   useEffect(() => {
     if (cumulativeScore + roundScore <= 0 && !currentRound?.isTutorial) {
-      alert("GAME OVER: Your score has reached 0. The A-Eye experience will now reset.");
-      resetGame();
-      router.push("/");
+      setShowGameOverModal(true);
     }
-  }, [cumulativeScore, roundScore, currentRound, resetGame, router]);
+  }, [roundScore, cumulativeScore, currentRound?.isTutorial]);
 
   // Timer and deduct logic replaced by useLevelScoring hook
 
@@ -672,6 +672,14 @@ export default function Level3Page() {
           )}
         </AnimatePresence>
       </motion.div>
+
+      <GameOverModal
+        isOpen={showGameOverModal}
+        onRestart={() => {
+          resetGame();
+          startTransition('/', { variant: 'init' });
+        }}
+      />
     </main>
   );
 }

@@ -876,7 +876,7 @@ export default function Level2Page() {
         isOpen={showGameOverModal}
         onRestart={() => {
           resetGame();
-          startTransition('/', { variant: 'default' });
+          startTransition('/', { variant: 'init' });
         }}
       />
 
