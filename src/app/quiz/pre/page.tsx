@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
-import { Button } from "@/components/ui/button";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import { NotebookPen, ArrowRight, ShieldCheck } from "lucide-react";
 
 const quizQuestions = [
@@ -181,14 +181,16 @@ export default function PreAssessmentQuiz() {
               </div>
 
               <div className="flex justify-end mt-4 border-t-[4px] border-dashed border-[#0F172A] pt-8">
-                <Button 
+                <BrutalButton 
                   onClick={handleNext} 
                   disabled={selectedAnswer === null}
-                  className="btn-primary text-xl px-10 h-16"
+                  variant="primary"
+                  size="lg"
+                  className="px-10 h-16"
                 >
                   {currentStep === quizQuestions.length - 1 ? "Submit" : "Next File"}
                   <ArrowRight className="ml-2 w-6 h-6" />
-                </Button>
+                </BrutalButton>
               </div>
             </div>
           </motion.div>

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { driver } from "driver.js";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck } from "lucide-react";
@@ -480,16 +480,15 @@ export default function Level1Page() {
               id="tutorial-source"
               className="mt-6 space-y-4 transition-all duration-500"
             >
-              <Button
+              <BrutalButton
                 id="btn-source-check"
                 onClick={handleOpenSourceCheck}
                 disabled={currentRoundIndex === 0 && isTourActive}
-                className={`w-full h-14 font-heading text-xl tracking-wide uppercase border-[4px] border-[#0F172A] font-bold shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed ${
-                  sourceCheckOpen ? "bg-[#FFB800] text-[#0F172A] hover:bg-[#FFB800]/90" : "bg-white text-[#0F172A] hover:bg-gray-50"
-                }`}
+                variant={sourceCheckOpen ? "primary" : "secondary"}
+                className="w-full"
               >
                 <Search className="mr-2 w-5 h-5" strokeWidth={2.5} />                {sourceCheckOpen ? "Close Source Check" : "Open Source Check"}
-              </Button>
+              </BrutalButton>
               
               <AnimatePresence>
                 {sourceCheckOpen && (
@@ -518,16 +517,18 @@ export default function Level1Page() {
               id="tutorial-verdict"
               className="mt-6 pt-6 border-t-[4px] border-dashed border-[#0F172A] transition-all duration-500"
             >
-              <Button
+              <BrutalButton
                 id="tutorial-verdict-btn"
                 onClick={() => {
                   setShowVerdictModal(true);
                 }}
                 disabled={!canFileVerdict}
-                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                variant="primary"
+                size="lg"
+                className="disabled:bg-[#1D2A3C] disabled:text-white/70"
               >
                 {canFileVerdict ? <><CheckCircle2 className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
-              </Button>
+              </BrutalButton>
             </div>
           </Card>
         </div>
@@ -599,19 +600,21 @@ export default function Level1Page() {
                     
                     {/* Submit */}
                     <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
-                      <Button
+                      <BrutalButton
                         onClick={() => setShowVerdictModal(false)}
-                        className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        variant="secondary"
+                        className="flex-1"
                       >
                         Cancel
-                      </Button>
-                      <Button
+                      </BrutalButton>
+                      <BrutalButton
                         onClick={handleSubmitVerdict}
                         disabled={!selectedTactic}
-                        className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                        variant="primary"
+                        className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
                       >
                         Submit Report
-                      </Button>
+                      </BrutalButton>
                     </div>
                   </div>
                 </>
@@ -642,25 +645,26 @@ export default function Level1Page() {
                   
                   <div className="pt-8">
                     {feedback.isSuccess ? (
-                      <Button
+                      <BrutalButton
                         onClick={handleNextRound}
-                        className={`w-full h-16 text-white text-2xl font-heading uppercase tracking-widest border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all ${
-                          currentRoundIndex === 0 ? "bg-[#10B981] hover:bg-[#10B981]/90" : "bg-[#FFB800] hover:bg-[#FFB800]/90 text-[#0F172A]"
-                        }`}
+                        variant="primary"
+                        size="lg"
+                        className={currentRoundIndex === 0 ? "bg-[#10B981] hover:bg-[#10B981]/90" : ""}
                       >
                         {currentRoundIndex < sessionRounds.length - 1 ? (
                           <span className="flex items-center justify-center">{currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"} <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
                         ) : (
                           <span className="flex items-center justify-center">Complete Case 001 <Trophy className="ml-3 w-7 h-7" strokeWidth={2.5} /></span>
                         )}
-                      </Button>
+                      </BrutalButton>
                     ) : (
-                      <Button
+                      <BrutalButton
                         onClick={handleRetryRound}
-                        className="w-full h-16 bg-white text-[#0F172A] text-2xl font-heading uppercase tracking-widest border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:bg-gray-100 active:shadow-none active:translate-x-[6px] active:translate-y-[6px] transition-all"
+                        variant="secondary"
+                        size="lg"
                       >
                         <RotateCcw className="mr-3 w-7 h-7" strokeWidth={2.5} /> Retry Verdict
-                      </Button>
+                      </BrutalButton>
                     )}
                   </div>
                 </div>

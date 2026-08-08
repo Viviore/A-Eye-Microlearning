@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Search, Play, NotebookPen, FileText, Camera, Video, ShieldAlert, BadgeCheck } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LandingNavbar } from "@/components/layout/LandingNavbar";
@@ -41,7 +41,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] font-black tracking-tighter leading-[0.9] font-heading mb-8 relative"
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] font-black tracking-tighter leading-[0.9] font-heading mb-8 relative"
             >
               <span className="block text-[#FFB800] drop-shadow-[6px_6px_0px_#0F172A]">A-EYE</span>
               <span className="block text-[#0F172A]">INVESTIGATION</span>
@@ -63,13 +63,14 @@ export default function Home() {
               className="relative"
             >
               <Link href="/how-to-play" passHref>
-                <Button 
-                  size="lg" 
-                  className="bg-white hover:bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] h-16 px-10 text-xl font-heading font-black tracking-wider uppercase transition-all group"
+                <BrutalButton 
+                  size="xl" 
+                  variant="hero"
+                  className="w-full sm:w-auto group"
                 >
                   <Play className="mr-3 w-6 h-6" />
                   Start Training
-                </Button>
+                </BrutalButton>
               </Link>
             </motion.div>
           </div>
@@ -160,12 +161,12 @@ export default function Home() {
             </div>
             
             <div className="relative mt-8 lg:mt-0 lg:order-1">
-              <Card className="bg-[#FFB800] p-8 md:p-12 relative flex flex-col hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] transition-all shadow-[8px_8px_0px_0px_#0F172A] border-[4px] border-[#0F172A] rounded-none">
+              <Card className="bg-[#FFB800] p-8 md:p-12 relative flex flex-col justify-center min-h-[320px] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] transition-all shadow-[8px_8px_0px_0px_#0F172A] border-[4px] border-[#0F172A] rounded-none">
                 <div className="absolute top-0 left-0 w-full border-b-[4px] border-[#0F172A] bg-white p-2 flex gap-2">
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
                   <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
                 </div>
-                <CardContent className="p-0 pt-8 mt-auto font-sans text-3xl md:text-4xl font-black text-[#0F172A] leading-tight uppercase tracking-tight text-center">
+                <CardContent className="p-0 pt-8 font-sans text-3xl md:text-4xl font-black text-[#0F172A] leading-tight uppercase tracking-tight text-center">
                   "Don't just consume media.
                   <br />
                   <span className="text-white drop-shadow-[2px_2px_0px_#0F172A]">Interrogate it."</span>
@@ -216,6 +217,7 @@ export default function Home() {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
+              className="h-full"
             >
               <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
                 <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
@@ -242,7 +244,7 @@ export default function Home() {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              className="mt-4 md:mt-0"
+              className="mt-4 md:mt-0 h-full"
             >
               <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
                 <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
@@ -269,7 +271,7 @@ export default function Home() {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
               }}
-              className="mt-8 md:mt-0"
+              className="mt-8 md:mt-0 h-full"
             >
               <Card className="flex flex-col hover:-translate-y-2 transition-all h-full border-primary shadow-[8px_8px_0px_0px_#FFB800] hover:shadow-[12px_12px_0px_0px_#FFB800]">
                 <div className="border-b-[4px] border-primary bg-primary p-2 flex gap-1.5">
@@ -321,7 +323,7 @@ export default function Home() {
                 <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]"></div>
                 <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white"></div>
               </div>
-              <CardContent className="p-0 pt-8 mt-auto space-y-6 font-sans text-xl md:text-2xl font-bold text-[#0F172A] leading-relaxed">
+              <CardContent className="p-0 pt-8 space-y-6 font-sans text-xl md:text-2xl font-bold text-[#0F172A] leading-relaxed">
                 <p>
                   Welcome to the A-Eye Simulation. Your objective is to process a series of restricted case files containing unverified digital artifacts.
                 </p>
@@ -387,13 +389,14 @@ export default function Home() {
           Ready to open the files?
         </motion.h2>
         <Link href="/how-to-play" passHref>
-          <Button 
-            size="lg" 
-            className="bg-white hover:bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px] h-20 px-16 text-2xl font-heading font-black tracking-wider uppercase transition-all group"
+          <BrutalButton 
+            size="xl" 
+            variant="secondary"
+            className="w-full sm:w-auto group hover:bg-[#FFB800]"
           >
             <Play className="mr-4 w-8 h-8" />
             Begin Investigation
-          </Button>
+          </BrutalButton>
         </Link>
       </section>
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { driver } from "driver.js";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import { useRouter } from "next/navigation";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
 import {
@@ -553,8 +553,8 @@ export default function Level3Page() {
                 <h3 className="font-heading font-black text-2xl uppercase">Are you sure?</h3>
                 <p className="font-sans font-bold text-center">You selected Panel {selectedPanel} as the AI fake. Locking this in will consume your answer.</p>
                 <div className="flex gap-4">
-                  <Button onClick={handleCancelConfirm} className="bg-white text-[#0F172A] border-[3px] border-[#0F172A] hover:bg-gray-100 uppercase font-bold px-8">Cancel</Button>
-                  <Button onClick={handleConfirmPanel} className="bg-[#0F172A] text-white hover:bg-[#0F172A]/90 uppercase font-bold border-[3px] border-[#0F172A] px-8">Lock Answer</Button>
+                  <BrutalButton onClick={handleCancelConfirm} variant="secondary">Cancel</BrutalButton>
+                  <BrutalButton onClick={handleConfirmPanel} variant="dark">Lock Answer</BrutalButton>
                 </div>
               </motion.div>
             )}
@@ -631,12 +631,14 @@ export default function Level3Page() {
                 {feedback.message}
               </p>
               
-              <Button
+              <BrutalButton
                 onClick={handleNextAction}
-                className="w-full h-16 bg-[#0F172A] text-white hover:bg-[#0F172A]/90 font-heading uppercase tracking-widest font-bold text-2xl transition-all"
+                variant="dark"
+                size="lg"
+                className="w-full h-16"
               >
                 {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
-              </Button>
+              </BrutalButton>
             </motion.div>
           )}
         </AnimatePresence>

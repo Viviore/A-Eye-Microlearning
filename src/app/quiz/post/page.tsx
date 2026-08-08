@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
-import { Button } from "@/components/ui/button";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import Link from "next/link";
 import { NotebookPen, TrendingUp, RotateCcw, Award } from "lucide-react";
 import confetti from "canvas-confetti";
@@ -140,12 +140,14 @@ export default function PostAssessmentQuizPage() {
 
           <div className="flex justify-center">
             <Link href="/" passHref>
-              <Button 
+              <BrutalButton 
                 onClick={handlePlayAgain}
-                className="btn-primary text-xl px-10 h-14"
+                variant="primary"
+                size="lg"
+                className="px-10 h-14"
               >
                 <RotateCcw className="w-5 h-5 mr-2" /> Start New Simulation
-              </Button>
+              </BrutalButton>
             </Link>
           </div>
         </motion.div>

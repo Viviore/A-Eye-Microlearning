@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { driver } from "driver.js";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import {
   Flag,
   CheckCircle2,
@@ -774,16 +774,18 @@ export default function Level2Page() {
               id="tutorial-verdict"
               className="mt-6 pt-6 border-t-[4px] border-dashed border-[#0F172A] transition-all duration-500"
             >
-              <Button
+              <BrutalButton
                 id="tutorial-verdict-btn"
                 onClick={() => {
                   setShowVerdictModal(true);
                 }}
                 disabled={foundClues.length < currentRound.cluesNeeded}
-                className="w-full h-16 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] font-heading uppercase tracking-widest border-[4px] border-[#0F172A] font-bold text-2xl shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all"
+                variant="primary"
+                size="lg"
+                className="disabled:bg-[#1D2A3C] disabled:text-white/70"
               >
                 {foundClues.length >= currentRound.cluesNeeded ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
-              </Button>
+              </BrutalButton>
             </div>
           </div>
 
@@ -854,19 +856,21 @@ export default function Level2Page() {
                         </div>
 
                         <div className="flex gap-4 pt-6 mt-4 border-t-[3px] border-dashed border-[#0F172A]/30">
-                          <Button
+                          <BrutalButton
                             onClick={() => setShowVerdictModal(false)}
-                            className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                            variant="secondary"
+                            className="flex-1"
                           >
                             Cancel
-                          </Button>
-                          <Button
+                          </BrutalButton>
+                          <BrutalButton
                             onClick={() => setVerdictStep(2)}
                             disabled={!selectedEvidenceId}
-                            className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                            variant="primary"
+                            className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
                           >
                             Next Step
-                          </Button>
+                          </BrutalButton>
                         </div>
                       </div>
                     ) : (
@@ -914,22 +918,24 @@ export default function Level2Page() {
                         </div>
 
                         <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
-                          <Button
+                          <BrutalButton
                             onClick={() => {
                               setVerdictStep(1);
                               setSelectedTactic(null);
                             }}
-                            className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                            variant="secondary"
+                            className="flex-1"
                           >
                             Back
-                          </Button>
-                          <Button
+                          </BrutalButton>
+                          <BrutalButton
                             onClick={handleSubmitVerdict}
                             disabled={!selectedTactic}
-                            className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                            variant="primary"
+                            className="flex-1 disabled:bg-[#1D2A3C] disabled:text-white/70"
                           >
                             Submit Report
-                          </Button>
+                          </BrutalButton>
                         </div>
                       </div>
                     )}
@@ -974,9 +980,11 @@ export default function Level2Page() {
 
                   <div className="pt-8">
                     {feedback.isSuccess ? (
-                      <Button
+                      <BrutalButton
                         onClick={handleNextRound}
-                        className="w-full h-16 text-[#0F172A] text-2xl font-heading uppercase tracking-widest bg-[#10B981] hover:bg-[#10B981]/90 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all"
+                        variant="primary"
+                        size="lg"
+                        className="bg-[#10B981] hover:bg-[#10B981]/90"
                       >
                         {currentRoundIndex < IMAGE_ROUNDS.length - 1 ? (
                           <>
@@ -995,15 +1003,16 @@ export default function Level2Page() {
                             />
                           </>
                         )}
-                      </Button>
+                      </BrutalButton>
                     ) : (
-                      <Button
+                      <BrutalButton
                         onClick={handleRetryRound}
-                        className="w-full h-16 bg-white text-[#0F172A] text-2xl font-heading uppercase tracking-widest border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:bg-gray-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all"
+                        variant="secondary"
+                        size="lg"
                       >
                         <RotateCcw className="mr-3 w-7 h-7" strokeWidth={2.5} />{" "}
                         Retry Verdict
-                      </Button>
+                      </BrutalButton>
                     )}
                   </div>
                 </div>

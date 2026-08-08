@@ -1,0 +1,59 @@
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const brutalButtonVariants = cva(
+  "cursor-pointer inline-flex items-center justify-center text-center font-heading font-black tracking-wider uppercase transition-all border-[4px] border-[#0F172A] rounded-none focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed",
+  {
+    variants: {
+      variant: {
+        primary:
+          "bg-[#FFB800] text-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none hover:bg-[#FFB800]/90",
+        secondary:
+          "bg-white text-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none hover:bg-gray-50",
+        dark:
+          "bg-[#0F172A] text-white shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none hover:bg-[#0F172A]/90",
+        hero: 
+          "bg-[#FFB800] hover:bg-white text-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px]",
+        ghost:
+          "bg-transparent text-[#0F172A] border-dashed hover:border-solid hover:bg-gray-100 shadow-none hover:shadow-[4px_4px_0px_0px_#0F172A] hover:-translate-y-[2px]",
+      },
+      size: {
+        default: "h-12 px-6 md:h-14 md:px-8 text-lg md:text-xl",
+        sm: "h-9 px-3 md:h-10 md:px-4 text-xs md:text-sm border-[3px]",
+        lg: "h-14 px-8 md:h-16 md:px-10 text-xl md:text-2xl w-full",
+        xl: "h-16 px-8 md:h-20 md:px-16 text-xl md:text-3xl",
+        nav: "h-10 px-5 md:h-12 md:px-6 text-sm md:text-base border-[4px]",
+        icon: "h-10 w-10 md:h-12 md:w-12",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "default",
+    },
+  }
+)
+
+export interface BrutalButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof brutalButtonVariants> {
+  asChild?: boolean
+}
+
+const BrutalButton = React.forwardRef<HTMLButtonElement, BrutalButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
+    return (
+      <Comp
+        className={cn(brutalButtonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+BrutalButton.displayName = "BrutalButton"
+
+export { BrutalButton, brutalButtonVariants }

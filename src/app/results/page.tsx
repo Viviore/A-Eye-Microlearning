@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
-import { Button } from "@/components/ui/button";
+import { BrutalButton } from "@/components/ui/brutal-button";
 import Link from "next/link";
 import { Shield, Target, Activity, AlertTriangle, CheckCircle2, ChevronRight, BarChart, FileText, Camera, Video, XCircle } from "lucide-react";
 import { ChartBarMultiple } from "@/components/charts/chart-bar-multiple";
@@ -92,9 +92,9 @@ export default function ResultsDashboardPage() {
           </div>
 
           <Link href="/quiz/post" passHref>
-            <Button className="py-4 px-8 h-auto bg-[#FFB800] hover:bg-[#FFB800] text-[#0F172A] font-heading font-black text-lg uppercase tracking-widest rounded-none border-[4px] border-[#0F172A] hover:-translate-y-1 transition-transform shadow-[6px_6px_0px_0px_#0F172A] active:shadow-none active:translate-y-[6px] active:translate-x-[6px]">
+            <BrutalButton variant="primary" size="lg">
               TAKE POST-QUIZ <ChevronRight className="ml-2 w-6 h-6" strokeWidth={3} />
-            </Button>
+            </BrutalButton>
           </Link>
         </motion.div>
 
