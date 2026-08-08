@@ -19,6 +19,11 @@ import {
   Lightbulb,
   Plus,
   FileCheck,
+  MessageCircle, 
+  Repeat2, 
+  Heart, 
+  Eye, 
+  Share
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
@@ -423,9 +428,9 @@ export default function Level2Page() {
     <main
       className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
-      <div className="w-full max-w-[1200px] z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-20">
-        {/* Left Column: Photo Feed */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
+      <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8 pb-20">
+        
+        {/* Header Info */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
             <div className="flex items-center gap-3">
               <div
@@ -473,11 +478,15 @@ export default function Level2Page() {
             </div>
           </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Photo Feed */}
+          <div className="lg:col-span-7 flex flex-col gap-4 h-full">
+
           {/* Mock Social Post (Photo) */}
 
           <div
             id="tutorial-post"
-            className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
+            className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex-1 flex flex-col"
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div
@@ -669,7 +678,7 @@ export default function Level2Page() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-6 p-3 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-start gap-2 text-sm text-[#0F172A] -rotate-1 font-medium"
+                className="mt-6 p-3 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-start gap-2 text-sm text-[#0F172A] font-medium"
               >
                 <ShieldAlert className="w-5 h-5 text-[#0F172A] shrink-0 mt-0.5" />
                 <p>
@@ -679,6 +688,29 @@ export default function Level2Page() {
                 </p>
               </motion.div>
             )}
+
+            {/* Social Engagement Footer */}
+            <div className="mt-auto pt-8 flex items-center justify-between text-[#0F172A]/50 font-bold font-mono text-sm sm:text-base border-t-[3px] border-dashed border-[#0F172A]/20">
+              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{124 + ((currentRoundIndex + 1) * 17) % 500}</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-[#10B981] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#10B981]/10 transition-colors"><Repeat2 className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{(2.1 + ((currentRoundIndex + 1) * 0.3) % 15).toFixed(1)}K</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-[#FF3366] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#FF3366]/10 transition-colors"><Heart className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{(18.4 + ((currentRoundIndex + 1) * 2.7) % 80).toFixed(1)}K</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-[#2563EB] cursor-pointer transition-colors group hidden sm:flex">
+                <div className="p-2 rounded-full group-hover:bg-[#2563EB]/10 transition-colors"><Eye className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+                <span>{(142 + ((currentRoundIndex + 1) * 31) % 900).toFixed(1)}K</span>
+              </div>
+              <div className="flex items-center hover:text-[#0F172A] cursor-pointer transition-colors group">
+                <div className="p-2 rounded-full group-hover:bg-[#0F172A]/10 transition-colors"><Share className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} /></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -731,11 +763,10 @@ export default function Level2Page() {
                   {[...foundClues, ...foundDecoys].map((clue, idx) => (
                     <motion.div
                       key={clue.id}
-                      initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+                      initial={{ opacity: 0, scale: 0.9 }}
                       animate={{
                         opacity: 1,
                         scale: 1,
-                        rotate: idx % 2 === 0 ? 1 : -1,
                       }}
                       className={`p-3 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative ${clue.isDecoy ? "bg-red-400" : "bg-[#FFB800]"}`}
                     >
@@ -775,9 +806,9 @@ export default function Level2Page() {
                   setShowVerdictModal(true);
                 }}
                 disabled={foundClues.length < currentRound.cluesNeeded}
-                variant="primary"
+                variant="blue"
                 size="lg"
-                className="disabled:bg-[#1D2A3C] disabled:text-white/70"
+                className="w-full flex items-center justify-center"
               >
                 {foundClues.length >= currentRound.cluesNeeded ? <><FileCheck className="mr-3 w-6 h-6 inline" strokeWidth={2.5} /> File Verdict</> : "Gather Evidence First"}
               </BrutalButton>
@@ -796,6 +827,7 @@ export default function Level2Page() {
               {currentTip ? `"${currentTip}"` : "..."}
             </p>
           </div>
+        </div>
         </div>
       </div>
 
