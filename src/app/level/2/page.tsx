@@ -187,6 +187,7 @@ export default function Level2Page() {
     timeLeft,
     setTimeLeft,
     clickPopups: deductions, // Map clickPopups to deductions for UI compatibility
+    scorePopups,
     triggerScoreAnimation,
     applyDeduction,
     resetScoring,
@@ -636,7 +637,7 @@ export default function Level2Page() {
                           transition={{ duration: 1, ease: "easeOut" }}
                           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 font-black font-heading text-4xl z-50 whitespace-nowrap pointer-events-none drop-shadow-[2px_2px_0_rgba(15,23,42,1)]"
                         >
-                          -{d.amount}
+                          {d.amount}
                         </motion.div>
                       ))}
                     </AnimatePresence>

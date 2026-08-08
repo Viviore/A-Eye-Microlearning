@@ -91,6 +91,7 @@ export default function Level3Page() {
     timeLeft,
     setTimeLeft,
     clickPopups: deductions,
+    scorePopups,
     triggerScoreAnimation,
     applyDeduction,
     resetScoring,
@@ -387,7 +388,7 @@ export default function Level3Page() {
             currentRoundNumber={sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1}
             totalRounds={sessionRounds.filter(r => !r.isTutorial).length}
             score={cumulativeScore + roundScore}
-            scorePopups={deductions}
+            scorePopups={scorePopups}
             icon="fileVideo"
           >
             <div className="relative group">

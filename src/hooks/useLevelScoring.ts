@@ -41,14 +41,14 @@ export function useLevelScoring({
     
     if (x !== undefined && y !== undefined) {
       // It's a coordinate-based click popup (Level 1)
-      const newPopup = { id: Date.now() + Math.random(), amount, x, y };
+      const newPopup = { id: Date.now() + Math.random(), amount: -amount, x, y };
       setClickPopups((prev) => [...prev, newPopup]);
       setTimeout(() => {
         setClickPopups((prev) => prev.filter((p) => p.id !== newPopup.id));
       }, 1000);
     } else {
       // Standard deduction (Level 2/3) or if no coords provided
-      const newDeduction = { id: Date.now() + Math.random(), amount };
+      const newDeduction = { id: Date.now() + Math.random(), amount: -amount };
       // Depending on the level, some use scorePopups for everything, some use a separate deductions state.
       // We'll expose this as clickPopups but components can render it wherever.
       setClickPopups((prev) => [...prev, newDeduction]);

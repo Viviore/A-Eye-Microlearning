@@ -597,7 +597,7 @@ export default function Level1Page() {
               transition={{ duration: 1, ease: "easeOut" }}
               className="text-red-500 font-black font-heading text-4xl whitespace-nowrap drop-shadow-[2px_2px_0_rgba(15,23,42,1)]"
             >
-              -{popup.amount}
+              {popup.amount}
             </motion.div>
           </div>
         ))}
