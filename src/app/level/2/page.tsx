@@ -196,7 +196,7 @@ export default function Level2Page() {
     hasTimer: true,
     isPaused: currentRound?.isTutorial || showVerdictModal || feedback !== null,
     onTimeout: () => {
-      applyDeduction(50);
+      triggerScoreAnimation(-50);
       addCumulativeScore(-50);
       markCase002RoundPlayed(currentRound?.id || "");
       

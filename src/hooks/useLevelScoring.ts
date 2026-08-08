@@ -64,35 +64,40 @@ export function useLevelScoring({
     onTimeoutRef.current = onTimeout;
   }, [onTimeout]);
 
-  // Timer Effect
-  const timeLeftRef = useRef(initialTime);
-  
+  // Timer countdown — only counts down, nothing else
   useEffect(() => {
-    if (!hasTimer || !isReady || isPaused) return;
+    if (!hasTimer || !isReady || isPaused || timeLeft <= 0) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        const next = prev <= 1 ? 0 : prev - 1;
-        timeLeftRef.current = next;
-        return next;
-      });
-
-      // Check after state update — if time just hit 0, fire timeout callback
-      // Use queueMicrotask to ensure it runs after React processes the state update
-      queueMicrotask(() => {
-        if (timeLeftRef.current === 0) {
+        if (prev <= 1) {
           clearInterval(timer);
-          onTimeoutRef.current?.();
+          return 0;
         }
+        return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [hasTimer, isReady, isPaused]);
+  }, [hasTimer, isReady, isPaused, timeLeft <= 0]);
+
+  // Separate effect: fire onTimeout when timeLeft hits 0
+  const hasFiredTimeoutRef = useRef(false);
+
+  useEffect(() => {
+    if (timeLeft === 0 && hasTimer && isReady && !hasFiredTimeoutRef.current) {
+      hasFiredTimeoutRef.current = true;
+      onTimeoutRef.current?.();
+    }
+    if (timeLeft > 0) {
+      hasFiredTimeoutRef.current = false;
+    }
+  }, [timeLeft, hasTimer, isReady]);
 
   const resetScoring = useCallback(() => {
     setRoundScore(initialScore);
     setTimeLeft(initialTime);
+    hasFiredTimeoutRef.current = false;
     setScorePopups([]);
     setClickPopups([]);
   }, [initialScore, initialTime]);
