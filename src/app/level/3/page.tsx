@@ -581,10 +581,10 @@ export default function Level3Page() {
                   const isDisabled = isTutorial && !isCorrect;
                   const showPulse = isTutorial && isCorrect;
 
-                  let btnClass = "relative p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] ";
+                  let btnClass = "relative p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer ";
                   
                   if (isDisabled) {
-                    btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
+                    btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 !cursor-not-allowed ";
                   } else if (showPulse) {
                     btnClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
                   } else {
