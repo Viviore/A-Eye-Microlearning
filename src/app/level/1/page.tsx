@@ -289,11 +289,7 @@ export default function Level1Page() {
 
   return (
     <main 
-      className={`min-h-full bg-white text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans ${currentRoundIndex === 0 ? 'pb-72 md:pb-56 lg:pb-48' : 'pb-32'}`}
-      style={{
-        backgroundImage: "linear-gradient(to right, #0F172A12 1px, transparent 1px), linear-gradient(to bottom, #0F172A12 1px, transparent 1px)",
-        backgroundSize: "24px 24px"
-      }}
+      className={`min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans ${currentRoundIndex === 0 ? 'pb-72 md:pb-56 lg:pb-48' : 'pb-32'}`}
     >
       {/* Global Tutorial Backdrop removed so UI is not dimmed */}
       

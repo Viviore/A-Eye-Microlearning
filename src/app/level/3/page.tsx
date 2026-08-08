@@ -354,11 +354,7 @@ export default function Level3Page() {
 
   return (
     <main
-      className="min-h-full bg-white text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
-      style={{
-        backgroundImage: "linear-gradient(to right, #0F172A12 1px, transparent 1px), linear-gradient(to bottom, #0F172A12 1px, transparent 1px)",
-        backgroundSize: "24px 24px",
-      }}
+      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
       <div className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
         
@@ -383,7 +379,7 @@ export default function Level3Page() {
 
           <div className="flex items-center gap-4">
             <div className="relative group">
-              <Button
+              <button
                 disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
                 onClick={() => {
                   if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
@@ -396,20 +392,20 @@ export default function Level3Page() {
                 title="+30 Seconds (-80 pts)"
               >
                 <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
-              </Button>
+              </button>
               <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg z-50">
                 +30s (-80 pts)
               </div>
             </div>
 
             <div id="tutorial-replay" className="relative group">
-              <Button
+              <button
                 disabled={isPanelLocked || showConfirm || showReveal}
                 onClick={handleReplay}
                 className="w-10 h-10 p-0 rounded-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center justify-center text-[#0F172A] disabled:opacity-50 hover:bg-[#FFB800]"
               >
                 <RotateCcw className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
-              </Button>
+              </button>
               <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg z-50">
                 {replaysUsed < 5 ? `Replays: ${5 - replaysUsed} free` : "Replay (-10 pts)"}
               </div>

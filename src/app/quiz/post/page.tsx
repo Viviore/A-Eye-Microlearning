@@ -193,7 +193,7 @@ export default function PostAssessmentQuizPage() {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-[#FAFAFA] font-sans bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-opacity-20 flex flex-col items-center">
+    <main className="min-h-[100dvh] bg-[#FAFAFA] font-sans bg-cubes flex flex-col items-center">
       <AnimatePresence mode="wait">
         {phase === "intro" && (
           <motion.div

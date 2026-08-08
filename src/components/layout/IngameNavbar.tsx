@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Shield, FileText, Camera, Video, BarChart, Home, Lock, CheckCircle2, HelpCircle, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Shield, FileText, Camera, Video, BarChart, Home, Lock, CheckCircle2, HelpCircle, Menu, X, Power, AlertOctagon } from "lucide-react";
 import { useGameStore } from "@/store/gameStore";
 
 export function IngameNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isConfirmTerminate, setIsConfirmTerminate] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const { preQuizScore, postQuizScore, completedLevels, level1Verdict, level2Verdict, level3Verdict } = useGameStore();
 
   if (pathname === "/") {
@@ -158,18 +160,54 @@ export function IngameNavbar() {
           </nav>
           
           {/* Separate Return to Home Button */}
-          <Link
-            href="/"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="flex items-center justify-center gap-2 transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] bg-white text-[#0F172A] hover:bg-gray-100 px-4 py-3 xl:py-2 xl:shrink-0"
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              setIsConfirmTerminate(true);
+            }}
+            className="group flex items-center justify-center gap-2 transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] bg-white text-[#0F172A] hover:bg-[#FF3366] hover:border-[#0F172A] px-4 py-3 xl:py-2 xl:shrink-0 font-sans font-bold"
           >
-            <Home className="w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A]" />
-            <span className="text-base xl:text-sm font-sans font-bold block xl:hidden 2xl:block">Return to Home</span>
-          </Link>
-
+            <Home className="w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A] group-hover:hidden" />
+            <Power className="w-5 h-5 xl:w-5 xl:h-5 text-white hidden group-hover:block" />
+            <span className="grid text-base xl:text-sm xl:hidden 2xl:grid items-center text-center">
+              <span className="col-start-1 row-start-1 group-hover:opacity-0 transition-opacity">Return to Home</span>
+              <span className="col-start-1 row-start-1 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest text-white">Terminate</span>
+            </span>
+          </button>
         </div>
-
       </div>
+
+      {/* Confirmation Modal */}
+      {isConfirmTerminate && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white border-[4px] border-[#0F172A] p-6 md:p-8 shadow-[12px_12px_0px_0px_#0F172A] max-w-md w-full animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-4 mb-4 text-[#FF3366]">
+              <AlertOctagon className="w-10 h-10" strokeWidth={2.5} />
+              <h3 className="font-heading font-black text-2xl uppercase text-[#0F172A]">Terminate Session?</h3>
+            </div>
+            <p className="font-sans font-bold text-[#0F172A]/70 mb-8 border-l-[4px] border-[#FF3366] pl-4">
+              Are you sure you want to abort the current mission? Any unsaved progress will be kept in your current state, but you will return to headquarters.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={() => setIsConfirmTerminate(false)}
+                className="flex-1 px-4 py-3 bg-gray-100 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all font-heading font-black tracking-wider uppercase text-[#0F172A]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setIsConfirmTerminate(false);
+                  router.push("/");
+                }}
+                className="flex-1 px-4 py-3 bg-[#FF3366] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all font-heading font-black tracking-wider uppercase text-white"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

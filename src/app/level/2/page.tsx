@@ -422,11 +422,7 @@ export default function Level2Page() {
 
   return (
     <main
-      className="min-h-full bg-white text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
-      style={{
-        backgroundImage: "linear-gradient(to right, #0F172A12 1px, transparent 1px), linear-gradient(to bottom, #0F172A12 1px, transparent 1px)",
-        backgroundSize: "24px 24px",
-      }}
+      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
       <div className="w-full max-w-[1200px] z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-20">
         {/* Left Column: Photo Feed */}
@@ -502,7 +498,7 @@ export default function Level2Page() {
               
               <div className="ml-auto flex items-center gap-4 transition-all duration-300">
                 <div id="tutorial-tool" className="relative group">
-                  <Button
+                  <button
                     disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
                     onClick={() => {
                       if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
@@ -515,7 +511,7 @@ export default function Level2Page() {
                     title="+30 Seconds (-80 pts)"
                   >
                     <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
-                  </Button>
+                  </button>
                   {/* Tooltip */}
                   <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg">
                     +30s (-80 pts)
