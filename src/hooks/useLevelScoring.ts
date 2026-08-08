@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 type UseLevelScoringProps = {
   initialScore?: number;
@@ -37,7 +37,7 @@ export function useLevelScoring({
 
   // Used for deducting score with optional mouse coordinates for floating text
   const applyDeduction = useCallback((amount: number, x?: number, y?: number) => {
-    setRoundScore((prev) => Math.max(0, prev - amount));
+    setRoundScore((prev) => prev - amount);
     
     if (x !== undefined && y !== undefined) {
       // It's a coordinate-based click popup (Level 1)
@@ -58,6 +58,12 @@ export function useLevelScoring({
     }
   }, []);
 
+  // Store onTimeout in a ref so the timer effect doesn't restart on every render
+  const onTimeoutRef = useRef(onTimeout);
+  useEffect(() => {
+    onTimeoutRef.current = onTimeout;
+  }, [onTimeout]);
+
   // Timer Effect
   useEffect(() => {
     if (!hasTimer || !isReady || isPaused) return;
@@ -66,7 +72,7 @@ export function useLevelScoring({
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          onTimeout?.();
+          onTimeoutRef.current?.();
           return 0;
         }
         return prev - 1;
@@ -74,7 +80,7 @@ export function useLevelScoring({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [hasTimer, isReady, isPaused, onTimeout]);
+  }, [hasTimer, isReady, isPaused]);
 
   const resetScoring = useCallback(() => {
     setRoundScore(initialScore);

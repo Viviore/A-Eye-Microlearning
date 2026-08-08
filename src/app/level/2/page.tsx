@@ -176,7 +176,7 @@ export default function Level2Page() {
   
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode; forceNext?: boolean } | null>(null);
   const [foundDecoys, setFoundDecoys] = useState<VisualClue[]>([]);
 
   const [isTourActive, setIsTourActive] = useState(true);
@@ -197,10 +197,14 @@ export default function Level2Page() {
     isPaused: currentRound?.isTutorial || showVerdictModal || feedback !== null,
     onTimeout: () => {
       applyDeduction(50);
+      addCumulativeScore(-50);
+      markCase002RoundPlayed(currentRound?.id || "");
+      
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
-        message: "You ran out of time. The AI generates new content fast, you must be faster."
+        message: "You ran out of time. The AI generates new content fast, you must be faster.",
+        forceNext: true,
       });
     }
   });
@@ -302,10 +306,10 @@ export default function Level2Page() {
   }, [isTourActive, currentRound, flaggedIds.size, showVerdictModal]);
 
   useEffect(() => {
-    if (currentRoundIndex !== 0 && cumulativeScore + roundScore <= 0) {
+    if (currentRoundIndex !== 0 && cumulativeScore + roundScore <= 0 && !feedback?.forceNext) {
       setShowGameOverModal(true);
     }
-  }, [roundScore, cumulativeScore, currentRoundIndex]);
+  }, [roundScore, cumulativeScore, currentRoundIndex, feedback?.forceNext]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -865,6 +869,7 @@ export default function Level2Page() {
             title={feedback.title}
             message={feedback.message}
             scoreBadge={feedback.scoreBadge}
+            forceNextAction={feedback.forceNext}
             onNext={handleNextRound}
             onRetry={handleRetryRound}
             nextButtonText="Next Photo"

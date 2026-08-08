@@ -46,6 +46,7 @@ export function VerdictFeedback({
   nextButtonText,
   isFinalRound,
   scoreBadge,
+  forceNextAction,
 }: {
   isSuccess: boolean;
   title: string;
@@ -55,6 +56,7 @@ export function VerdictFeedback({
   nextButtonText?: string;
   isFinalRound?: boolean;
   scoreBadge?: React.ReactNode;
+  forceNextAction?: boolean;
 }) {
   return (
     <div className="py-4 space-y-6 relative text-left">
@@ -96,12 +98,12 @@ export function VerdictFeedback({
       </div>
 
       <div className="px-6 pt-2 flex gap-4">
-        {isSuccess ? (
+        {isSuccess || forceNextAction ? (
           <BrutalButton
             onClick={onNext}
             variant="primary"
             size="lg"
-            className={`w-full md:w-auto ${!isFinalRound ? "bg-[#10B981] hover:bg-[#10B981]/90" : ""}`}
+            className={`w-full md:w-auto ${!isFinalRound ? (isSuccess ? "bg-[#10B981] hover:bg-[#10B981]/90" : "bg-[#E11D48] hover:bg-[#E11D48]/90 text-white") : ""}`}
           >
             {!isFinalRound ? (
               <span className="flex items-center justify-center">
