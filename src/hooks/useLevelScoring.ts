@@ -64,14 +64,17 @@ export function useLevelScoring({
     onTimeoutRef.current = onTimeout;
   }, [onTimeout]);
 
-  // Timer countdown — only counts down, nothing else
+  // Timer countdown
+  const [timerStopped, setTimerStopped] = useState(false);
+  
   useEffect(() => {
-    if (!hasTimer || !isReady || isPaused || timeLeft <= 0) return;
+    if (!hasTimer || !isReady || isPaused || timerStopped) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
+          setTimerStopped(true);
           return 0;
         }
         return prev - 1;
@@ -79,7 +82,7 @@ export function useLevelScoring({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [hasTimer, isReady, isPaused, timeLeft <= 0]);
+  }, [hasTimer, isReady, isPaused, timerStopped]);
 
   // Separate effect: fire onTimeout when timeLeft hits 0
   const hasFiredTimeoutRef = useRef(false);
@@ -97,6 +100,7 @@ export function useLevelScoring({
   const resetScoring = useCallback(() => {
     setRoundScore(initialScore);
     setTimeLeft(initialTime);
+    setTimerStopped(false);
     hasFiredTimeoutRef.current = false;
     setScorePopups([]);
     setClickPopups([]);
