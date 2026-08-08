@@ -34,17 +34,17 @@ const STATUS_MESSAGES = [
 const getVariantConfig = (variant: TransitionVariant) => {
   switch(variant) {
     case 'next-case': return {
-      bg: 'bg-[#2563EB]',
+      bg: 'bg-[#FFB800]',
       border: 'border-[#0F172A]',
-      titleColor: 'text-white',
-      textColor: 'text-white/80',
+      titleColor: 'text-[#0F172A]',
+      textColor: 'text-[#0F172A]/70',
       title: 'ACCESSING NEXT CASE...'
     };
     case 'results': return {
-      bg: 'bg-[#0F172A]',
-      border: 'border-[#FFB800]',
-      titleColor: 'text-[#FFB800]',
-      textColor: 'text-[#FFB800]/80',
+      bg: 'bg-[#FFB800]',
+      border: 'border-[#0F172A]',
+      titleColor: 'text-[#0F172A]',
+      textColor: 'text-[#0F172A]/70',
       title: 'COMPILING FINAL REPORT...'
     };
     case 'init':

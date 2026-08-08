@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { driver } from "driver.js";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,6 +19,7 @@ import {
   Lightbulb,
   Plus,
   FileCheck,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
 import case002Data from "@/data/case002.json";
@@ -49,21 +50,21 @@ type ImageRound = {
 const IMAGE_ROUNDS: ImageRound[] = case002Data as ImageRound[];
 
 const TACTIC_OPTIONS = [
-  "AI Image Generation",
-  "Deepfake",
-  "Context Stripping",
-  "Photoshopped Composite",
+  "Anatomical/Biological Error",
+  "Text Rendering Error",
+  "Physics/Shadow Violation",
+  "Object Merging/Clipping",
 ];
 
 const TACTIC_DESCRIPTIONS: Record<string, string> = {
-  "AI Image Generation":
-    "Images created entirely by artificial intelligence, often containing physical impossibilities or warped artifacts.",
-  Deepfake:
-    "Using AI to map a person's face or voice onto another person's body.",
-  "Context Stripping":
-    "Using a genuine, real photo but claiming it represents a different event or time.",
-  "Photoshopped Composite":
-    "Manually splicing different real photos together using image editing software.",
+  "Anatomical/Biological Error":
+    "Extra or wrong body parts, impossible organic structures (e.g., extra fingers, impossible banana stem).",
+  "Text Rendering Error":
+    "Garbled text, mismatched fonts, corrupted signs, unscannable barcodes.",
+  "Physics/Shadow Violation":
+    "Impossible reflections, floating objects, wrong shadow direction.",
+  "Object Merging/Clipping":
+    "Things blending into each other, clipping through solid objects, impossible duplication.",
 };
 
 
@@ -135,6 +136,8 @@ export default function Level2Page() {
 
   const [currentTip, setCurrentTip] = useState<string>("");
 
+
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentTip(
@@ -145,7 +148,13 @@ export default function Level2Page() {
   const [flaggedIds, setFlaggedIds] = useState<Set<string>>(new Set());
   const [foundClues, setFoundClues] = useState<VisualClue[]>([]);
   const [showVerdictModal, setShowVerdictModal] = useState(false);
+  const [verdictStep, setVerdictStep] = useState<1 | 2>(1);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
+  
+  const shuffledTactics = useMemo(() => {
+    return [...TACTIC_OPTIONS].sort(() => 0.5 - Math.random());
+  }, [currentRoundIndex, verdictStep]);
+  
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
@@ -301,9 +310,10 @@ export default function Level2Page() {
 
   
   const handleSubmitVerdict = () => {
-    if (!selectedTactic) return;
+    if (!selectedTactic || !selectedEvidenceId) return;
 
-    const correctTactic = currentRound.clues[0]?.tactic;
+    const selectedClue = currentRound.clues.find(c => c.id === selectedEvidenceId);
+    const correctTactic = selectedClue?.tactic;
     
     if (selectedTactic === correctTactic) {
       if (!currentRound.isTutorial) {
@@ -369,6 +379,7 @@ export default function Level2Page() {
       setFeedback(null);
       setSelectedEvidenceId(null);
       setSelectedTactic(null);
+      setVerdictStep(1);
       setShowVerdictModal(false);
       setRoundScore(100);
       setTimeLeft(60);
@@ -788,22 +799,57 @@ export default function Level2Page() {
             >
               {!feedback ? (
                 <>
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#FFB800] rounded-full border-2 border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] z-20">
-                    <div className="absolute top-1 left-1 w-2 h-2 bg-white rounded-full opacity-50" />
-                  </div>
+
 
                   <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
                     Final Verdict Form
                   </h2>
 
                   <div className="space-y-4 font-sans">
-                    <div>
-                      <h3 className="font-bold text-xl mb-3 font-heading">
-                        How It Was Faked
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {TACTIC_OPTIONS.map((tactic) => {
-                          return (
+                    {verdictStep === 1 ? (
+                      <div>
+                        <h3 className="font-bold text-xl mb-3 font-heading">
+                          Which clue do you want to explain?
+                        </h3>
+                        <div className="flex flex-col gap-3">
+                          {foundClues.map((clue) => (
+                            <button
+                              key={clue.id}
+                              onClick={() => setSelectedEvidenceId(clue.id)}
+                              className={`p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer text-left ${
+                                selectedEvidenceId === clue.id
+                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]"
+                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
+                              }`}
+                            >
+                              <div className="text-lg">{clue.title}</div>
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="flex gap-4 pt-6 mt-4 border-t-[3px] border-dashed border-[#0F172A]/30">
+                          <Button
+                            onClick={() => setShowVerdictModal(false)}
+                            className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={() => setVerdictStep(2)}
+                            disabled={!selectedEvidenceId}
+                            className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                          >
+                            Next Step
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <h3 className="font-bold text-xl mb-3 font-heading">
+                          How Was This Faked?
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {shuffledTactics.map((tactic) => (
                             <button
                               key={tactic}
                               onClick={() => setSelectedTactic(tactic)}
@@ -817,33 +863,35 @@ export default function Level2Page() {
                             >
                               {tactic}
                             </button>
-                          );
-                        })}
-                      </div>
+                          ))}
+                        </div>
 
-                      <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
-                        {hoveredTactic
-                          ? TACTIC_DESCRIPTIONS[hoveredTactic]
-                          : "Hover over a tactic to see its definition."}
-                      </div>
-                    </div>
+                        <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
+                          {hoveredTactic
+                            ? TACTIC_DESCRIPTIONS[hoveredTactic]
+                            : "Hover over a tactic to see its definition."}
+                        </div>
 
-                    <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
-                      <Button
-                        onClick={() => setShowVerdictModal(false)}
-                        disabled={currentRound.isTutorial && isTourActive}
-                        className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleSubmitVerdict}
-                        disabled={!selectedTactic}
-                        className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
-                      >
-                        Submit Report
-                      </Button>
-                    </div>
+                        <div className="flex gap-4 pt-4 mt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
+                          <Button
+                            onClick={() => {
+                              setVerdictStep(1);
+                              setSelectedTactic(null);
+                            }}
+                            className="flex-1 h-12 bg-white text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] hover:bg-gray-100 transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                          >
+                            Back
+                          </Button>
+                          <Button
+                            onClick={handleSubmitVerdict}
+                            disabled={!selectedTactic}
+                            className="flex-1 h-12 bg-[#FFB800] hover:bg-[#FFB800]/90 disabled:bg-[#1D2A3C] disabled:text-white/70 disabled:border-dashed disabled:shadow-none text-[#0F172A] border-[4px] border-[#0F172A] font-bold font-heading text-xl uppercase tracking-wider shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px]"
+                          >
+                            Submit Report
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (
