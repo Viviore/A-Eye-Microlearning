@@ -264,8 +264,7 @@ export default function Level2Page() {
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
         },
-        onDestroyStarted: () => {
-          driverObjRef.current?.destroy();
+        onDestroyed: () => {
           setIsTourActive(false);
         },
         steps: [

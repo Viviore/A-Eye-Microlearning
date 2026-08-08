@@ -154,10 +154,9 @@ export default function Level1Page() {
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
         },
-        onDestroyStarted: () => {
+        onDestroyed: () => {
           setIsTourActive(false);
           setSourceCheckOpen(false);
-          driverObjRef.current?.destroy();
         },
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
