@@ -105,7 +105,15 @@ export default function Level1Page() {
   const [showVerdictModal, setShowVerdictModal] = useState(false);
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode } | null>(null);
+
+  const [shuffledTacticOptions, setShuffledTacticOptions] = useState<string[]>(currentRound?.tacticOptions || []);
+  
+  useEffect(() => {
+    if (!currentRound) return;
+    setShuffledTacticOptions([...currentRound.tacticOptions].sort(() => 0.5 - Math.random()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRoundIndex]);
 
   const [isTourActive, setIsTourActive] = useState(true);
   
@@ -242,10 +250,15 @@ export default function Level1Page() {
       }
       setFeedback({
         isSuccess: true,
-        title: currentRoundIndex === 0 ? "TRAINING COMPLETE" : "Verdict Correct!",
+        title: currentRoundIndex === 0 ? "TRAINING COMPLETE" : "VERDICT CORRECT!",
         message: currentRoundIndex === 0 
-          ? "Excellent work, recruit. You've successfully analyzed your first case. The training wheels are off now. Are you ready for the real assignments?"
-          : `Great job! You correctly identified the fake post and the tactic used. (+${roundScore} Points)`
+          ? "Great job! You identified all the clues and successfully filed your report."
+          : "Great job! You correctly identified the fake post and the tactic used.",
+        scoreBadge: currentRoundIndex !== 0 ? (
+          <span className="inline-block bg-[#10B981] text-white border-[3px] border-[#0F172A] px-3 py-1 font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            +{roundScore} Points
+          </span>
+        ) : undefined
       });
     } else {
       if (currentRound.difficulty !== "Tutorial") {
@@ -254,7 +267,12 @@ export default function Level1Page() {
       setFeedback({
         isSuccess: false,
         title: "Analysis Failed",
-        message: "That's not quite how this was faked. Take another look and try again. (-25 Points)"
+        message: "That's not quite how this was faked. Take another look and try again.",
+        scoreBadge: (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -25 Points
+          </span>
+        )
       });
     }
   };
@@ -294,6 +312,7 @@ export default function Level1Page() {
     setShowVerdictModal(false);
     setSelectedTactic(null);
     setFeedback(null);
+    setShuffledTacticOptions(prev => [...prev].sort(() => 0.5 - Math.random()));
     // Keep the clues but reset verdict!
   };
 
@@ -477,7 +496,7 @@ export default function Level1Page() {
               <div className="pt-2">
                 <h3 className="font-bold text-xl mb-3 font-heading">How Was This Faked?</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {currentRound.tacticOptions.map(tactic => {
+                  {shuffledTacticOptions.map(tactic => {
                     const correctTactics = currentRound.segments.filter(s => s.isClue && s.tactic).map(s => s.tactic);
                     const isCorrect = correctTactics.includes(tactic);
                     const isTutorial = currentRound.difficulty === "Tutorial" && !isTourActive;
@@ -542,6 +561,7 @@ export default function Level1Page() {
             isSuccess={feedback.isSuccess}
             title={feedback.title}
             message={feedback.message}
+            scoreBadge={feedback.scoreBadge}
             onNext={handleNextRound}
             onRetry={handleRetryRound}
             nextButtonText={currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"}

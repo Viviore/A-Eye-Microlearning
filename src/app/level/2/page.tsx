@@ -160,13 +160,15 @@ export default function Level2Page() {
   const [verdictStep, setVerdictStep] = useState<1 | 2>(1);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
   
-  const shuffledTactics = useMemo(() => {
-    return [...TACTIC_OPTIONS].sort(() => 0.5 - Math.random());
-  }, [currentRoundIndex, verdictStep]);
+  const [shuffledTactics, setShuffledTactics] = useState<string[]>(TACTIC_OPTIONS);
+  
+  useEffect(() => {
+    setShuffledTactics([...TACTIC_OPTIONS].sort(() => 0.5 - Math.random()));
+  }, [currentRoundIndex]);
   
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode } | null>(null);
   const [foundDecoys, setFoundDecoys] = useState<VisualClue[]>([]);
 
   const [isTourActive, setIsTourActive] = useState(true);
@@ -337,10 +339,14 @@ export default function Level2Page() {
         isSuccess: true,
         title:
           currentRoundIndex < sessionRounds.length - 1
-            ? "VERDICT VERIFIED"
-            : "CASE CLOSED",
-        message:
-          "Outstanding work! You correctly identified how this image was faked.",
+            ? "VERDICT CORRECT!"
+            : "CASE 002 COMPLETE!",
+        message: "Great job! You correctly identified the fake image and the tactic used.",
+        scoreBadge: (
+          <span className="inline-block bg-[#10B981] text-white border-[3px] border-[#0F172A] px-3 py-1 font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            +{roundScore} Points
+          </span>
+        )
       });
     } else {
       applyDeduction(50);
@@ -348,6 +354,11 @@ export default function Level2Page() {
         isSuccess: false,
         title: "Analysis Failed",
         message: "That's not quite the right analysis. Review your evidence and tactic match and try again.",
+        scoreBadge: (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -50 Points
+          </span>
+        )
       });
     }
   };
@@ -648,9 +659,12 @@ export default function Level2Page() {
             }
           >
             {foundClues.length === 0 && foundDecoys.length === 0 ? (
-              <p className="text-center text-[#0F172A]/40 font-mono text-sm absolute inset-0 flex items-center justify-center">
-                [ No clues flagged yet ]
-              </p>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/30 mt-16">
+                <Flag className="w-10 h-10 mb-2 opacity-50" strokeWidth={2} />
+                <p className="font-heading font-bold text-lg uppercase tracking-widest text-center">
+                  [ No clues flagged yet ]
+                </p>
+              </div>
             ) : (
               <AnimatePresence>
                 {[...foundClues, ...foundDecoys].map((clue, idx) => (
@@ -676,8 +690,7 @@ export default function Level2Page() {
                         <p className="text-lg font-sans font-black leading-snug text-[#0F172A]">
                           {clue.title}
                         </p>
-                        
-                        <p className="text-[14px] text-[#0F172A]/90 font-sans font-bold mt-1">
+                        <p className="text-[15px] text-[#1D2A3C] font-sans font-bold mt-2 pt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
                           {showVerdictModal || feedback ? clue.explanation : "Analyze the image to determine why this is suspicious."}
                         </p>
                       </div>
@@ -827,6 +840,7 @@ export default function Level2Page() {
             isSuccess={feedback.isSuccess}
             title={feedback.title}
             message={feedback.message}
+            scoreBadge={feedback.scoreBadge}
             onNext={handleNextRound}
             onRetry={handleRetryRound}
             nextButtonText="Next Photo"

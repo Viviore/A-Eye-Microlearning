@@ -74,7 +74,7 @@ export default function Level3Page() {
   
   const [selectedTell, setSelectedTell] = useState<string | null>(null);
   const [showReveal, setShowReveal] = useState(false);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string; penalty?: number } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; penalty?: number; scoreBadge?: React.ReactNode } | null>(null);
   const [hoveredTell, setHoveredTell] = useState<string | null>(null);
 
   const videoARef = useRef<HTMLVideoElement>(null);
@@ -129,16 +129,19 @@ export default function Level3Page() {
 
   const currentRound = sessionRounds[currentRoundIndex];
 
-  const [currentTells, setCurrentTells] = useState<any[]>([]);
+  const [currentTells, setCurrentTells] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!currentRound) {
-      setCurrentTells([]);
-      return;
+    if (!currentRound) return;
+    const tells = [...currentRound.tells];
+    if (!currentRound.isTutorial) {
+      // Add a decoy
+      const decoys = ["Mismatched Shadows", "Glitchy Audio", "Unnatural Blinking"];
+      tells.push(decoys[Math.floor(Math.random() * decoys.length)]);
     }
-    const tells = [...currentRound.tells, ...currentRound.distractorTells];
     setCurrentTells(tells.sort(() => 0.5 - Math.random()));
-  }, [currentRound]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRoundIndex]);
 
   // Check Game Over condition
   useEffect(() => {
@@ -240,6 +243,11 @@ export default function Level3Page() {
         isSuccess: false,
         title: "WRONG PANEL",
         message: "You picked the wrong panel. The other video was the AI-generated one.",
+        scoreBadge: !currentRound.isTutorial ? (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -50 Points
+          </span>
+        ) : undefined,
         penalty: 50,
       });
     } else if (!isCorrectTell) {
@@ -249,6 +257,11 @@ export default function Level3Page() {
         isSuccess: false,
         title: "LUCKY GUESS",
         message: "You picked the correct panel, but your reasoning was wrong.",
+        scoreBadge: !currentRound.isTutorial ? (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -25 Points
+          </span>
+        ) : undefined,
         penalty: 25,
       });
       if (!currentRound.isTutorial) {
@@ -266,6 +279,11 @@ export default function Level3Page() {
         isSuccess: true,
         title: "VERDICT VERIFIED",
         message: "Great job! You successfully identified the AI video and the correct reasoning.",
+        scoreBadge: !currentRound.isTutorial ? (
+          <span className="inline-block bg-[#10B981] text-white border-[3px] border-[#0F172A] px-3 py-1 font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            +{finalScore} Points
+          </span>
+        ) : undefined,
       });
     }
   };
@@ -595,40 +613,61 @@ export default function Level3Page() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className={`p-8 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col ${feedback.isSuccess ? "bg-green-400" : "bg-[#FF3366]"}`}
+              className={`relative p-8 mt-10 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col bg-[#FAFAFA] text-left`}
             >
-              <div className="flex items-center gap-4 mb-6 border-b-[4px] border-solid border-[#0F172A] pb-6">
+              {/* Overlapping top-left icon */}
+              <div className="absolute -top-10 -left-10 z-10">
                 {feedback.isSuccess ? (
-                  <div className="w-16 h-16 bg-white border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center rotate-3 shrink-0">
-                    <CheckCircle2 className="w-10 h-10 text-green-600" strokeWidth={4} />
+                  <div className="w-16 h-16 bg-[#10B981] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+                    <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={3} />
                   </div>
                 ) : (
-                  <div className="w-16 h-16 bg-white border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center -rotate-3 shrink-0">
-                    <XCircle className="w-10 h-10 text-red-600" strokeWidth={4} />
-                  </div>
-                )}
-                <h3 className="font-heading font-black text-3xl md:text-5xl text-[#0F172A] uppercase tracking-wider drop-shadow-[2px_2px_0px_white]">
-                  {feedback.title}
-                </h3>
-                {feedback.penalty && (
-                  <div className="ml-auto bg-[#0F172A] text-white px-3 py-1 font-mono font-bold text-lg md:text-xl border-2 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] rotate-2">
-                    -{feedback.penalty} PTS
+                  <div className="w-16 h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+                    <XCircle className="w-8 h-8 text-white" strokeWidth={3} />
                   </div>
                 )}
               </div>
-              <p className="text-xl md:text-2xl font-sans font-bold text-[#0F172A] mb-8 bg-white p-4 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
-                {feedback.message}
-              </p>
+
+              {feedback.scoreBadge && (
+                <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
+                  {feedback.scoreBadge}
+                </div>
+              )}
+
+              {feedback.penalty && (
+                <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
+                  <div className="bg-[#0F172A] text-white px-3 py-1 font-mono font-bold text-lg border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#E11D48] rotate-2">
+                    -{feedback.penalty} PTS
+                  </div>
+                </div>
+              )}
+
+              <div className="pl-6 pt-2">
+                <h3 className="font-heading font-black text-3xl md:text-5xl text-[#0F172A] uppercase tracking-wider">
+                  {feedback.title}
+                </h3>
+                <div className={`w-16 h-2 mt-3 ${feedback.isSuccess ? "bg-[#10B981]" : "bg-[#E11D48]"}`}></div>
+              </div>
+
+              <div className="px-6 pb-2 mt-2">
+                <div className="border-[3px] border-[#0F172A] p-6 bg-white shadow-[6px_6px_0px_0px_#E2E8F0]">
+                  <p className="text-xl md:text-2xl font-bold font-sans text-[#0F172A] leading-relaxed text-left">
+                    {feedback.message}
+                  </p>
+                </div>
+              </div>
               
-              <BrutalButton
-                onClick={handleNextAction}
-                variant="dark"
-                size="lg"
-                className="w-full h-16 md:h-20 text-xl md:text-2xl group"
-              >
-                {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
-                <ArrowRight className="ml-4 w-8 h-8 transition-transform group-hover:translate-x-2" strokeWidth={3} />
-              </BrutalButton>
+              <div className="px-6 pb-4 pt-4 flex gap-4">
+                <BrutalButton
+                  onClick={handleNextAction}
+                  variant="dark"
+                  size="lg"
+                  className="w-full h-16 md:h-20 text-xl md:text-2xl group"
+                >
+                  {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
+                  <ArrowRight className="ml-4 w-8 h-8 transition-transform group-hover:translate-x-2" strokeWidth={3} />
+                </BrutalButton>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

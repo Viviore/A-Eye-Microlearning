@@ -15,17 +15,17 @@ export function VerdictModalContainer({
     <AnimatePresence>
       {isOpen && (
         <div
-          className={`fixed inset-0 z-50 flex justify-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm ${
-            alignTop ? "items-start pt-4 md:pt-12" : "items-center"
+          className={`fixed inset-0 z-50 flex justify-center p-4 bg-[#FAFAFA]/90 backdrop-blur-sm overflow-y-auto ${
+            alignTop ? "items-start" : "items-center"
           }`}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className={`p-5 md:p-6 w-full max-w-2xl overflow-y-auto overflow-x-hidden bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative ${
+            className={`p-5 md:p-6 w-full max-w-2xl overflow-visible bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative ${
               alignTop
-                ? "max-h-[calc(100vh-320px)] md:max-h-[calc(100vh-280px)]"
+                ? "mt-4 md:mt-12"
                 : "max-h-[90vh]"
             }`}
           >
@@ -45,61 +45,77 @@ export function VerdictFeedback({
   onRetry,
   nextButtonText,
   isFinalRound,
+  scoreBadge,
 }: {
   isSuccess: boolean;
   title: string;
-  message: string;
+  message: React.ReactNode;
   onNext: () => void;
   onRetry: () => void;
   nextButtonText?: string;
   isFinalRound?: boolean;
+  scoreBadge?: React.ReactNode;
 }) {
   return (
-    <div className="text-center py-8 space-y-6">
-      <div className="flex justify-center">
+    <div className="py-4 space-y-6 relative text-left">
+      {/* Absolute top-right score badge */}
+      {scoreBadge && (
+        <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
+          {scoreBadge}
+        </div>
+      )}
+
+      {/* Overlapping top-left icon */}
+      <div className="absolute -top-10 -left-10 z-10">
         {isSuccess ? (
-          <div className="w-24 h-24 bg-[#FFB800] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A]">
-            <CheckCircle2 className="w-12 h-12 text-[#0F172A]" strokeWidth={2.5} />
+          <div className="w-16 h-16 bg-[#10B981] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+            <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={3} />
           </div>
         ) : (
-          <div className="w-24 h-24 bg-white border-[4px] border-[#FFB800] flex items-center justify-center shadow-[6px_6px_0px_0px_#FFB800]">
-            <XCircle className="w-12 h-12 text-[#FFB800]" strokeWidth={2.5} />
+          <div className="w-16 h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+            <XCircle className="w-8 h-8 text-white" strokeWidth={3} />
           </div>
         )}
       </div>
 
-      <h2
-        className={`text-5xl font-black font-heading tracking-wider ${
-          isSuccess ? "uppercase text-[#0F172A]" : "text-[#FFB800]"
-        }`}
-      >
-        {title}
-      </h2>
-      <p className="text-xl font-bold font-sans text-[#0F172A]/80 max-w-md mx-auto leading-relaxed">
-        {message}
-      </p>
+      <div className="pl-6 pt-6">
+        <h2 className="text-4xl md:text-5xl font-black font-heading tracking-wider uppercase text-[#0F172A] mb-3">
+          {title}
+        </h2>
+        
+        {/* Short colored underline */}
+        <div className={`w-16 h-2 ${isSuccess ? "bg-[#10B981]" : "bg-[#E11D48]"}`}></div>
+      </div>
 
-      <div className="pt-8">
+      <div className="px-6 pb-2 mt-2">
+        <div className="border-[3px] border-[#0F172A] p-6 bg-white shadow-[6px_6px_0px_0px_#E2E8F0]">
+          <p className="text-xl md:text-2xl font-bold font-sans text-[#0F172A] leading-relaxed text-left">
+            {message}
+          </p>
+        </div>
+      </div>
+
+      <div className="px-6 pt-2 flex gap-4">
         {isSuccess ? (
           <BrutalButton
             onClick={onNext}
             variant="primary"
             size="lg"
-            className={!isFinalRound ? "bg-[#10B981] hover:bg-[#10B981]/90" : ""}
+            className={`w-full md:w-auto ${!isFinalRound ? "bg-[#10B981] hover:bg-[#10B981]/90" : ""}`}
           >
             {!isFinalRound ? (
               <span className="flex items-center justify-center">
-                {nextButtonText || "Next Round"} <ArrowRight className="ml-3 w-7 h-7" strokeWidth={2.5} />
+                {nextButtonText || "Next Round"} <ArrowRight className="ml-3 w-6 h-6" strokeWidth={2.5} />
               </span>
             ) : (
               <span className="flex items-center justify-center">
-                {nextButtonText || "Complete Case"} <Trophy className="ml-3 w-7 h-7" strokeWidth={2.5} />
+                {nextButtonText || "Complete Case"} <Trophy className="ml-3 w-6 h-6" strokeWidth={2.5} />
               </span>
             )}
           </BrutalButton>
         ) : (
-          <BrutalButton onClick={onRetry} variant="secondary" size="lg">
-            <RotateCcw className="mr-3 w-7 h-7" strokeWidth={2.5} /> Retry Verdict
+          <BrutalButton onClick={onRetry} variant="secondary" size="lg" className="w-full md:w-auto">
+            <RotateCcw className="mr-3 w-6 h-6" strokeWidth={2.5} /> Retry Verdict
           </BrutalButton>
         )}
       </div>
