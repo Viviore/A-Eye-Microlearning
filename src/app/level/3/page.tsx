@@ -388,7 +388,7 @@ export default function Level3Page() {
             currentRoundNumber={sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1}
             totalRounds={sessionRounds.filter(r => !r.isTutorial).length}
             score={cumulativeScore + roundScore}
-            scorePopups={scorePopups}
+            deductions={deductions}
             icon="fileVideo"
           >
             <div className="relative group">
