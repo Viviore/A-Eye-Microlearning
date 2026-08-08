@@ -290,7 +290,13 @@ export default function Level3Page() {
       const d = driver({
         showProgress: true,
         allowClose: false,
+        smoothScroll: true,
         disableActiveInteraction: true,
+        onHighlightStarted: (element) => {
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        },
         onPopoverRender: (popover, { state }) => {
           if (!driverObjRef.current?.hasNextStep()) return;
 

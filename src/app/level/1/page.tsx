@@ -121,7 +121,13 @@ export default function Level1Page() {
       const d = driver({
         showProgress: true,
         allowClose: false,
+        smoothScroll: true,
         disableActiveInteraction: true,
+        onHighlightStarted: (element) => {
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        },
         onPopoverRender: (popover, { state }) => {
           if (!driverObjRef.current?.hasNextStep()) return;
 
@@ -156,7 +162,7 @@ export default function Level1Page() {
           { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
           { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.", side: "bottom" } },
           { element: '#btn-source-check', popover: { title: 'A-Eye Agent', description: "Always gather facts first! We'll click 'Open Source Check' to see verified information.", side: "left" } },
-          { element: '#tutorial-source', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" }, onHighlightStarted: () => setSourceCheckOpen(true) },
+          { element: '#tutorial-source', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" }, onHighlightStarted: (element) => { setSourceCheckOpen(true); element?.scrollIntoView({ behavior: "smooth", block: "center" }); } },
           { element: '#segment-t-2', popover: { title: 'A-Eye Agent', description: "Look at the highlighted sentence. It contradicts our verified facts! You'll need to flag such clues.", side: "bottom" } },
           { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board. Watch out for decoys!", side: "left" } },
           { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Each round starts at 100 points. Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points.", side: "bottom" } },
@@ -174,6 +180,18 @@ export default function Level1Page() {
       }
     };
   }, [currentRoundIndex, isReady, isTransitioning]);
+
+  useEffect(() => {
+    if (currentRoundIndex === 0 && !isTourActive && flaggedIds.size === 0 && !showVerdictModal) {
+      const timeout = setTimeout(() => {
+        const el = document.getElementById("segment-t-2");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [isTourActive, currentRoundIndex, flaggedIds.size, showVerdictModal]);
   
   if (!isReady || !currentRound) return null;
   

@@ -223,7 +223,13 @@ export default function Level2Page() {
       const d = driver({
         showProgress: true,
         allowClose: false,
+        smoothScroll: true,
         disableActiveInteraction: true,
+        onHighlightStarted: (element) => {
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        },
         onPopoverRender: (popover, { state }) => {
           if (!driverObjRef.current?.hasNextStep()) return;
 
@@ -279,6 +285,18 @@ export default function Level2Page() {
       }
     };
   }, [currentRound?.isTutorial, isTransitioning]);
+
+  useEffect(() => {
+    if (currentRound?.isTutorial && !isTourActive && flaggedIds.size === 0 && !showVerdictModal) {
+      const timeout = setTimeout(() => {
+        const el = document.getElementById("tutorial-image-container");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [isTourActive, currentRound, flaggedIds.size, showVerdictModal]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
