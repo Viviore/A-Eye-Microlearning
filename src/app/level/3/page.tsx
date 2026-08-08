@@ -443,54 +443,96 @@ export default function Level3Page() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Panel A */}
-            <div 
-              onClick={() => handlePanelClick("A")}
-              className={`relative cursor-pointer transition-all border-[4px] ${selectedPanel === "A" ? "border-[#FFB800] shadow-[0_0_0_4px_#FFB800]" : "border-[#0F172A] hover:border-[#FFB800] hover:scale-[1.02]"} ${(isPanelLocked && selectedPanel !== "A") ? "opacity-50 pointer-events-none grayscale" : ""}`}
-            >
-              <div className="absolute top-2 left-2 bg-[#0F172A] text-white font-mono font-bold px-3 py-1 z-10 border-2 border-white shadow-sm">PANEL A</div>
-              <video 
-                ref={videoARef} 
-                src={currentRound.videoA} 
-                className="w-full h-auto object-cover aspect-video" 
-                autoPlay
-                loop 
-                muted 
-                playsInline
-                onEnded={() => { videoARef.current?.pause(); }}
-              />
-              {showReveal && (
-                <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
-                  <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "A" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
-                    {currentRound.correctPanel === "A" ? "AI FAKE" : "REAL"}
-                  </span>
+            {(() => {
+              const isCorrect = currentRound.correctPanel === "A";
+              const isTutorial = currentRound.isTutorial && !isTourActive;
+              const isDisabled = isTutorial && !isCorrect && !isPanelLocked;
+              const showPulse = isTutorial && isCorrect && !selectedPanel;
+              
+              return (
+                <div 
+                  onClick={() => !isDisabled && handlePanelClick("A")}
+                  className={`relative cursor-pointer transition-all border-[4px] ${selectedPanel === "A" ? "border-[#FFB800] shadow-[0_0_0_4px_#FFB800]" : showPulse ? "border-[#FFB800] border-solid shadow-[0_0_0_4px_#FFB800] animate-pulse" : "border-[#0F172A] hover:border-[#FFB800] hover:scale-[1.02]"} ${(isPanelLocked && selectedPanel !== "A") || isDisabled ? "opacity-50 pointer-events-none grayscale" : ""}`}
+                >
+                  <div className="absolute top-2 left-2 bg-[#0F172A] text-white font-mono font-bold px-3 py-1 z-10 border-2 border-white shadow-sm">PANEL A</div>
+                  <video 
+                    ref={videoARef} 
+                    src={currentRound.videoA} 
+                    className="w-full h-auto object-cover aspect-video" 
+                    autoPlay
+                    loop 
+                    muted 
+                    playsInline
+                    onEnded={() => { videoARef.current?.pause(); }}
+                  />
+                  {showReveal && (
+                    <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
+                      <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "A" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
+                        {currentRound.correctPanel === "A" ? "AI FAKE" : "REAL"}
+                      </span>
+                    </div>
+                  )}
+                  {showPulse && (
+                    <motion.span 
+                      animate={{ x: [0, 12, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                      className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none z-10 drop-shadow-xl"
+                    >
+                      <svg viewBox="0 0 100 100" className="w-16 h-16 overflow-visible">
+                        <polygon points="14,44 54,44 54,24 94,54 54,84 54,64 14,64" fill="#0F172A" />
+                        <polygon points="10,40 50,40 50,20 90,50 50,80 50,60 10,60" fill="#FFB800" stroke="#0F172A" strokeWidth="6" strokeLinejoin="miter" />
+                      </svg>
+                    </motion.span>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()}
 
             {/* Panel B */}
-            <div 
-              onClick={() => handlePanelClick("B")}
-              className={`relative cursor-pointer transition-all border-[4px] ${selectedPanel === "B" ? "border-[#FFB800] shadow-[0_0_0_4px_#FFB800]" : "border-[#0F172A] hover:border-[#FFB800] hover:scale-[1.02]"} ${(isPanelLocked && selectedPanel !== "B") ? "opacity-50 pointer-events-none grayscale" : ""}`}
-            >
-              <div className="absolute top-2 left-2 bg-[#0F172A] text-white font-mono font-bold px-3 py-1 z-10 border-2 border-white shadow-sm">PANEL B</div>
-              <video 
-                ref={videoBRef} 
-                src={currentRound.videoB} 
-                className="w-full h-auto object-cover aspect-video" 
-                autoPlay
-                loop 
-                muted 
-                playsInline
-                onEnded={() => { videoBRef.current?.pause(); }}
-              />
-              {showReveal && (
-                <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
-                  <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "B" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
-                    {currentRound.correctPanel === "B" ? "AI FAKE" : "REAL"}
-                  </span>
+            {(() => {
+              const isCorrect = currentRound.correctPanel === "B";
+              const isTutorial = currentRound.isTutorial && !isTourActive;
+              const isDisabled = isTutorial && !isCorrect && !isPanelLocked;
+              const showPulse = isTutorial && isCorrect && !selectedPanel;
+              
+              return (
+                <div 
+                  onClick={() => !isDisabled && handlePanelClick("B")}
+                  className={`relative cursor-pointer transition-all border-[4px] ${selectedPanel === "B" ? "border-[#FFB800] shadow-[0_0_0_4px_#FFB800]" : showPulse ? "border-[#FFB800] border-solid shadow-[0_0_0_4px_#FFB800] animate-pulse" : "border-[#0F172A] hover:border-[#FFB800] hover:scale-[1.02]"} ${(isPanelLocked && selectedPanel !== "B") || isDisabled ? "opacity-50 pointer-events-none grayscale" : ""}`}
+                >
+                  <div className="absolute top-2 left-2 bg-[#0F172A] text-white font-mono font-bold px-3 py-1 z-10 border-2 border-white shadow-sm">PANEL B</div>
+                  <video 
+                    ref={videoBRef} 
+                    src={currentRound.videoB} 
+                    className="w-full h-auto object-cover aspect-video" 
+                    autoPlay
+                    loop 
+                    muted 
+                    playsInline
+                    onEnded={() => { videoBRef.current?.pause(); }}
+                  />
+                  {showReveal && (
+                    <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
+                      <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "B" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
+                        {currentRound.correctPanel === "B" ? "AI FAKE" : "REAL"}
+                      </span>
+                    </div>
+                  )}
+                  {showPulse && (
+                    <motion.span 
+                      animate={{ x: [0, 12, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                      className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none z-10 drop-shadow-xl"
+                    >
+                      <svg viewBox="0 0 100 100" className="w-16 h-16 overflow-visible">
+                        <polygon points="14,44 54,44 54,24 94,54 54,84 54,64 14,64" fill="#0F172A" />
+                        <polygon points="10,40 50,40 50,20 90,50 50,80 50,60 10,60" fill="#FFB800" stroke="#0F172A" strokeWidth="6" strokeLinejoin="miter" />
+                      </svg>
+                    </motion.span>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()}
           </div>
 
           {/* Confirm Dialog */}
@@ -527,17 +569,35 @@ export default function Level3Page() {
               <p className="text-center font-bold text-[#0F172A]/70 mb-6">Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {currentTells.map((tell) => (
-                  <button
-                    key={tell}
-                    onClick={() => handleTellClick(tell)}
-                    onMouseEnter={() => setHoveredTell(tell)}
-                    onMouseLeave={() => setHoveredTell(null)}
-                    className="p-4 border-[4px] border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] font-bold font-sans transition-all text-[#0F172A] bg-white hover:bg-[#FFB800] hover:shadow-[4px_4px_0px_0px_#0F172A]"
-                  >
-                    {tell}
-                  </button>
-                ))}
+                {currentTells.map((tell) => {
+                  const isCorrect = currentRound.tells.includes(tell);
+                  const isTutorial = currentRound.isTutorial && !isTourActive;
+                  const isDisabled = isTutorial && !isCorrect;
+                  const showPulse = isTutorial && isCorrect;
+
+                  let btnClass = "relative p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] ";
+                  
+                  if (isDisabled) {
+                    btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
+                  } else if (showPulse) {
+                    btnClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                  } else {
+                    btnClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:bg-[#FFB800] hover:shadow-[4px_4px_0px_0px_#0F172A] ";
+                  }
+
+                  return (
+                    <button
+                      key={tell}
+                      onClick={() => !isDisabled && handleTellClick(tell)}
+                      onMouseEnter={() => !isDisabled && setHoveredTell(tell)}
+                      onMouseLeave={() => !isDisabled && setHoveredTell(null)}
+                      disabled={isDisabled}
+                      className={btnClass}
+                    >
+                      {tell}
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
           )}

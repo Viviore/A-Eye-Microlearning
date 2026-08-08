@@ -13,7 +13,8 @@
       "tacticOptions": [
         "Vague Attribution",
         "Artificial Urgency",
-        "Phishing Link"
+        "Phishing Link",
+        "False Context"
       ],
       "segments": [
         {

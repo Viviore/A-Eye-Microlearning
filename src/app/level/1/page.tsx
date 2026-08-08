@@ -332,7 +332,7 @@ export default function Level1Page() {
           {/* Mock Social Post */}
           <Card 
             id="tutorial-post"
-            className="p-6 md:p-8 mt-6 bg-white border-[4px] border-[#0F172A] rounded-none transition-all duration-500 shadow-[8px_8px_0px_0px_#0F172A]"
+            className="overflow-visible p-6 md:p-8 mt-6 bg-white border-[4px] border-[#0F172A] rounded-none transition-all duration-500 shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div 
@@ -349,7 +349,7 @@ export default function Level1Page() {
             <div className="text-xl md:text-2xl font-mono leading-relaxed text-[#0F172A]">
               {currentRound.segments.map((segment) => {
                 const isFlagged = flaggedIds.has(segment.id);
-                const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0;
+                const showTutorialPulse = currentRoundIndex === 0 && segment.id === "t-2" && flaggedIds.size === 0 && !isTourActive;
                 return (
                   <span
                     key={segment.id}
@@ -541,19 +541,30 @@ export default function Level1Page() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {currentRound.tacticOptions.map(tactic => {
                           const correctTactics = currentRound.segments.filter(s => s.isClue && s.tactic).map(s => s.tactic);
+                          const isCorrect = correctTactics.includes(tactic);
+                          const isTutorial = currentRound.difficulty === "Tutorial" && !isTourActive;
+                          const isDisabled = isTutorial && !isCorrect;
+
+                          let buttonClass = `p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer `;
+                          
+                          if (isDisabled) {
+                            buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
+                          } else if (selectedTactic === tactic) {
+                            buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
+                          } else if (isTutorial && isCorrect) {
+                            buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                          } else {
+                            buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
+                          }
+
                           return (
                             <button
                               key={tactic}
-                              onClick={() => {
-                                setSelectedTactic(tactic);
-                              }}
-                              onMouseEnter={() => setHoveredTactic(tactic)}
-                              onMouseLeave={() => setHoveredTactic(null)}
-                              className={`p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer ${
-                                selectedTactic === tactic
-                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]"
-                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                              }`}
+                              onClick={() => !isDisabled && setSelectedTactic(tactic)}
+                              onMouseEnter={() => !isDisabled && setHoveredTactic(tactic)}
+                              onMouseLeave={() => !isDisabled && setHoveredTactic(null)}
+                              disabled={isDisabled}
+                              className={buttonClass}
                             >
                               {tactic}
                             </button>

@@ -812,19 +812,27 @@ export default function Level2Page() {
                           Which clue do you want to explain?
                         </h3>
                         <div className="flex flex-col gap-3">
-                          {foundClues.map((clue) => (
-                            <button
-                              key={clue.id}
-                              onClick={() => setSelectedEvidenceId(clue.id)}
-                              className={`p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer text-left ${
-                                selectedEvidenceId === clue.id
-                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]"
-                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                              }`}
-                            >
-                              <div className="text-lg">{clue.title}</div>
-                            </button>
-                          ))}
+                          {foundClues.map((clue) => {
+                            let buttonClass = `p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer text-left `;
+                            
+                            if (selectedEvidenceId === clue.id) {
+                              buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
+                            } else if (currentRound.isTutorial) {
+                              buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                            } else {
+                              buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
+                            }
+
+                            return (
+                              <button
+                                key={clue.id}
+                                onClick={() => setSelectedEvidenceId(clue.id)}
+                                className={buttonClass}
+                              >
+                                <div className="text-lg">{clue.title}</div>
+                              </button>
+                            );
+                          })}
                         </div>
 
                         <div className="flex gap-4 pt-6 mt-4 border-t-[3px] border-dashed border-[#0F172A]/30">
@@ -849,21 +857,36 @@ export default function Level2Page() {
                           How Was This Faked?
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {shuffledTactics.map((tactic) => (
-                            <button
-                              key={tactic}
-                              onClick={() => setSelectedTactic(tactic)}
-                              onMouseEnter={() => setHoveredTactic(tactic)}
-                              onMouseLeave={() => setHoveredTactic(null)}
-                              className={`p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer ${
-                                selectedTactic === tactic
-                                  ? "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]"
-                                  : "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)]"
-                              }`}
-                            >
-                              {tactic}
-                            </button>
-                          ))}
+                          {shuffledTactics.map((tactic) => {
+                            const correctTactic = currentRound.clues.find(c => c.id === selectedEvidenceId)?.tactic;
+                            const isCorrect = tactic === correctTactic;
+                            const isTutorial = currentRound.isTutorial && !isTourActive;
+                            const isDisabled = isTutorial && !isCorrect;
+                            
+                            let buttonClass = `p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer `;
+                            if (isDisabled) {
+                              buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
+                            } else if (selectedTactic === tactic) {
+                              buttonClass += "bg-[#FFB800] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ";
+                            } else if (isTutorial && isCorrect) {
+                              buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                            } else {
+                              buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
+                            }
+
+                            return (
+                              <button
+                                key={tactic}
+                                onClick={() => !isDisabled && setSelectedTactic(tactic)}
+                                onMouseEnter={() => !isDisabled && setHoveredTactic(tactic)}
+                                onMouseLeave={() => !isDisabled && setHoveredTactic(null)}
+                                disabled={isDisabled}
+                                className={buttonClass}
+                              >
+                                {tactic}
+                              </button>
+                            );
+                          })}
                         </div>
 
                         <div className="mt-4 h-12 flex items-center justify-center p-2 bg-[#0F172A]/5 border-[2px] border-dashed border-[#0F172A]/20 rounded-sm italic text-sm text-[#0F172A]/80 text-center transition-all">
