@@ -53,18 +53,18 @@ export function IngameNavbar() {
       done: isC3Done,
     },
     {
-      path: "/results",
-      label: "Results",
-      icon: BarChart,
-      unlocked: true,
-      done: isC3Done,
-    },
-    {
       path: "/quiz/post",
       label: "Post-Test",
       icon: CheckCircle2,
       unlocked: true,
       done: postQuizScore !== null,
+    },
+    {
+      path: "/results",
+      label: "Results",
+      icon: BarChart,
+      unlocked: true,
+      done: false,
     },
   ];
 
