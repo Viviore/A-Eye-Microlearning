@@ -127,7 +127,7 @@ export default function HowToPlay() {
             <Button 
               onClick={() => {
                 const preloadPromise = import("@/utils/preloader").then(m => m.preloadGameAssets());
-                startTransition("/quiz/pre", preloadPromise);
+                startTransition("/quiz/pre", { variant: 'init', waitFor: preloadPromise });
               }}
               size="lg" 
               className="bg-white hover:bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px] h-20 px-16 text-2xl font-heading font-black tracking-wider uppercase transition-all group"

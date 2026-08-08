@@ -4,12 +4,21 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
+type TransitionVariant = 'init' | 'next-case' | 'results';
+
+export type TransitionOptions = {
+  waitFor?: Promise<any>;
+  variant?: TransitionVariant;
+};
+
 type TransitionContextType = {
-  startTransition: (href: string, waitFor?: Promise<any>) => void;
+  startTransition: (href: string, options?: TransitionOptions) => void;
+  isTransitioning: boolean;
 };
 
 const TransitionContext = createContext<TransitionContextType>({
   startTransition: () => {},
+  isTransitioning: false,
 });
 
 export const useAppTransition = () => useContext(TransitionContext);
@@ -22,6 +31,33 @@ const STATUS_MESSAGES = [
   "Verifying integrity..."
 ];
 
+const getVariantConfig = (variant: TransitionVariant) => {
+  switch(variant) {
+    case 'next-case': return {
+      bg: 'bg-[#2563EB]',
+      border: 'border-[#0F172A]',
+      titleColor: 'text-white',
+      textColor: 'text-white/80',
+      title: 'ACCESSING NEXT CASE...'
+    };
+    case 'results': return {
+      bg: 'bg-[#0F172A]',
+      border: 'border-[#FFB800]',
+      titleColor: 'text-[#FFB800]',
+      textColor: 'text-[#FFB800]/80',
+      title: 'COMPILING FINAL REPORT...'
+    };
+    case 'init':
+    default: return {
+      bg: 'bg-[#FFB800]',
+      border: 'border-[#0F172A]',
+      titleColor: 'text-[#0F172A]',
+      textColor: 'text-[#0F172A]/70',
+      title: 'INITIATING PROTOCOL...'
+    };
+  }
+};
+
 export function TransitionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -32,13 +68,15 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const [sourcePath, setSourcePath] = useState<string | null>(null);
   const [statusText, setStatusText] = useState(STATUS_MESSAGES[0]);
   const [loadProgress, setLoadProgress] = useState<number | null>(null);
+  const [variant, setVariant] = useState<TransitionVariant>('init');
 
-  const startTransition = (href: string, waitFor?: Promise<any>) => {
+  const startTransition = (href: string, options?: TransitionOptions) => {
     if (pathname === href) {
       router.push(href);
       return;
     }
     
+    setVariant(options?.variant || 'init');
     setIsTransitioning(true);
     setSourcePath(pathname);
     setMinTimeElapsed(false);
@@ -47,11 +85,11 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     
     setTimeout(() => {
       setMinTimeElapsed(true);
-    }, 1800); // Enforce a snappier 1.8s minimum display
+    }, 1800);
 
     const slideDownAnimation = new Promise(resolve => setTimeout(resolve, 600));
 
-    Promise.all([slideDownAnimation, waitFor || Promise.resolve()]).then(() => {
+    Promise.all([slideDownAnimation, options?.waitFor || Promise.resolve()]).then(() => {
       router.push(href);
     });
   };
@@ -81,7 +119,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       } else {
         setStatusText("Awaiting network response...");
       }
-    }, 400); // Faster hacker-style cycling (400ms)
+    }, 400);
 
     return () => clearInterval(interval);
   }, [isTransitioning]);
@@ -96,8 +134,10 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
+  const config = getVariantConfig(variant);
+
   return (
-    <TransitionContext.Provider value={{ startTransition }}>
+    <TransitionContext.Provider value={{ startTransition, isTransitioning }}>
       {children}
 
       <AnimatePresence>
@@ -107,18 +147,18 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
             animate={{ top: "0" }}
             exit={{ top: "100vh" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed left-0 w-full h-[100vh] bg-[#FFB800] z-[99999] border-y-[8px] border-[#0F172A] flex flex-col items-center justify-center pointer-events-none gap-4"
+            className={`fixed left-0 w-full h-[100vh] ${config.bg} z-[99999] border-y-[8px] ${config.border} flex flex-col items-center justify-center pointer-events-none gap-4`}
             style={{ margin: 0, padding: 0 }}
           >
-            <span className="font-heading font-black text-[#0F172A] text-4xl md:text-6xl uppercase tracking-widest animate-pulse flex items-center gap-4">
-              Initiating Protocol...
+            <span className={`font-heading font-black ${config.titleColor} text-4xl md:text-6xl uppercase tracking-widest animate-pulse flex items-center gap-4 text-center px-4`}>
+              {config.title}
               {loadProgress !== null && (
-                <span className="text-3xl md:text-5xl text-[#0F172A]/80">
+                <span className={`text-3xl md:text-5xl opacity-80`}>
                   {loadProgress}%
                 </span>
               )}
             </span>
-            <span className="font-mono font-bold text-[#0F172A]/70 text-sm md:text-lg tracking-wider">
+            <span className={`font-mono font-bold ${config.textColor} text-sm md:text-lg tracking-wider`}>
               [ {statusText} ]
             </span>
           </motion.div>

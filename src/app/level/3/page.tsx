@@ -6,6 +6,7 @@ import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useAppTransition } from "@/components/layout/TransitionProvider";
 import {
   FileVideo,
   CheckCircle2,
@@ -29,6 +30,7 @@ const VIDEO_ROUNDS: VideoRound[] = case003Data as VideoRound[];
 
 export default function Level3Page() {
   const router = useRouter();
+  const { startTransition, isTransitioning } = useAppTransition();
   const { 
     completeLevel, 
     cumulativeScore, 
@@ -273,15 +275,15 @@ export default function Level3Page() {
       } else {
         completeLevel(3);
         setTimeout(() => {
-          router.push("/results");
-        }, 500);
+          startTransition("/results", { variant: 'results' });
+        }, 1500);
       }
     }
   };
 
   // Driver.js tutorial
   useEffect(() => {
-    if (currentRound?.isTutorial && !isDriverInitialized.current && isReady) {
+    if (currentRound?.isTutorial && !isDriverInitialized.current && isReady && !isTransitioning) {
       isDriverInitialized.current = true;
       setIsTourActive(true);
       
@@ -340,7 +342,7 @@ export default function Level3Page() {
         driverObjRef.current.destroy();
       }
     };
-  }, [currentRound?.isTutorial, isReady]);
+  }, [currentRound?.isTutorial, isReady, isTransitioning]);
 
   if (!isReady || !currentRound) return null;
 

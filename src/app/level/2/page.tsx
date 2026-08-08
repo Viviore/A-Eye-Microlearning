@@ -19,8 +19,8 @@ import {
   Lightbulb,
   Plus,
   FileCheck,
-} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAppTransition } from "@/components/layout/TransitionProvider";
 import case002Data from "@/data/case002.json";
 
 type VisualClue = {
@@ -93,6 +93,7 @@ const DETECTIVE_TIPS = [
 
 export default function Level2Page() {
   const router = useRouter();
+  const { startTransition, isTransitioning } = useAppTransition();
   const { completeLevel, cumulativeScore, addCumulativeScore, addCase002Score, resetGame, playedCase002Rounds, markCase002RoundPlayed } = useGameStore();
 
   
@@ -206,7 +207,7 @@ export default function Level2Page() {
 
 
   useEffect(() => {
-    if (currentRound?.isTutorial && !isDriverInitialized.current) {
+    if (currentRound?.isTutorial && !isDriverInitialized.current && !isTransitioning) {
       isDriverInitialized.current = true;
       setIsTourActive(true);
 
@@ -268,7 +269,7 @@ export default function Level2Page() {
         driverObjRef.current.destroy();
       }
     };
-  }, [currentRound?.isTutorial]);
+  }, [currentRound?.isTutorial, isTransitioning]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -384,7 +385,7 @@ export default function Level2Page() {
       setIsHoveringImage(false);
     } else {
       completeLevel(2);
-      router.push("/level/3");
+      startTransition("/level/3", { variant: 'next-case' });
     }
   };
 

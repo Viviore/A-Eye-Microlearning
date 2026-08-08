@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAppTransition } from "@/components/layout/TransitionProvider";
 import case001Data from "@/data/case001.json";
 
 export type TextSegment = {
@@ -45,6 +46,7 @@ const TACTIC_DESCRIPTIONS: Record<string, string> = case001Data.TACTIC_DESCRIPTI
 
 export default function Level1Page() {
   const router = useRouter();
+  const { startTransition, isTransitioning } = useAppTransition();
   const completeLevel = useGameStore((state) => state.completeLevel);
   const cumulativeScore = useGameStore((state) => state.cumulativeScore);
   const addCumulativeScore = useGameStore((state) => state.addCumulativeScore);
@@ -112,7 +114,7 @@ export default function Level1Page() {
   const isDriverInitialized = useRef(false);
 
   useEffect(() => {
-    if (currentRoundIndex === 0 && !isDriverInitialized.current && isReady) {
+    if (currentRoundIndex === 0 && !isDriverInitialized.current && isReady && !isTransitioning) {
       isDriverInitialized.current = true;
       setIsTourActive(true);
       
@@ -171,7 +173,7 @@ export default function Level1Page() {
         driverObjRef.current.destroy();
       }
     };
-  }, [currentRoundIndex, isReady]);
+  }, [currentRoundIndex, isReady, isTransitioning]);
   
   if (!isReady || !currentRound) return null;
   
@@ -256,7 +258,7 @@ export default function Level1Page() {
       setFeedback(null);
     } else {
       completeLevel(1);
-      router.push('/level/2');
+      startTransition('/level/2', { variant: 'next-case' });
     }
   };
   
