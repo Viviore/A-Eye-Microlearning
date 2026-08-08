@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
 import { BrutalButton } from "@/components/ui/brutal-button";
 import Link from "next/link";
-import { Shield, Target, Activity, AlertTriangle, CheckCircle2, ChevronRight, BarChart, FileText, Camera, Video, XCircle } from "lucide-react";
+import { Shield, Target, Activity, AlertTriangle, CheckCircle2, ChevronRight, BarChart, FileText, Camera, Video, XCircle, TrendingUp } from "lucide-react";
 import { ChartBarMultiple } from "@/components/charts/chart-bar-multiple";
 
 export default function ResultsDashboardPage() {
@@ -13,6 +13,12 @@ export default function ResultsDashboardPage() {
     case001Score,
     case002Score,
     case003Score,
+    preQuizScore,
+    preQuizAwareness,
+    preQuizConfidence,
+    postQuizScore,
+    postQuizAwareness,
+    postQuizConfidence,
   } = useGameStore();
 
   const maxCaseScore = 500;
@@ -91,12 +97,50 @@ export default function ResultsDashboardPage() {
             </p>
           </div>
 
-          <Link href="/quiz/post" passHref>
-            <BrutalButton variant="primary" size="lg">
-              TAKE POST-QUIZ <ChevronRight className="ml-2 w-6 h-6" strokeWidth={3} />
-            </BrutalButton>
-          </Link>
+          {postQuizScore === null ? (
+            <Link href="/quiz/post" passHref>
+              <BrutalButton variant="primary" size="lg">
+                TAKE POST-QUIZ <ChevronRight className="ml-2 w-6 h-6" strokeWidth={3} />
+              </BrutalButton>
+            </Link>
+          ) : (
+            <div className="font-mono text-sm font-bold bg-[#0F172A] text-white px-4 py-2 uppercase tracking-wider">
+              Assessment Completed
+            </div>
+          )}
         </motion.div>
+
+        {preQuizScore !== null && postQuizScore !== null && (
+          <motion.div variants={itemVariants} className="bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] p-6 md:p-8">
+            <div className="flex items-center gap-3 mb-6 border-b-[4px] border-[#0F172A] pb-4">
+              <TrendingUp className="w-8 h-8 text-[#FFB800]" strokeWidth={3} />
+              <h2 className="text-3xl font-black font-heading uppercase text-[#0F172A]">Your Growth</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+              <div className="bg-[#FAFAFA] border-[3px] border-[#0F172A] p-4 text-center">
+                <div className="text-sm font-bold font-mono uppercase text-[#0F172A]/70 mb-2">Detection Skill</div>
+                <div className="text-3xl font-black font-heading text-[#0F172A]">
+                  <span className="text-[#0F172A]/50">{preQuizScore}/5</span> <span className="text-[#FFB800] px-2">→</span> <span>{postQuizScore}/5</span>
+                </div>
+              </div>
+              <div className="bg-[#FAFAFA] border-[3px] border-[#0F172A] p-4 text-center">
+                <div className="text-sm font-bold font-mono uppercase text-[#0F172A]/70 mb-2">Confidence Rating</div>
+                <div className="text-3xl font-black font-heading text-[#0F172A]">
+                  <span className="text-[#0F172A]/50">{preQuizConfidence}/5</span> <span className="text-[#FFB800] px-2">→</span> <span>{postQuizConfidence}/5</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-[#0F172A] text-white p-4 font-sans font-bold text-lg leading-relaxed shadow-[4px_4px_0px_0px_#FFB800]">
+              {postQuizScore > preQuizScore && postQuizConfidence! > preQuizConfidence! && "Incredible progress. You went from struggling to spot fakes to catching them consistently, and your confidence has grown to match your skills. You are now equipped to navigate the digital world."}
+              {postQuizScore > preQuizScore && postQuizConfidence! <= preQuizConfidence! && "Your objective detection skills improved significantly, even if your confidence hasn't fully caught up yet. Trust your eyes—you're better at this than you think."}
+              {postQuizScore <= preQuizScore && postQuizConfidence! > preQuizConfidence! && "Your confidence has grown, which is the first step to awareness. Keep applying the cross-examination techniques to improve your objective detection rate."}
+              {postQuizScore <= preQuizScore && postQuizConfidence! <= preQuizConfidence! && "You've established a baseline. Digital literacy is a continuous journey of maintaining skepticism. Review the case files to sharpen your detection protocols further."}
+            </div>
+          </motion.div>
+        )}
+
 
         {/* Global Overview Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

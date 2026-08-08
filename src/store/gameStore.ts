@@ -20,11 +20,19 @@ interface GameState {
   resetSession: (missionId: string) => void;
 
   preQuizScore: number | null;
+  preQuizAwareness: number | null;
+  preQuizConfidence: number | null;
   postQuizScore: number | null;
+  postQuizAwareness: number | null;
+  postQuizConfidence: number | null;
   completedLevels: number[];
   cumulativeScore: number;
   setPreQuizScore: (score: number) => void;
+  setPreQuizAwareness: (rating: number) => void;
+  setPreQuizConfidence: (rating: number) => void;
   setPostQuizScore: (score: number) => void;
+  setPostQuizAwareness: (rating: number) => void;
+  setPostQuizConfidence: (rating: number) => void;
   completeLevel: (levelId: number) => void;
   addCumulativeScore: (points: number) => void;
   resetCumulativeScore: () => void;
@@ -183,11 +191,20 @@ export const useGameStore = create<GameState>((set) => ({
     }),
 
   preQuizScore: null,
+  preQuizAwareness: null,
+  preQuizConfidence: null,
   postQuizScore: null,
+  postQuizAwareness: null,
+  postQuizConfidence: null,
   completedLevels: [],
   cumulativeScore: 0,
+  
   setPreQuizScore: (score) => set({ preQuizScore: score }),
+  setPreQuizAwareness: (rating) => set({ preQuizAwareness: rating }),
+  setPreQuizConfidence: (rating) => set({ preQuizConfidence: rating }),
   setPostQuizScore: (score) => set({ postQuizScore: score }),
+  setPostQuizAwareness: (rating) => set({ postQuizAwareness: rating }),
+  setPostQuizConfidence: (rating) => set({ postQuizConfidence: rating }),
   completeLevel: (levelId) =>
     set((state) => ({
       completedLevels: state.completedLevels.includes(levelId)
@@ -229,15 +246,19 @@ export const useGameStore = create<GameState>((set) => ({
       return { playedCase003Rounds: [...state.playedCase003Rounds, roundId] };
     }),
     
-  resetGame: () =>
-    set({
-      preQuizScore: null,
-      postQuizScore: null,
-      completedLevels: [],
-      cumulativeScore: 0,
-      case001Score: 0,
-      case002Score: 0,
-      case003Score: 0,
+  resetGame: () => set({ 
+    sessions: initialSessions(),
+    preQuizScore: null,
+    preQuizAwareness: null,
+    preQuizConfidence: null,
+    postQuizScore: null,
+    postQuizAwareness: null,
+    postQuizConfidence: null,
+    completedLevels: [],
+    cumulativeScore: 0,
+    case001Score: 0,
+    case002Score: 0,
+    case003Score: 0,
       level1FoundArtifacts: [],
       level1Verdict: null,
       level1Confidence: null,

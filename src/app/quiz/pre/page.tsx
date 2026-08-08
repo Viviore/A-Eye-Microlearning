@@ -5,197 +5,217 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
 import { BrutalButton } from "@/components/ui/brutal-button";
-import { NotebookPen, ArrowRight, ShieldCheck } from "lucide-react";
-
-const quizQuestions = [
-  {
-    question: "When evaluating an image online, what is the most reliable first step?",
-    options: [
-      "Trusting it if it has a lot of likes and shares",
-      "Checking the comments to see if others think it's real",
-      "Looking for a verified blue checkmark on the poster's account",
-      "Looking for visual inconsistencies and verifying the source context",
-    ],
-    correctAnswer: 3,
-  },
-  {
-    question: "Which of the following is a common artifact found in AI-generated images?",
-    options: [
-      "The image is perfectly symmetrical in every way",
-      "Inconsistent lighting and impossible geometry",
-      "The image file size is always larger than a normal photo",
-      "There are hidden watermarks visible only when zoomed in",
-    ],
-    correctAnswer: 1,
-  },
-  {
-    question: "If an image confirms your existing beliefs and makes you very angry, you should...",
-    options: [
-      "Share it immediately to spread awareness",
-      "Assume it is true because it makes sense",
-      "Pause and verify it",
-      "Only share it with close friends",
-    ],
-    correctAnswer: 2,
-  },
-];
+import { ShieldCheck } from "lucide-react";
+import { QUIZ_ASSETS } from "@/data/quizQuestions";
 
 export default function PreAssessmentQuiz() {
   const router = useRouter();
-  const setPreQuizScore = useGameStore((state) => state.setPreQuizScore);
+  const { setPreQuizScore, setPreQuizAwareness, setPreQuizConfidence } = useGameStore();
 
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [isCompleting, setIsCompleting] = useState(false);
+  const [phase, setPhase] = useState<"intro" | "partA" | "partB" | "complete">("intro");
+  
+  // Part A state
+  const [currentStepA, setCurrentStepA] = useState(0);
+  const [scoreA, setScoreA] = useState(0);
 
-  const handleNext = () => {
-    if (selectedAnswer === null) return;
+  // Part B state
+  const [awareness, setAwareness] = useState<number | null>(null);
+  const [currentStepB, setCurrentStepB] = useState(0);
 
-    const newAnswers = [...answers, selectedAnswer];
-    setAnswers(newAnswers);
-    setSelectedAnswer(null);
-
-    if (currentStep < quizQuestions.length - 1) {
-      setCurrentStep(currentStep + 1);
+  const handleAnswerA = (isFakeSelected: boolean) => {
+    const isCorrect = isFakeSelected === QUIZ_ASSETS[currentStepA].isFake;
+    if (isCorrect) {
+      setScoreA(prev => prev + 1);
+    }
+    
+    if (currentStepA < QUIZ_ASSETS.length - 1) {
+      setCurrentStepA(prev => prev + 1);
     } else {
-      setIsCompleting(true);
-      const score = newAnswers.reduce((total, answer, index) => {
-        return total + (answer === quizQuestions[index].correctAnswer ? 1 : 0);
-      }, 0);
-      
-      const percentage = Math.round((score / quizQuestions.length) * 100);
-      setPreQuizScore(percentage);
-
-      setTimeout(() => {
-        router.push("/level/1");
-      }, 2000);
+      setPhase("partB");
     }
   };
 
-  if (isCompleting) {
-    return (
-      <main className="min-h-[100dvh] flex items-center justify-center relative overflow-hidden font-sans">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center z-10 max-w-lg w-full bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] flex flex-col"
-        >
-          <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-2 flex gap-2">
-            <div className="w-4 h-4 border-[3px] border-[#0F172A] bg-[#FFB800]"></div>
-            <div className="w-4 h-4 border-[3px] border-[#0F172A] bg-[#0F172A]"></div>
-            <div className="w-4 h-4 border-[3px] border-[#0F172A] bg-white"></div>
-          </div>
-          <div className="p-12">
-            <div className="flex justify-center mb-8 relative">
-              <ShieldCheck className="w-16 h-16 text-[#0F172A] stroke-[2] relative z-10" />
-            </div>
-            <h2 className="text-4xl font-bold mb-3 font-heading tracking-wide text-[#0F172A] uppercase">
-              Assessment Logged!
-            </h2>
-            <p className="font-sans text-lg mb-12 text-[#0F172A] font-bold">
-              Calibrating your profile... Access Granted.
-            </p>
-            <div className="w-full h-6 bg-white border-[3px] border-[#0F172A] overflow-hidden relative shadow-[4px_4px_0px_0px_#0F172A]">
-              <motion.div 
-                className="absolute top-0 left-0 h-full bg-[#FFB800] border-r-[3px] border-[#0F172A]"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.5, ease: "linear" }}
-              />
-            </div>
-          </div>
-        </motion.div>
-      </main>
-    );
-  }
+  const handleAnswerB = (rating: number) => {
+    if (currentStepB === 0) {
+      setAwareness(rating);
+      setCurrentStepB(1);
+    } else {
+      setPreQuizScore(scoreA); 
+      setPreQuizAwareness(awareness!);
+      setPreQuizConfidence(rating);
+      
+      setPhase("complete");
+      setTimeout(() => {
+        router.push("/level/1");
+      }, 2500);
+    }
+  };
 
-  const question = quizQuestions[currentStep];
+  const renderPartA = () => {
+    const asset = QUIZ_ASSETS[currentStepA];
+    
+    return (
+      <div className="flex flex-col h-full max-w-3xl mx-auto w-full pt-12 pb-24 px-4">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="font-heading font-black text-2xl uppercase tracking-widest text-[#0F172A]">
+            Quick Check: Real or Fake?
+          </h2>
+          <span className="font-mono font-bold bg-black text-white px-3 py-1">
+            {currentStepA + 1} / {QUIZ_ASSETS.length}
+          </span>
+        </div>
+        
+        {/* Post Mockup */}
+        <div className="bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] mb-8 overflow-hidden">
+          <div className="border-b-[4px] border-[#0F172A] p-3 bg-gray-100 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gray-300 border-[2px] border-[#0F172A]"></div>
+            <div>
+              <div className="font-bold font-sans leading-none text-[#0F172A]">{asset.postAuthorName}</div>
+              <div className="text-sm font-mono opacity-60 mt-1 text-[#0F172A]">{asset.postHandle} • {asset.postTime}</div>
+            </div>
+          </div>
+          {asset.type === "image" && asset.imageSrc && (
+            <div className="border-b-[4px] border-[#0F172A] w-full bg-gray-50 flex justify-center p-4">
+              <img src={asset.imageSrc} alt="Post asset" className="max-h-[400px] object-contain border-[2px] border-black" />
+            </div>
+          )}
+          <div className="p-6">
+            <p className="font-sans text-lg text-[#0F172A] font-medium">{asset.content}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6 mt-auto">
+          <button
+            onClick={() => handleAnswerA(false)}
+            className="border-[4px] border-[#0F172A] bg-white text-[#0F172A] py-6 text-xl font-bold uppercase tracking-widest hover:bg-[#0F172A] hover:text-white transition-colors shadow-[6px_6px_0px_0px_#0F172A] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#0F172A]"
+          >
+            Real
+          </button>
+          <button
+            onClick={() => handleAnswerA(true)}
+            className="border-[4px] border-[#0F172A] bg-white text-[#0F172A] py-6 text-xl font-bold uppercase tracking-widest hover:bg-[#FFB800] transition-colors shadow-[6px_6px_0px_0px_#0F172A] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#0F172A]"
+          >
+            Fake
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPartB = () => {
+    const question = currentStepB === 0 
+      ? "How aware are you of AI-generated misinformation?"
+      : "How confident are you in spotting fake content online?";
+      
+    return (
+      <div className="flex flex-col h-full max-w-2xl mx-auto w-full pt-32 px-4 items-center text-center">
+        <h2 className="font-heading font-black text-3xl md:text-4xl uppercase tracking-widest text-[#0F172A] mb-16">
+          {question}
+        </h2>
+        
+        <div className="grid grid-cols-5 gap-3 md:gap-6 w-full">
+          {[1, 2, 3, 4, 5].map((rating) => (
+            <button
+              key={rating}
+              onClick={() => handleAnswerB(rating)}
+              className="aspect-square border-[4px] border-[#0F172A] bg-white text-[#0F172A] flex items-center justify-center text-4xl font-black hover:bg-[#FFB800] transition-colors shadow-[6px_6px_0px_0px_#0F172A] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#0F172A]"
+            >
+              {rating}
+            </button>
+          ))}
+        </div>
+        
+        <div className="flex justify-between w-full mt-6 font-mono font-bold text-[#0F172A]/70 uppercase text-sm md:text-base">
+          <span>Not at all</span>
+          <span>Very much</span>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <main className="min-h-[100dvh] flex items-center justify-center p-6 relative overflow-hidden font-sans">
-      <div className="z-10 w-full max-w-2xl">
-        <div className="mb-12 flex items-center justify-between">
-          <div className="flex items-center gap-2 px-3 py-1 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] text-[#0F172A] font-heading font-bold uppercase">
-            <NotebookPen className="w-4 h-4 text-[#0F172A]" />
-            <span>SYS.TEST // BSLN</span>
-          </div>
-          <div className="text-[#0F172A] font-heading font-black text-2xl bg-white border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] px-3 py-1">
-            0{currentStep + 1} / 0{quizQuestions.length}
-          </div>
-        </div>
-
-        <div className="w-full h-4 bg-white border-[3px] border-[#0F172A] mb-12 relative overflow-hidden shadow-[6px_6px_0px_0px_#0F172A]">
-          <motion.div 
-            className="absolute top-0 left-0 h-full bg-[#FFB800] border-r-[3px] border-[#0F172A]"
-            initial={{ width: `${(currentStep / quizQuestions.length) * 100}%` }}
-            animate={{ width: `${((currentStep + 1) / quizQuestions.length) * 100}%` }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          />
-        </div>
-
-        <AnimatePresence mode="wait">
+    <main className="min-h-[100dvh] bg-[#FAFAFA] font-sans bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-opacity-20 flex flex-col items-center">
+      <AnimatePresence mode="wait">
+        {phase === "intro" && (
           <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, y: 10 }}
+            key="intro"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative flex flex-col"
+            exit={{ opacity: 0, y: -20 }}
+            className="flex-1 flex flex-col items-center justify-center text-center max-w-2xl px-4"
           >
-            <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-2 flex justify-between items-center px-4">
-               <span className="font-sans font-bold uppercase text-sm">QUESTION PROMPT</span>
-               <div className="flex gap-2">
-                 <div className="w-4 h-4 border-[3px] border-[#0F172A] bg-white cursor-pointer hover:bg-black transition-colors"></div>
-               </div>
-            </div>
-            
-            <div className="p-8 md:p-12">
-              <h2 className="text-3xl md:text-4xl font-black mb-10 leading-tight font-heading text-[#0F172A]">
-                {question.question}
-              </h2>
+            <h1 className="text-5xl md:text-6xl font-black font-heading tracking-widest uppercase text-[#0F172A] drop-shadow-[4px_4px_0_rgba(255,184,0,1)] mb-6">
+              Quick Check
+            </h1>
+            <p className="text-xl font-bold font-sans text-[#0F172A] mb-12">
+              Before we start the simulation, let's see where you stand. How many can you spot?
+            </p>
+            <BrutalButton variant="primary" size="lg" onClick={() => setPhase("partA")}>
+              START CHECK
+            </BrutalButton>
+          </motion.div>
+        )}
 
-              <div className="grid grid-cols-1 gap-4 mb-10">
-                {question.options.map((option, index) => {
-                  const isSelected = selectedAnswer === index;
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedAnswer(index)}
-                      className={`w-full cursor-pointer text-left p-4 flex items-center gap-4 transition-all duration-100 border-[3px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0px_0px_#0F172A] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none ${
-                        isSelected
-                          ? "bg-[#FFB800] translate-x-[3px] translate-y-[3px] shadow-[3px_3px_0px_0px_#0F172A]"
-                          : "bg-white"
-                      }`}
-                    >
-                      <div className={`w-8 h-8 border-[3px] border-[#0F172A] flex items-center justify-center font-heading text-[#0F172A] font-bold shrink-0 ${isSelected ? 'bg-white' : 'bg-white'}`}>
-                        {isSelected ? <span className="text-[#0F172A]">X</span> : index + 1}
-                      </div>
-                      <span className="text-lg md:text-xl font-bold leading-snug font-sans text-[#0F172A]">
-                        {option}
-                      </span>
-                    </button>
-                  );
-                })}
+        {phase === "partA" && (
+          <motion.div
+            key={`partA-${currentStepA}`}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            className="w-full flex-1 flex flex-col"
+          >
+            {renderPartA()}
+          </motion.div>
+        )}
+
+        {phase === "partB" && (
+          <motion.div
+            key={`partB-${currentStepB}`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="w-full flex-1 flex flex-col"
+          >
+            {renderPartB()}
+          </motion.div>
+        )}
+
+        {phase === "complete" && (
+          <motion.div
+            key="complete"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex-1 flex flex-col items-center justify-center relative w-full px-4"
+          >
+            <div className="text-center z-10 max-w-lg w-full bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] flex flex-col">
+              <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-2 flex gap-2">
+                <div className="w-4 h-4 border-[3px] border-[#0F172A] bg-[#FFB800]"></div>
+                <div className="w-4 h-4 border-[3px] border-[#0F172A] bg-[#0F172A]"></div>
+                <div className="w-4 h-4 border-[3px] border-[#0F172A] bg-white"></div>
               </div>
-
-              <div className="flex justify-end mt-4 border-t-[4px] border-dashed border-[#0F172A] pt-8">
-                <BrutalButton 
-                  onClick={handleNext} 
-                  disabled={selectedAnswer === null}
-                  variant="primary"
-                  size="lg"
-                  className="px-10 h-16"
-                >
-                  {currentStep === quizQuestions.length - 1 ? "Submit" : "Next File"}
-                  <ArrowRight className="ml-2 w-6 h-6" />
-                </BrutalButton>
+              <div className="p-12">
+                <div className="flex justify-center mb-8">
+                  <ShieldCheck className="w-16 h-16 text-[#0F172A] stroke-[2]" />
+                </div>
+                <h2 className="text-4xl font-bold mb-3 font-heading tracking-wide text-[#0F172A] uppercase">
+                  Assessment Logged!
+                </h2>
+                <p className="font-sans text-lg mb-12 text-[#0F172A] font-bold">
+                  Calibrating your profile... Access Granted.
+                </p>
+                <div className="w-full h-6 bg-white border-[3px] border-[#0F172A] overflow-hidden relative shadow-[4px_4px_0px_0px_#0F172A]">
+                  <motion.div
+                    className="h-full bg-[#FFB800] border-r-[3px] border-[#0F172A]"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 2, ease: "linear" }}
+                  />
+                </div>
               </div>
             </div>
           </motion.div>
-        </AnimatePresence>
-      </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
