@@ -111,7 +111,14 @@ export default function Level1Page() {
   
   useEffect(() => {
     if (!currentRound) return;
-    setShuffledTacticOptions([...currentRound.tacticOptions].sort(() => 0.5 - Math.random()));
+    setShuffledTacticOptions(prev => {
+      const arr = [...currentRound.tacticOptions];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRoundIndex]);
 
@@ -312,7 +319,14 @@ export default function Level1Page() {
     setShowVerdictModal(false);
     setSelectedTactic(null);
     setFeedback(null);
-    setShuffledTacticOptions(prev => [...prev].sort(() => 0.5 - Math.random()));
+    setShuffledTacticOptions(prev => {
+      const arr = [...prev];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    });
     // Keep the clues but reset verdict!
   };
 

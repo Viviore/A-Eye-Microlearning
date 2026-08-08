@@ -163,7 +163,14 @@ export default function Level2Page() {
   const [shuffledTactics, setShuffledTactics] = useState<string[]>(TACTIC_OPTIONS);
   
   useEffect(() => {
-    setShuffledTactics([...TACTIC_OPTIONS].sort(() => 0.5 - Math.random()));
+    setShuffledTactics(prev => {
+      const arr = [...TACTIC_OPTIONS];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    });
   }, [currentRoundIndex]);
   
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
@@ -369,6 +376,14 @@ export default function Level2Page() {
     setFeedback(null);
     setSelectedTactic(null);
     setShowVerdictModal(false);
+    setShuffledTactics(prev => {
+      const arr = [...prev];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    });
     
     if (timeLeft === 0) {
       const availableReplacementRounds = IMAGE_ROUNDS.filter(
