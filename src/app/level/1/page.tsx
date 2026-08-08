@@ -330,7 +330,7 @@ export default function Level1Page() {
           {/* Mock Social Post */}
           <Card 
             id="tutorial-post"
-            className="p-6 md:p-8 mt-6 bg-white transition-all duration-500 shadow-[8px_8px_0px_0px_#0F172A]"
+            className="p-6 md:p-8 mt-6 bg-white border-[4px] border-[#0F172A] rounded-none transition-all duration-500 shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center gap-4 mb-6 border-b-[4px] border-dashed border-[#0F172A] pb-4">
               <div 
@@ -415,7 +415,7 @@ export default function Level1Page() {
 
           <Card 
             id="tutorial-evidence"
-            className="p-6 bg-white shadow-[8px_8px_0px_0px_#0F172A]"
+            className="p-6 bg-white border-[4px] border-[#0F172A] rounded-none shadow-[8px_8px_0px_0px_#0F172A]"
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-3xl font-black font-heading uppercase tracking-wide flex items-center gap-2 text-[#0F172A]">

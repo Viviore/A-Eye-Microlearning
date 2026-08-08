@@ -5,6 +5,7 @@ import { Search, MousePointerClick, BrainCircuit, ShieldCheck, Play, NotebookPen
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAppTransition } from "@/components/layout/TransitionProvider";
 import { Badge } from "@/components/ui/badge";
 
 const steps = [
@@ -35,6 +36,8 @@ const steps = [
 ];
 
 export default function HowToPlay() {
+  const { startTransition } = useAppTransition();
+
   return (
     <main className="min-h-[100dvh] relative overflow-hidden font-sans py-24">
       <div className="max-w-[1400px] mx-auto px-6 relative z-10">
@@ -86,7 +89,7 @@ export default function HowToPlay() {
               transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className={`${step.colSpan}`}
             >
-              <Card className="bg-white p-8 flex flex-col justify-between h-full group hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] shadow-[8px_8px_0px_0px_#0F172A] transition-all">
+              <Card className="bg-white border-[4px] border-[#0F172A] rounded-none p-8 flex flex-col justify-between h-full group hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] shadow-[8px_8px_0px_0px_#0F172A] transition-all">
                 <CardContent className="p-0">
                   <div className="flex justify-between items-start mb-8">
                     <div 
@@ -120,17 +123,19 @@ export default function HowToPlay() {
           transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="flex justify-start items-center relative mt-12 gap-8"
         >
-          <Link href="/quiz/pre" passHref>
+          <div className="inline-block">
             <Button 
+              onClick={() => {
+                const preloadPromise = import("@/utils/preloader").then(m => m.preloadGameAssets());
+                startTransition("/quiz/pre", preloadPromise);
+              }}
               size="lg" 
               className="bg-white hover:bg-[#FFB800] text-[#0F172A] border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px] h-20 px-16 text-2xl font-heading font-black tracking-wider uppercase transition-all group"
             >
               <Play className="mr-4 w-8 h-8" />
               Init Assessment
             </Button>
-          </Link>
-
-
+          </div>
         </motion.div>
       </div>
     </main>

@@ -304,17 +304,8 @@ export default function Level3Page() {
               }
               // Auto-advance past the tutorial round
               setCurrentRoundIndex(1);
-              setRoundScore(100);
-              setTimeLeft(60);
-              setToolUsed(false);
-              setReplaysUsed(0);
+              resetRoundState();
               setDeductions([]);
-              setSelectedPanel(null);
-              setIsPanelLocked(false);
-              setShowConfirm(false);
-              setSelectedTell(null);
-              setShowReveal(false);
-              setFeedback(null);
               setHoveredTell(null);
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);

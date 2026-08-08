@@ -21,13 +21,13 @@ This is primarily a hackathon submission project. The goal is to build feature b
 
 ## Tech Stack
 
-Use the following stack (see ARCHITECTURE.md for the full list with purpose):
+Use the following stack (see TECHNICAL_SPEC.md for the full list with purpose):
 - Next.js (React) + TypeScript
 - Tailwind CSS
 - Zustand (state), Framer Motion (animation), shadcn/ui (UI primitives)
 - No custom backend or database — static/client-side only
 
-Do not introduce a new major library beyond what's listed in ARCHITECTURE.md unless there is a strong reason.
+Do not introduce a new major library beyond what's listed in TECHNICAL_SPEC.md unless there is a strong reason.
 
 ---
 
@@ -75,7 +75,7 @@ Do not install or use new libraries without approval.
 
 ## Architecture Guidelines
 
-See ARCHITECTURE.md for screen flow, components, and level breakdown.
+See TECHNICAL_SPEC.md for screen flow, components, and level breakdown.
 
 ---
 

@@ -9,9 +9,9 @@ The game is built around a core learning loop designed to measure improvement be
 1. **Pre-Assessment Quiz:** Establish a baseline of your knowledge and ability to spot fakes.
 2. **Investigation Levels (1-3):** 
    - Analyze posts across different simulated platforms (e.g., Instagram, Facebook, LinkedIn style).
-   - Use advanced tools like zoom, contrast adjustments, and **visual push-pins** to mark evidence.
-   - Look for artifacts, submit your verdict (e.g., AI Generated, Real, Unsure), and rate your confidence.
-   - **Gameplay Dynamics:** Session rounds are dynamic, featuring a balanced difficulty curve. Be careful—incorrect retries now result in negative score deductions!
+   - Use advanced tools like zoom, forensic heatmaps, and redaction pens to mark evidence.
+   - Look for artifacts, submit your verdict (e.g., Advance Fee Fraud, AI Image Generation, Deepfake Video), and rate your confidence.
+   - **Gameplay Dynamics:** Session rounds are randomly pulled from a pool per session. Be careful—misclicks, tool usages, and incorrect retries now result in live negative score deductions!
 3. **Feedback & Summary:** Review your investigation results, complete with visual tape styling and detailed explanations of missed artifacts.
 4. **Post-Assessment Quiz:** Measure how much your critical thinking and visual artifact detection have improved!
 

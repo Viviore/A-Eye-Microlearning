@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   description: "Digital investigation training. Inspect simulated social feeds, identify AI artifacts, and verify the truth.",
 };
 
+import { TransitionProvider } from "@/components/layout/TransitionProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,10 +40,12 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans">
-        <Header />
-        <RouteGuard>
-          <div className="flex-1">{children}</div>
-        </RouteGuard>
+        <TransitionProvider>
+          <Header />
+          <RouteGuard>
+            <div className="flex-1">{children}</div>
+          </RouteGuard>
+        </TransitionProvider>
       </body>
     </html>
   );
