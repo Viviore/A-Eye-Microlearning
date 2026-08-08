@@ -65,17 +65,25 @@ export function useLevelScoring({
   }, [onTimeout]);
 
   // Timer Effect
+  const timeLeftRef = useRef(initialTime);
+  
   useEffect(() => {
     if (!hasTimer || !isReady || isPaused) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) {
+        const next = prev <= 1 ? 0 : prev - 1;
+        timeLeftRef.current = next;
+        return next;
+      });
+
+      // Check after state update — if time just hit 0, fire timeout callback
+      // Use queueMicrotask to ensure it runs after React processes the state update
+      queueMicrotask(() => {
+        if (timeLeftRef.current === 0) {
           clearInterval(timer);
           onTimeoutRef.current?.();
-          return 0;
         }
-        return prev - 1;
       });
     }, 1000);
 
