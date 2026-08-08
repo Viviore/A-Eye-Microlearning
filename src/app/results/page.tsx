@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Shield, Target, Activity, AlertTriangle, CheckCircle2, ChevronRight, BarChart, FileText, Camera, Video, XCircle, TrendingUp, Download } from "lucide-react";
 import { ChartBarMultiple } from "@/components/charts/chart-bar-multiple";
 import { useRef, useState } from "react";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 export default function ResultsDashboardPage() {
   const {
@@ -42,12 +42,10 @@ export default function ResultsDashboardPage() {
       setIsDownloading(true);
       await new Promise((resolve) => setTimeout(resolve, 100));
       
-      const canvas = await html2canvas(profileRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: null,
+      const dataUrl = await toPng(profileRef.current, {
+        pixelRatio: 2,
+        backgroundColor: "#FAFAFA",
       });
-      const dataUrl = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.download = `AEye_Profile_${calibrationProfile.replace(/\s+/g, '_')}.png`;
       link.href = dataUrl;
@@ -140,17 +138,15 @@ export default function ResultsDashboardPage() {
             </p>
           </div>
 
-          {postQuizScore !== null && (
-            <BrutalButton 
-              onClick={handleDownloadImage}
-              disabled={isDownloading}
-              variant="blue" 
-              size="lg"
-            >
-              <Download className="mr-3 w-6 h-6" strokeWidth={2.5} />
-              {isDownloading ? "GENERATING..." : "DOWNLOAD PROFILE"}
-            </BrutalButton>
-          )}
+          <BrutalButton 
+            onClick={handleDownloadImage}
+            disabled={isDownloading}
+            variant="blue" 
+            size="lg"
+          >
+            <Download className="mr-3 w-6 h-6" strokeWidth={2.5} />
+            {isDownloading ? "GENERATING..." : "DOWNLOAD PROFILE"}
+          </BrutalButton>
         </motion.div>
 
         {preQuizScore !== null && postQuizScore !== null && (
@@ -225,7 +221,7 @@ export default function ResultsDashboardPage() {
 
           {/* Right Column: Proficiency Profile */}
           <motion.div variants={itemVariants} className="lg:col-span-7 flex">
-            <div ref={profileRef} className={`w-full border-[4px] border-[#0F172A] p-6 lg:p-10 shadow-[8px_8px_0px_0px_#0F172A] flex flex-col relative overflow-hidden ${profileColor}`}>
+            <div className={`w-full border-[4px] border-[#0F172A] p-6 lg:p-10 shadow-[8px_8px_0px_0px_#0F172A] flex flex-col relative overflow-hidden ${profileColor}`}>
               <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #0F172A 1px, transparent 0)', backgroundSize: '16px 16px' }} />
               
               <div className="relative z-10 flex items-center justify-between border-b-[4px] border-[#0F172A] pb-4 mb-auto bg-white/40 px-4 py-2 border-t-[4px] -mx-4 -mt-4 lg:-mx-10 lg:-mt-10">
@@ -342,6 +338,98 @@ export default function ResultsDashboardPage() {
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Hidden Export Card (1080x1080 1:1 format) */}
+      <div 
+        ref={profileRef}
+        className="fixed left-[-9999px] top-[-9999px] w-[1080px] h-[1080px] bg-[#FAFAFA] flex flex-col p-12 font-sans border-[16px] border-[#0F172A]"
+        style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")' }}
+      >
+        {/* Header */}
+        <div className="flex items-center gap-6 mb-10 border-b-[8px] border-[#0F172A] pb-8">
+          <div className="p-4 bg-[#FFB800] border-[6px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]">
+            <BarChart className="w-14 h-14 text-[#0F172A]" strokeWidth={3} />
+          </div>
+          <div>
+            <h1 className="text-5xl font-black font-heading tracking-widest uppercase text-[#0F172A] drop-shadow-[5px_5px_0_rgba(255,184,0,1)]">
+              A-EYE SIMULATOR
+            </h1>
+            <p className="text-[#0F172A] font-bold font-mono text-xl tracking-widest uppercase bg-white border-[4px] border-[#0F172A] inline-block px-4 py-2 mt-2 shadow-[4px_4px_0px_0px_#0F172A]">
+              OFFICIAL CALIBRATION PROFILE
+            </p>
+          </div>
+        </div>
+
+        {/* Main Card */}
+        <div className={`flex-1 border-[8px] border-[#0F172A] p-10 shadow-[16px_16px_0px_0px_#0F172A] flex flex-col relative overflow-hidden ${profileColor}`}>
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 4px 4px, #0F172A 2px, transparent 0)', backgroundSize: '32px 32px' }} />
+          
+          <div className="relative z-10 flex items-center justify-between border-b-[6px] border-[#0F172A] pb-6 mb-10 bg-white/40 px-6 py-4 border-t-[6px] -mx-10 -mt-10">
+            <div className="font-black font-heading uppercase tracking-widest text-[#0F172A] text-2xl flex items-center gap-4">
+              <Target className="w-8 h-8" strokeWidth={3} /> PROFICIENCY PROFILE
+            </div>
+            <div className="bg-white border-[4px] border-[#0F172A] p-2 shadow-[4px_4px_0px_0px_#0F172A]">
+              <ProfileIcon className="w-10 h-10 text-[#0F172A]" strokeWidth={2.5} />
+            </div>
+          </div>
+
+          <div className="relative z-10 text-center space-y-10 mt-4 mb-10">
+            <h2 className="text-6xl font-black font-heading uppercase tracking-widest text-white drop-shadow-[6px_6px_0_rgba(15,23,42,1)] py-4">
+              {calibrationProfile}
+            </h2>
+            <div className="bg-white border-[6px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] text-left relative flex flex-col mx-auto w-full max-w-3xl">
+              <div className="absolute -top-6 -left-6 bg-[#0F172A] w-12 h-12 border-[4px] border-white z-20" />
+              
+              <div className="p-8 border-b-[6px] border-dashed border-[#0F172A]/30">
+                <p className="text-[#0F172A] font-bold font-sans text-xl leading-relaxed relative z-10">
+                  {calibrationDesc}
+                </p>
+              </div>
+              
+              <div className="p-8 bg-[#FAFAFA] flex flex-col gap-6">
+                <div className="text-lg font-black font-heading uppercase tracking-widest text-[#0F172A] border-b-[4px] border-[#0F172A]/20 pb-3">
+                  COGNITIVE SUBSYSTEMS
+                </div>
+                
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 shrink-0 bg-[#0F172A] text-white flex items-center justify-center font-black font-heading text-2xl shadow-[6px_6px_0px_0px_#FFB800] border-[4px] border-[#0F172A]">
+                    P1
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-base font-bold font-mono text-[#0F172A]/70 uppercase mb-1">PRIMARY TRAIT</div>
+                    <div className="text-2xl font-black font-heading text-[#0F172A] uppercase leading-tight">{cognitivePrimary}</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 shrink-0 bg-white border-[4px] border-[#0F172A] text-[#0F172A] flex items-center justify-center font-black font-heading text-2xl shadow-[6px_6px_0px_0px_#0F172A]">
+                    S2
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-base font-bold font-mono text-[#0F172A]/70 uppercase mb-1">SECONDARY TRAIT</div>
+                    <div className="text-2xl font-black font-heading text-[#0F172A] uppercase leading-tight">{cognitiveSecondary}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <div className="mt-8 flex justify-between items-end w-full">
+          <div className="flex flex-col gap-2">
+            <div className="text-sm font-bold font-mono text-[#0F172A]/70 uppercase tracking-widest">
+              MISSION SCORE
+            </div>
+            <div className="px-6 py-3 bg-[#0F172A] text-white font-bold font-mono text-3xl border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#FFB800]">
+              {cumulativeScore.toString().padStart(4, '0')} <span className="text-[#FFB800] text-xl">/ {maxTotalScore}</span>
+            </div>
+          </div>
+          <div className="text-2xl font-black font-heading uppercase text-[#0F172A] bg-[#FFB800] px-6 py-3 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+            A-EYE.UNESCO.ORG
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
