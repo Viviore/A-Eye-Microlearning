@@ -13,8 +13,13 @@ import {
   XCircle,
   Plus,
   RotateCcw,
+  ArrowRight
 } from "lucide-react";
 import case003Data from "@/data/case003.json";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { CaseHeader } from "@/components/game/CaseHeader";
+import { useLevelScoring } from "@/hooks/useLevelScoring";
+import { GameOverModal } from "@/components/game/VerdictModal";
 
 type VideoRound = {
   id: string;
@@ -27,6 +32,23 @@ type VideoRound = {
 };
 
 const VIDEO_ROUNDS: VideoRound[] = case003Data as VideoRound[];
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+  },
+};
 
 export default function Level3Page() {
   const router = useRouter();
@@ -45,27 +67,49 @@ export default function Level3Page() {
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
-  const [timeLeft, setTimeLeft] = useState(60);
   const [toolUsed, setToolUsed] = useState(false);
   const [replaysUsed, setReplaysUsed] = useState(0);
-  
-  const [roundScore, setRoundScore] = useState(100);
-  const [deductions, setDeductions] = useState<{id: number, amount: number}[]>([]);
-
   const [selectedPanel, setSelectedPanel] = useState<"A" | "B" | null>(null);
   const [isPanelLocked, setIsPanelLocked] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   
   const [selectedTell, setSelectedTell] = useState<string | null>(null);
   const [showReveal, setShowReveal] = useState(false);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; penalty?: number; scoreBadge?: React.ReactNode } | null>(null);
   const [hoveredTell, setHoveredTell] = useState<string | null>(null);
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
 
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
   const isDriverInitialized = useRef(false);
   const driverObjRef = useRef<any>(null);
   const [isTourActive, setIsTourActive] = useState(true);
+  
+  const {
+    roundScore,
+    setRoundScore,
+    timeLeft,
+    setTimeLeft,
+    clickPopups: deductions,
+    scorePopups,
+    triggerScoreAnimation,
+    applyDeduction,
+    resetScoring,
+  } = useLevelScoring({
+    isReady,
+    hasTimer: true,
+    isPaused: isPanelLocked || isTourActive || showConfirm || showReveal,
+    onTimeout: () => {
+      applyDeduction(50);
+      setFeedback({
+        isSuccess: false,
+        title: "TIME'S UP",
+        message: "You ran out of time. The AI generates new content fast, you must be faster.",
+        penalty: 50,
+      });
+      setShowReveal(true);
+    }
+  });
 
   useEffect(() => {
     const tutorial = VIDEO_ROUNDS.find(r => r.isTutorial);
@@ -88,64 +132,28 @@ export default function Level3Page() {
 
   const currentRound = sessionRounds[currentRoundIndex];
 
-  const [currentTells, setCurrentTells] = useState<any[]>([]);
+  const [currentTells, setCurrentTells] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!currentRound) {
-      setCurrentTells([]);
-      return;
+    if (!currentRound) return;
+    const tells = [...currentRound.tells];
+    if (!currentRound.isTutorial) {
+      // Add a decoy
+      const decoys = ["Mismatched Shadows", "Glitchy Audio", "Unnatural Blinking"];
+      tells.push(decoys[Math.floor(Math.random() * decoys.length)]);
     }
-    const tells = [...currentRound.tells, ...currentRound.distractorTells];
     setCurrentTells(tells.sort(() => 0.5 - Math.random()));
-  }, [currentRound]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRoundIndex]);
 
   // Check Game Over condition
   useEffect(() => {
     if (cumulativeScore + roundScore <= 0 && !currentRound?.isTutorial) {
-      alert("GAME OVER: Your score has reached 0. The A-Eye experience will now reset.");
-      resetGame();
-      router.push("/");
+      setShowGameOverModal(true);
     }
-  }, [cumulativeScore, roundScore, currentRound, resetGame, router]);
+  }, [roundScore, cumulativeScore, currentRound?.isTutorial]);
 
-  const applyDeduction = (amount: number) => {
-    if (!currentRound?.isTutorial) {
-      setRoundScore((prev) => Math.max(0, prev - amount));
-      // eslint-disable-next-line
-      setDeductions((prev) => [...prev, { id: Date.now() + Math.random(), amount }]);
-      setTimeout(() => {
-        setDeductions((prev) => prev.slice(1));
-      }, 2000);
-    }
-  };
-
-  const handleTimeout = useCallback(() => {
-    applyDeduction(50);
-    setFeedback({
-      isSuccess: false,
-      title: "TIME'S UP",
-      message: "You ran out of time. The AI generates new content fast, you must be faster."
-    });
-    setShowReveal(true);
-  }, [currentRound, setRoundScore, setDeductions, setFeedback, setShowReveal]);
-
-  // Timer logic
-  useEffect(() => {
-    if (!isReady || !currentRound || isPanelLocked || isTourActive || showConfirm || showReveal) return;
-    
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleTimeout();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  }, [isReady, currentRound, isPanelLocked, isTourActive, showConfirm, showReveal, handleTimeout]);
+  // Timer and deduct logic replaced by useLevelScoring hook
 
   const swapToRandomRound = () => {
     const availableIndices = sessionRounds
@@ -169,9 +177,8 @@ export default function Level3Page() {
     setSelectedTell(null);
     setShowReveal(false);
     setFeedback(null);
-    setTimeLeft(60);
     setToolUsed(false);
-    setRoundScore(100);
+    resetScoring();
     setReplaysUsed(0);
     
     if (videoARef.current && videoBRef.current) {
@@ -237,14 +244,26 @@ export default function Level3Page() {
         isSuccess: false,
         title: "WRONG PANEL",
         message: "You picked the wrong panel. The other video was the AI-generated one.",
+        scoreBadge: !currentRound.isTutorial ? (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -50 Points
+          </span>
+        ) : undefined,
+        penalty: 50,
       });
     } else if (!isCorrectTell) {
-      applyDeduction(20);
-      finalScore = Math.max(0, finalScore - 20);
+      applyDeduction(25);
+      finalScore = Math.max(0, finalScore - 25);
       setFeedback({
         isSuccess: false,
         title: "LUCKY GUESS",
         message: "You picked the correct panel, but your reasoning was wrong.",
+        scoreBadge: !currentRound.isTutorial ? (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -25 Points
+          </span>
+        ) : undefined,
+        penalty: 25,
       });
       if (!currentRound.isTutorial) {
         addCumulativeScore(finalScore);
@@ -261,6 +280,11 @@ export default function Level3Page() {
         isSuccess: true,
         title: "VERDICT VERIFIED",
         message: "Great job! You successfully identified the AI video and the correct reasoning.",
+        scoreBadge: !currentRound.isTutorial ? (
+          <span className="inline-block bg-[#10B981] text-white border-[3px] border-[#0F172A] px-3 py-1 font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            +{finalScore} Points
+          </span>
+        ) : undefined,
       });
     }
   };
@@ -312,9 +336,10 @@ export default function Level3Page() {
               }
               // Auto-advance past the tutorial round
               setCurrentRoundIndex(1);
+              resetScoring();
+              setToolUsed(false);
+              setSelectedTell(null);
               resetRoundState();
-              setDeductions([]);
-              setHoveredTell(null);
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
@@ -349,30 +374,23 @@ export default function Level3Page() {
 
   return (
     <main
-      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
+      className="min-h-[100dvh] bg-[#FAFAFA] text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
-      <div className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
+      <AnimatedBackground theme="light" />
+      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
-          <div className="flex items-center gap-3">
-            <div className="px-3 py-1.5 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2">
-              <FileVideo className="w-4 h-4 text-[#0F172A]" />
-              <span>CASE 003 // VIDEO INVESTIGATION</span>
-            </div>
-            
-            <span
-              className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] border-[#0F172A] ${
-                currentRound.isTutorial ? "bg-white text-[#0F172A]" : "bg-[#FFB800] text-[#0F172A]"
-              }`}
-            >
-              {currentRound.isTutorial
-                ? "TUTORIAL"
-                : `VIDEO ${sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1} / ${sessionRounds.filter(r => !r.isTutorial).length}`}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
+        <motion.div variants={fadeUp} className="w-full">
+          <CaseHeader 
+            caseNumber="CASE 003"
+            caseTitle="VIDEO INVESTIGATION"
+            isTutorial={currentRound.isTutorial}
+            currentRoundNumber={sessionRounds.slice(0, currentRoundIndex).filter(r => !r.isTutorial).length + 1}
+            totalRounds={sessionRounds.filter(r => !r.isTutorial).length}
+            score={cumulativeScore + roundScore}
+            scorePopups={deductions}
+            icon="fileVideo"
+          >
             <div className="relative group">
               <button
                 disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
@@ -410,35 +428,22 @@ export default function Level3Page() {
               <div className="text-sm font-bold uppercase text-red-500">Timer</div>
               <div className="text-3xl font-black font-heading">{timeLeft}s</div>
             </div>
-
-            <div className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative">
-              <span>Score: </span>
-              <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
-                {cumulativeScore + roundScore}
-              </span>
-              <AnimatePresence>
-                {deductions.map((d) => (
-                  <motion.div
-                    key={d.id}
-                    initial={{ opacity: 1, y: 0, scale: 0.8 }}
-                    animate={{ opacity: 0, y: -40, scale: 1.2 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-500 font-black font-heading text-2xl z-50 whitespace-nowrap pointer-events-none"
-                  >
-                    -{d.amount}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
+          </CaseHeader>
+        </motion.div>
 
         {/* Video Area */}
-        <div id="tutorial-videos" className="bg-white border-[4px] border-[#0F172A] p-6 shadow-[8px_8px_0px_0px_#0F172A]">
-          <h2 className="text-3xl font-black font-heading text-center mb-6 uppercase">Which one is AI?</h2>
+        <motion.div variants={fadeUp} id="tutorial-videos" className="bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col">
+          <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-3 flex justify-between items-center shrink-0">
+            <div className="flex gap-2">
+              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-white" />
+              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-[#0F172A]" />
+              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-white" />
+            </div>
+            <h2 className="text-xl md:text-2xl font-black font-heading uppercase tracking-widest text-[#0F172A]">Which one is AI?</h2>
+            <div className="w-20"></div>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#FAFAFA]">
             {/* Panel A */}
             {(() => {
               const isCorrect = currentRound.correctPanel === "A";
@@ -539,7 +544,7 @@ export default function Level3Page() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="mt-8 p-6 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex flex-col items-center gap-4"
+                className="mx-6 md:mx-8 mb-6 mt-2 p-6 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex flex-col items-center gap-4"
               >
                 <h3 className="font-heading font-black text-2xl uppercase">Are you sure?</h3>
                 <p className="font-sans font-bold text-center">You selected Panel {selectedPanel} as the AI fake. Locking this in will consume your answer.</p>
@@ -550,20 +555,22 @@ export default function Level3Page() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
 
         {/* Verdict Form Area */}
         <AnimatePresence>
           {isPanelLocked && !showReveal && (
             <motion.div 
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white p-8 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]"
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, y: 50 }}
+              className="bg-white p-8 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col"
             >
               <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-2 uppercase tracking-wider text-center">
                 Explain Your Tell
               </h2>
-              <p className="text-center font-bold text-[#0F172A]/70 mb-6">Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.</p>
+              <p className="text-center font-bold text-[#0F172A]/70 mb-8">Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentTells.map((tell) => {
@@ -572,14 +579,14 @@ export default function Level3Page() {
                   const isDisabled = isTutorial && !isCorrect;
                   const showPulse = isTutorial && isCorrect;
 
-                  let btnClass = "relative p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer ";
+                  let btnClass = "relative px-6 py-4 border-[4px] font-black font-heading uppercase text-lg md:text-xl transition-all text-[#0F172A] cursor-pointer text-center flex items-center justify-center min-h-[5rem] ";
                   
                   if (isDisabled) {
                     btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 !cursor-not-allowed ";
                   } else if (showPulse) {
-                    btnClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
+                    btnClass += "bg-[#FFB800] border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#0F172A] ";
                   } else {
-                    btnClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:bg-[#FFB800] hover:shadow-[4px_4px_0px_0px_#0F172A] ";
+                    btnClass += "bg-white border-solid border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:bg-[#FFB800] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#0F172A] active:translate-y-[2px] active:shadow-none ";
                   }
 
                   return (
@@ -604,36 +611,76 @@ export default function Level3Page() {
         <AnimatePresence>
           {showReveal && feedback && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className={`p-6 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] ${feedback.isSuccess ? "bg-green-100" : "bg-red-100"}`}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className={`relative p-8 mt-10 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col bg-[#FAFAFA] text-left`}
             >
-              <div className="flex items-center gap-3 mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-4">
+              {/* Overlapping top-left icon */}
+              <div className="absolute -top-10 -left-10 z-10">
                 {feedback.isSuccess ? (
-                  <CheckCircle2 className="w-10 h-10 text-green-600" strokeWidth={3} />
+                  <div className="w-16 h-16 bg-[#10B981] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+                    <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={3} />
+                  </div>
                 ) : (
-                  <XCircle className="w-10 h-10 text-red-600" strokeWidth={3} />
+                  <div className="w-16 h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+                    <XCircle className="w-8 h-8 text-white" strokeWidth={3} />
+                  </div>
                 )}
-                <h3 className="font-heading font-black text-3xl text-[#0F172A] uppercase tracking-wider">
+              </div>
+
+              {feedback.scoreBadge && (
+                <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
+                  {feedback.scoreBadge}
+                </div>
+              )}
+
+              {feedback.penalty && (
+                <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
+                  <div className="bg-[#0F172A] text-white px-3 py-1 font-mono font-bold text-lg border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#E11D48] rotate-2">
+                    -{feedback.penalty} PTS
+                  </div>
+                </div>
+              )}
+
+              <div className="pl-6 pt-2">
+                <h3 className="font-heading font-black text-3xl md:text-5xl text-[#0F172A] uppercase tracking-wider">
                   {feedback.title}
                 </h3>
+                <div className={`w-16 h-2 mt-3 ${feedback.isSuccess ? "bg-[#10B981]" : "bg-[#E11D48]"}`}></div>
               </div>
-              <p className="text-xl font-sans font-bold text-[#0F172A] mb-8">
-                {feedback.message}
-              </p>
+
+              <div className="px-6 pb-2 mt-2">
+                <div className="border-[3px] border-[#0F172A] p-6 bg-white shadow-[6px_6px_0px_0px_#E2E8F0]">
+                  <p className="text-xl md:text-2xl font-bold font-sans text-[#0F172A] leading-relaxed text-left">
+                    {feedback.message}
+                  </p>
+                </div>
+              </div>
               
-              <BrutalButton
-                onClick={handleNextAction}
-                variant="dark"
-                size="lg"
-                className="w-full h-16"
-              >
-                {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
-              </BrutalButton>
+              <div className="px-6 pb-4 pt-4 flex gap-4">
+                <BrutalButton
+                  onClick={handleNextAction}
+                  variant="dark"
+                  size="lg"
+                  className="w-full h-16 md:h-20 text-xl md:text-2xl group"
+                >
+                  {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
+                  <ArrowRight className="ml-4 w-8 h-8 transition-transform group-hover:translate-x-2" strokeWidth={3} />
+                </BrutalButton>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
+
+      <GameOverModal
+        isOpen={showGameOverModal}
+        onRestart={() => {
+          resetGame();
+          startTransition('/', { variant: 'init' });
+        }}
+      />
     </main>
   );
 }

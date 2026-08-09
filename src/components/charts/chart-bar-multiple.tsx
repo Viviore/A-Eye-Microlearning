@@ -62,8 +62,16 @@ export function ChartBarMultiple({ c1, c2, c3 }: { c1: number, c2: number, c3: n
       </CardHeader>
       <CardContent className="pt-6">
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData} margin={{ top: 20 }}>
+          <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
             <CartesianGrid vertical={false} stroke="#0F172A" strokeDasharray="4 4" />
+            <YAxis 
+              domain={[0, 500]} 
+              tickLine={false}
+              axisLine={false}
+              tickMargin={10}
+              className="font-mono font-bold text-xs"
+              tick={{ fill: '#0F172A' }}
+            />
             <XAxis
               dataKey="case"
               tickLine={false}
@@ -74,14 +82,14 @@ export function ChartBarMultiple({ c1, c2, c3 }: { c1: number, c2: number, c3: n
             />
             <ChartTooltip
               cursor={{ fill: 'rgba(15, 23, 42, 0.05)' }}
-              content={<ChartTooltipContent hideLabel className="border-2 border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] font-mono font-bold rounded-none" />}
+              content={<ChartTooltipContent hideLabel className="border-2 border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-white font-mono font-bold rounded-none" />}
             />
             <Bar 
               dataKey="score" 
               radius={0}
               stroke="#0F172A"
               strokeWidth={3}
-              minPointSize={5}
+              minPointSize={10}
             />
           </BarChart>
         </ChartContainer>
