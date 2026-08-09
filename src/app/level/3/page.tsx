@@ -16,7 +16,6 @@ import {
   ArrowRight
 } from "lucide-react";
 import case003Data from "@/data/case003.json";
-import { AnimatedBackground } from "@/components/ui/animated-background";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
 import { GameOverModal } from "@/components/game/VerdictModal";
@@ -84,6 +83,8 @@ export default function Level3Page() {
   const isDriverInitialized = useRef(false);
   const driverObjRef = useRef<any>(null);
   const [isTourActive, setIsTourActive] = useState(true);
+
+  const currentRound = sessionRounds[currentRoundIndex];
   
   const {
     roundScore,
@@ -98,9 +99,17 @@ export default function Level3Page() {
   } = useLevelScoring({
     isReady,
     hasTimer: true,
-    isPaused: isPanelLocked || isTourActive || showConfirm || showReveal,
+    isPaused: currentRound?.isTutorial || isPanelLocked || isTourActive || showConfirm || showReveal,
     onTimeout: () => {
+      // Pause both videos immediately
+      if (videoARef.current && videoBRef.current) {
+        videoARef.current.pause();
+        videoBRef.current.pause();
+      }
       applyDeduction(50);
+      addCumulativeScore(-50);
+      addCase003Score(-50);
+      markCase003RoundPlayed(currentRound?.id || "");
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
@@ -130,7 +139,6 @@ export default function Level3Page() {
     setIsReady(true);
   }, [playedCase003Rounds]);
 
-  const currentRound = sessionRounds[currentRoundIndex];
 
   const [currentTells, setCurrentTells] = useState<string[]>([]);
 
@@ -375,9 +383,8 @@ export default function Level3Page() {
 
   return (
     <main
-      className="min-h-[100dvh] bg-[#FAFAFA] text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
+      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
-      <AnimatedBackground theme="light" />
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
         
         {/* Header Section */}

@@ -200,6 +200,7 @@ export default function Level2Page() {
       addCumulativeScore(-50);
       markCase002RoundPlayed(currentRound?.id || "");
       
+      setShowVerdictModal(true);
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
