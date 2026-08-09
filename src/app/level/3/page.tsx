@@ -136,15 +136,16 @@ export default function Level3Page() {
 
   useEffect(() => {
     if (!currentRound) return;
-    const tells = [...currentRound.tells];
-    if (!currentRound.isTutorial) {
-      // Add a decoy
-      const decoys = ["Mismatched Shadows", "Glitchy Audio", "Unnatural Blinking"];
-      tells.push(decoys[Math.floor(Math.random() * decoys.length)]);
+    // 1 correct tell + all 3 distractors = 4 options
+    const tells = [...currentRound.tells, ...(currentRound.distractorTells || [])];
+    // Fisher-Yates shuffle
+    for (let i = tells.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tells[i], tells[j]] = [tells[j], tells[i]];
     }
-    setCurrentTells(tells.sort(() => 0.5 - Math.random()));
+    setCurrentTells(tells);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentRoundIndex]);
+  }, [currentRoundIndex, currentRound]);
 
   // Check Game Over condition
   useEffect(() => {
@@ -426,7 +427,11 @@ export default function Level3Page() {
 
             <div id="tutorial-timer" className="text-right">
               <div className="text-sm font-bold uppercase text-red-500">Timer</div>
-              <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+              {currentRound.isTutorial ? (
+                <div className="text-lg font-black font-heading text-[#0F172A]/30 uppercase tracking-wider">Paused</div>
+              ) : (
+                <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+              )}
             </div>
           </CaseHeader>
         </motion.div>

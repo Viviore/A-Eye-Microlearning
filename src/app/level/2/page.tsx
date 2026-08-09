@@ -508,7 +508,11 @@ export default function Level2Page() {
                 className="text-right transition-all duration-500"
               >
                 <div className="text-sm font-bold uppercase text-red-500">Timer</div>
-                <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+                {currentRound.isTutorial ? (
+                  <div className="text-lg font-black font-heading text-[#0F172A]/30 uppercase tracking-wider">Paused</div>
+                ) : (
+                  <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+                )}
               </div>
             </PostAuthorHeader>
 
@@ -687,7 +691,7 @@ export default function Level2Page() {
             }
           >
             {foundClues.length === 0 && foundDecoys.length === 0 ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/30 mt-16">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/30">
                 <Flag className="w-10 h-10 mb-2 opacity-50" strokeWidth={2} />
                 <p className="font-heading font-bold text-lg uppercase tracking-widest text-center">
                   [ No clues flagged yet ]

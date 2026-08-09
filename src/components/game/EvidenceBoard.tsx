@@ -23,7 +23,7 @@ export function EvidenceBoard({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col gap-3 min-h-[200px] mb-6">
+      <div className="relative flex-1 flex flex-col gap-3 min-h-[200px] mb-6">
         {children}
       </div>
 
