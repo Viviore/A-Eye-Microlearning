@@ -300,7 +300,7 @@ export default function Level3Page() {
       } else {
         completeLevel(3);
         setTimeout(() => {
-          startTransition("/results", { variant: 'results' });
+          startTransition("/post", { variant: 'next-case' });
         }, 1500);
       }
     }

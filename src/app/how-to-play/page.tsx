@@ -129,8 +129,7 @@ export default function HowToPlay() {
           <div className="w-full sm:w-auto">
             <BrutalButton 
               onClick={() => {
-                const preloadPromise = import("@/utils/preloader").then(m => m.preloadGameAssets());
-                startTransition("/level/1", { variant: 'init', waitFor: preloadPromise });
+                startTransition("/pre", { variant: 'init' });
               }}
               size="xl" 
               variant="hero"

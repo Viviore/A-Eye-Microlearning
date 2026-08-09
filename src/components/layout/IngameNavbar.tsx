@@ -25,6 +25,13 @@ export function IngameNavbar() {
 
   const navItems = [
     {
+      path: "/pre",
+      label: "Pre-Quiz",
+      icon: HelpCircle,
+      unlocked: true,
+      done: isPreQuizDone,
+    },
+    {
       path: "/level/1",
       label: "Case 001",
       icon: FileText,
@@ -44,6 +51,13 @@ export function IngameNavbar() {
       icon: Video,
       unlocked: true,
       done: isC3Done,
+    },
+    {
+      path: "/post",
+      label: "Post-Quiz",
+      icon: HelpCircle,
+      unlocked: true,
+      done: postQuizScore !== null,
     },
     {
       path: "/results",
