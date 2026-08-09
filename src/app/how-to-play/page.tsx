@@ -41,7 +41,10 @@ export default function HowToPlay() {
 
   return (
     <>
-      <LandingNavbar />
+      <LandingNavbar 
+        ctaLabel="Init Assessment" 
+        onCtaClick={() => startTransition("/pre", { variant: 'init' })} 
+      />
       <main className="min-h-[100dvh] relative overflow-hidden font-sans py-16 md:py-24 pt-28 md:pt-32">
         <div className="max-w-[1400px] mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
