@@ -259,7 +259,7 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "WRONG PANEL",
-        message: (<>You picked the wrong panel. The other video was the AI-generated one. <span className="block mt-2 font-black text-[#E11D48]">The correct tell was: &ldquo;{currentRound.tells[0]}&rdquo;</span></>),
+        message: (<>You picked the wrong panel. The other video was the AI-generated one.</>),
         scoreBadge: !currentRound.isTutorial ? (
           <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
             -50 Points
@@ -273,7 +273,7 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "LUCKY GUESS",
-        message: (<>You picked the correct panel, but your reasoning was wrong. <span className="block mt-2 font-black text-[#FFB800]">The actual tell was: &ldquo;{currentRound.tells[0]}&rdquo;</span></>),
+        message: (<>You picked the correct panel, but your reasoning was wrong.</>),
         scoreBadge: !currentRound.isTutorial ? (
           <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
             -25 Points
