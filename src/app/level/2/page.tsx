@@ -204,8 +204,7 @@ export default function Level2Page() {
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
-        message: "You ran out of time. The AI generates new content fast, you must be faster.",
-        forceNext: true,
+        message: "You ran out of time. The AI generates new content fast, you must be faster."
       });
     }
   });
@@ -878,7 +877,7 @@ export default function Level2Page() {
             onNext={handleNextRound}
             onRetry={handleRetryRound}
             nextButtonText="Next Photo"
-            isFinalRound={currentRoundIndex === IMAGE_ROUNDS.length - 1}
+            isFinalRound={currentRoundIndex === sessionRounds.length - 1}
           />
         )}
       </VerdictModalContainer>

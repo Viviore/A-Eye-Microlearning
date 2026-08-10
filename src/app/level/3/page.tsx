@@ -315,7 +315,7 @@ export default function Level3Page() {
       } else {
         completeLevel(3);
         setTimeout(() => {
-          startTransition("/post", { variant: 'next-case' });
+          startTransition("/post", { variant: 'post-assessment' });
         }, 1500);
       }
     }
@@ -487,10 +487,20 @@ export default function Level3Page() {
                     onEnded={() => { videoARef.current?.pause(); }}
                   />
                   {showReveal && (
-                    <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
-                      <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "A" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
-                        {currentRound.correctPanel === "A" ? "AI FAKE" : "REAL"}
-                      </span>
+                    <div className={`absolute inset-0 flex items-center justify-center bg-black/70 z-20`}>
+                      {currentRound.correctPanel === "A" ? (
+                        <div className="bg-[#FFB800] text-[#0F172A] px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AI GENERATED
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="bg-[#10B981] text-white px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AUTHENTIC
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
                   {showPulse && (
@@ -533,10 +543,20 @@ export default function Level3Page() {
                     onEnded={() => { videoBRef.current?.pause(); }}
                   />
                   {showReveal && (
-                    <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
-                      <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "B" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
-                        {currentRound.correctPanel === "B" ? "AI FAKE" : "REAL"}
-                      </span>
+                    <div className={`absolute inset-0 flex items-center justify-center bg-black/70 z-20`}>
+                      {currentRound.correctPanel === "B" ? (
+                        <div className="bg-[#FFB800] text-[#0F172A] px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AI GENERATED
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="bg-[#10B981] text-white px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AUTHENTIC
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
                   {showPulse && (
