@@ -15,12 +15,8 @@ export default function ResultsDashboardPage() {
     case001Score,
     case002Score,
     case003Score,
-    preQuizScore,
-    preQuizAwareness,
-    preQuizConfidence,
-    postQuizScore,
-    postQuizAwareness,
-    postQuizConfidence,
+    preAssessmentResult,
+    postAssessmentResult,
   } = useGameStore();
 
   const maxCaseScore = 500;
@@ -32,6 +28,21 @@ export default function ResultsDashboardPage() {
   const c1Percent = getCasePercentage(case001Score);
   const c2Percent = getCasePercentage(case002Score);
   const c3Percent = getCasePercentage(case003Score);
+
+  const preSkill = preAssessmentResult?.skillPercentage || 0;
+  const postSkill = postAssessmentResult?.skillPercentage || 0;
+  const skillGrowth = postSkill - preSkill;
+  const skillGrowthSign = skillGrowth >= 0 ? "+" : "";
+
+  const preAwareness = preAssessmentResult?.awarenessRating || 1;
+  const postAwareness = postAssessmentResult?.awarenessRating || 1;
+  const awarenessGrowth = postAwareness - preAwareness;
+  const awarenessGrowthSign = awarenessGrowth >= 0 ? "+" : "";
+
+  const preConfidence = preAssessmentResult?.confidenceRating || 1;
+  const postConfidence = postAssessmentResult?.confidenceRating || 1;
+  const confidenceGrowth = postConfidence - preConfidence;
+  const confidenceGrowthSign = confidenceGrowth >= 0 ? "+" : "";
 
   const profileRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -301,6 +312,80 @@ export default function ResultsDashboardPage() {
               </div>
               <div className="text-sm font-bold bg-[#FAFAFA] p-4 border-[3px] border-[#0F172A] text-[#0F172A] shadow-[inset_2px_2px_0px_rgba(0,0,0,0.05)]">
                 Spot temporal flickering & facial masks.
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* YOUR GROWTH SECTION */}
+        <motion.div variants={itemVariants} className="pt-12 pb-8">
+          <div className="flex items-center gap-3 mb-8 border-b-[4px] border-[#0F172A] pb-4">
+            <div className="p-2 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+              <TrendingUp className="w-6 h-6 text-[#0F172A]" strokeWidth={3} />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black font-heading tracking-widest uppercase text-[#0F172A]">
+              YOUR GROWTH
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* MIL Skill Growth */}
+            <div className="bg-white border-[4px] border-[#0F172A] p-6 md:p-8 shadow-[8px_8px_0px_0px_#0F172A] relative flex flex-col justify-center min-h-[220px]">
+              <div className="absolute top-0 left-0 bg-[#0F172A] text-white font-mono font-bold text-xs px-3 py-1 uppercase border-r-[4px] border-b-[4px] border-[#0F172A] flex items-center gap-2">
+                <Target className="w-4 h-4" /> MIL SKILL
+              </div>
+              <div className="mt-6 flex flex-col items-center">
+                <div className="flex items-center justify-between w-full mb-6">
+                  <div className="flex flex-col items-center">
+                    <span className="text-4xl font-black font-heading text-[#0F172A]">{preSkill}%</span>
+                    <span className="font-mono text-xs font-bold text-[#0F172A]/70 uppercase tracking-widest">Before</span>
+                  </div>
+                  <ChevronRight className="w-8 h-8 text-[#0F172A]/30" strokeWidth={3} />
+                  <div className="flex flex-col items-center">
+                    <span className="text-4xl font-black font-heading text-[#FFB800] drop-shadow-[2px_2px_0_#0F172A]">{postSkill}%</span>
+                    <span className="font-mono text-xs font-bold text-[#0F172A]/70 uppercase tracking-widest">After</span>
+                  </div>
+                </div>
+                <div className="bg-[#FFB800] border-[3px] border-[#0F172A] px-4 py-2 shadow-[4px_4px_0px_0px_#0F172A] w-full text-center">
+                  <span className="font-heading font-black text-xl text-[#0F172A] uppercase">{skillGrowthSign}{skillGrowth} percentage points</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Self-Reported Growth */}
+            <div className="flex flex-col gap-6">
+              {/* Awareness */}
+              <div className="bg-white border-[4px] border-[#0F172A] p-6 shadow-[6px_6px_0px_0px_#0F172A] flex flex-col justify-between flex-1">
+                <div className="font-heading font-bold text-lg uppercase tracking-wide text-[#0F172A] mb-4">
+                  AI Misinformation Awareness
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl font-black font-heading text-[#0F172A]">{preAwareness}/5</span>
+                    <ChevronRight className="w-5 h-5 text-[#0F172A]/30" strokeWidth={3} />
+                    <span className="text-2xl font-black font-heading text-[#FFB800] drop-shadow-[1px_1px_0_#0F172A]">{postAwareness}/5</span>
+                  </div>
+                  <div className="font-mono font-bold text-lg text-[#0F172A] bg-[#FAFAFA] border-[2px] border-[#0F172A] px-3 py-1 shadow-[2px_2px_0px_0px_#0F172A]">
+                    {awarenessGrowthSign}{awarenessGrowth}
+                  </div>
+                </div>
+              </div>
+
+              {/* Confidence */}
+              <div className="bg-white border-[4px] border-[#0F172A] p-6 shadow-[6px_6px_0px_0px_#0F172A] flex flex-col justify-between flex-1">
+                <div className="font-heading font-bold text-lg uppercase tracking-wide text-[#0F172A] mb-4">
+                  Confidence Identifying AI Fakes
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl font-black font-heading text-[#0F172A]">{preConfidence}/5</span>
+                    <ChevronRight className="w-5 h-5 text-[#0F172A]/30" strokeWidth={3} />
+                    <span className="text-2xl font-black font-heading text-[#FFB800] drop-shadow-[1px_1px_0_#0F172A]">{postConfidence}/5</span>
+                  </div>
+                  <div className="font-mono font-bold text-lg text-[#0F172A] bg-[#FAFAFA] border-[2px] border-[#0F172A] px-3 py-1 shadow-[2px_2px_0px_0px_#0F172A]">
+                    {confidenceGrowthSign}{confidenceGrowth}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
