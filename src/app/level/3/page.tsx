@@ -121,6 +121,9 @@ export default function Level3Page() {
   });
 
   useEffect(() => {
+    // Only initialize once to prevent round shuffling mid-game
+    if (sessionRounds.length > 0) return;
+
     const tutorial = VIDEO_ROUNDS.find(r => r.isTutorial);
     let unplayed = VIDEO_ROUNDS.filter(r => !r.isTutorial && !playedCase003Rounds.includes(r.id));
     
@@ -137,7 +140,7 @@ export default function Level3Page() {
       setSessionRounds(selected);
     }
     setIsReady(true);
-  }, [playedCase003Rounds]);
+  }, []);
 
 
   const [currentTells, setCurrentTells] = useState<string[]>([]);
@@ -165,16 +168,20 @@ export default function Level3Page() {
   // Timer and deduct logic replaced by useLevelScoring hook
 
   const swapToRandomRound = () => {
-    const availableIndices = sessionRounds
-      .map((_, i) => i)
-      .filter(i => i !== currentRoundIndex && !playedCase003Rounds.includes(sessionRounds[i].id) && !sessionRounds[i].isTutorial);
+    const usedIds = sessionRounds.map(r => r.id);
+    let available = VIDEO_ROUNDS.filter(r => !r.isTutorial && !usedIds.includes(r.id) && !playedCase003Rounds.includes(r.id));
       
-    if (availableIndices.length > 0) {
-      // eslint-disable-next-line
-      const nextIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-      setCurrentRoundIndex(nextIdx);
-    } else {
-      setCurrentRoundIndex((prev) => (prev + 1) % sessionRounds.length);
+    if (available.length === 0) {
+      available = VIDEO_ROUNDS.filter(r => !r.isTutorial && r.id !== currentRound?.id);
+    }
+    
+    if (available.length > 0) {
+      const nextRound = available[Math.floor(Math.random() * available.length)];
+      setSessionRounds(prev => {
+        const next = [...prev];
+        next[currentRoundIndex] = nextRound;
+        return next;
+      });
     }
     resetRoundState();
   };
@@ -252,12 +259,7 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "WRONG PANEL",
-        message: (<>You picked the wrong panel. The other video was the AI-generated one. <span className="block mt-2 font-black text-[#E11D48]">The correct tell was: &ldquo;{currentRound.tells[0]}&rdquo;</span></>),
-        scoreBadge: !currentRound.isTutorial ? (
-          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
-            -50 Points
-          </span>
-        ) : undefined,
+        message: (<>You picked the wrong panel. The other video was the AI-generated one.</>),
         penalty: 50,
       });
     } else if (!isCorrectTell) {
@@ -266,12 +268,7 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "LUCKY GUESS",
-        message: (<>You picked the correct panel, but your reasoning was wrong. <span className="block mt-2 font-black text-[#FFB800]">The actual tell was: &ldquo;{currentRound.tells[0]}&rdquo;</span></>),
-        scoreBadge: !currentRound.isTutorial ? (
-          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
-            -25 Points
-          </span>
-        ) : undefined,
+        message: (<>You picked the correct panel, but your reasoning was wrong.</>),
         penalty: 25,
       });
       if (!currentRound.isTutorial) {
@@ -308,7 +305,7 @@ export default function Level3Page() {
       } else {
         completeLevel(3);
         setTimeout(() => {
-          startTransition("/post", { variant: 'next-case' });
+          startTransition("/post", { variant: 'post-assessment' });
         }, 1500);
       }
     }
@@ -480,10 +477,20 @@ export default function Level3Page() {
                     onEnded={() => { videoARef.current?.pause(); }}
                   />
                   {showReveal && (
-                    <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
-                      <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "A" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
-                        {currentRound.correctPanel === "A" ? "AI FAKE" : "REAL"}
-                      </span>
+                    <div className={`absolute inset-0 flex items-center justify-center bg-black/70 z-20`}>
+                      {currentRound.correctPanel === "A" ? (
+                        <div className="bg-[#FFB800] text-[#0F172A] px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AI GENERATED
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="bg-[#10B981] text-white px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AUTHENTIC
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
                   {showPulse && (
@@ -526,10 +533,20 @@ export default function Level3Page() {
                     onEnded={() => { videoBRef.current?.pause(); }}
                   />
                   {showReveal && (
-                    <div className={`absolute inset-0 flex items-center justify-center bg-black/60 z-20`}>
-                      <span className={`text-5xl font-black font-heading uppercase ${currentRound.correctPanel === "B" ? "text-red-500 drop-shadow-[0_4px_0_black]" : "text-green-400 drop-shadow-[0_4px_0_black]"}`}>
-                        {currentRound.correctPanel === "B" ? "AI FAKE" : "REAL"}
-                      </span>
+                    <div className={`absolute inset-0 flex items-center justify-center bg-black/70 z-20`}>
+                      {currentRound.correctPanel === "B" ? (
+                        <div className="bg-[#FFB800] text-[#0F172A] px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AI GENERATED
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="bg-[#10B981] text-white px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[2deg]">
+                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                            AUTHENTIC
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
                   {showPulse && (

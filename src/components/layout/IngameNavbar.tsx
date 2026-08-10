@@ -27,8 +27,8 @@ export function IngameNavbar() {
   const pathname = usePathname();
   const router = useRouter();
   const {
-    preQuizScore,
-    postQuizScore,
+    preAssessmentCompleted,
+    postAssessmentCompleted,
     completedLevels,
     level1Verdict,
     level2Verdict,
@@ -40,7 +40,7 @@ export function IngameNavbar() {
     return null;
   }
 
-  const isPreQuizDone = preQuizScore !== null;
+  const isPreQuizDone = preAssessmentCompleted;
   const isC1Done = completedLevels.includes(1) || level1Verdict !== null;
   const isC2Done = completedLevels.includes(2) || level2Verdict !== null;
   const isC3Done = completedLevels.includes(3) || level3Verdict !== null;
@@ -57,35 +57,35 @@ export function IngameNavbar() {
       path: "/level/1",
       label: "Case 001",
       icon: FileText,
-      unlocked: true,
+      unlocked: isPreQuizDone,
       done: isC1Done,
     },
     {
       path: "/level/2",
       label: "Case 002",
       icon: Camera,
-      unlocked: true,
+      unlocked: isC1Done,
       done: isC2Done,
     },
     {
       path: "/level/3",
       label: "Case 003",
       icon: Video,
-      unlocked: true,
+      unlocked: isC2Done,
       done: isC3Done,
     },
     {
       path: "/post",
       label: "Post-Quiz",
       icon: HelpCircle,
-      unlocked: true,
-      done: postQuizScore !== null,
+      unlocked: isC3Done,
+      done: postAssessmentCompleted,
     },
     {
       path: "/results",
       label: "Results",
       icon: BarChart,
-      unlocked: true,
+      unlocked: postAssessmentCompleted,
       done: false,
     },
   ];
