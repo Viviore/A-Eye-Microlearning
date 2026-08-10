@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
 import { BrutalButton } from "@/components/ui/brutal-button";
 import Link from "next/link";
-import { Shield, Target, Activity, AlertTriangle, CheckCircle2, ChevronRight, BarChart, FileText, Camera, Video, XCircle, TrendingUp, Download } from "lucide-react";
+import { Shield, Target, Activity, AlertTriangle, CheckCircle2, ChevronRight, BarChart, FileText, Camera, Video, XCircle, TrendingUp, Download, Share2 } from "lucide-react";
 import { ChartBarMultiple } from "@/components/charts/chart-bar-multiple";
 import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
@@ -57,8 +57,29 @@ export default function ResultsDashboardPage() {
         pixelRatio: 2,
         backgroundColor: "#FAFAFA",
       });
+      const fileName = `AEye_Profile_${calibrationProfile.replace(/\s+/g, '_')}.png`;
+
+      if (navigator.share) {
+        try {
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], fileName, { type: blob.type });
+          
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: "My A-Eye Profiling Result",
+              text: `I scored ${accuracyPercent}% on A-Eye and got the profile: ${calibrationProfile}!`,
+              files: [file],
+            });
+            return;
+          }
+        } catch (shareErr) {
+          console.log("Web Share API failed, falling back to download", shareErr);
+        }
+      }
+
       const link = document.createElement("a");
-      link.download = `AEye_Profile_${calibrationProfile.replace(/\s+/g, '_')}.png`;
+      link.download = fileName;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -152,8 +173,8 @@ export default function ResultsDashboardPage() {
             variant="blue" 
             size="lg"
           >
-            <Download className="mr-3 w-6 h-6" strokeWidth={2.5} />
-            {isDownloading ? "GENERATING..." : "DOWNLOAD PROFILE"}
+            <Share2 className="mr-3 w-6 h-6" strokeWidth={2.5} />
+            {isDownloading ? "GENERATING..." : "EXPORT & SHARE"}
           </BrutalButton>
         </motion.div>
 

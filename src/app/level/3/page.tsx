@@ -260,11 +260,6 @@ export default function Level3Page() {
         isSuccess: false,
         title: "WRONG PANEL",
         message: (<>You picked the wrong panel. The other video was the AI-generated one.</>),
-        scoreBadge: !currentRound.isTutorial ? (
-          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
-            -50 Points
-          </span>
-        ) : undefined,
         penalty: 50,
       });
     } else if (!isCorrectTell) {
@@ -274,11 +269,6 @@ export default function Level3Page() {
         isSuccess: false,
         title: "LUCKY GUESS",
         message: (<>You picked the correct panel, but your reasoning was wrong.</>),
-        scoreBadge: !currentRound.isTutorial ? (
-          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
-            -25 Points
-          </span>
-        ) : undefined,
         penalty: 25,
       });
       if (!currentRound.isTutorial) {
