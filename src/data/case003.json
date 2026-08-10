@@ -5,13 +5,11 @@
     "videoA": "/videos/tutorial/cut_real.mp4",
     "videoB": "/videos/tutorial/cut_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Unnatural blinking pattern"
-    ],
+    "tells": ["Cucumber slice glitches and duplicates on the knife blade"],
     "distractorTells": [
-      "Face warped when turning",
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong"
+      "Knife blade morphed mid-slice",
+      "Lighting changed on the cutting board",
+      "Hand position shifted unnaturally"
     ]
   },
   {
@@ -20,28 +18,24 @@
     "videoA": "/videos/set1/race_real.mp4",
     "videoB": "/videos/set1/race_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Hands/fingers looked wrong"
-    ],
+    "tells": ["Background objects morphing"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Background objects morphing",
-      "Unnatural blinking pattern"
+      "Car reflections were inverted",
+      "Tail lights flickered unnaturally",
+      "Street lights vanished suddenly"
     ]
   },
   {
     "id": "v-round-3",
     "isTutorial": false,
-    "videoA": "/videos/set2/sushi_ai.mp4",
-    "videoB": "/videos/set2/sushi_real.mp4",
-    "correctPanel": "A",
-    "tells": [
-      "Background objects morphing"
-    ],
+    "videoA": "/videos/set1/sushi_real.mp4",
+    "videoB": "/videos/set1/sushi_ai.mp4",
+    "correctPanel": "B",
+    "tells": ["Sushi doesn't react to flame"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Unnatural blinking pattern"
+      "Salmon melted unnaturally",
+      "Plate edge warped",
+      "Flame color was inconsistent"
     ]
   },
   {
@@ -50,13 +44,11 @@
     "videoA": "/videos/set3/block_real.mp4",
     "videoB": "/videos/set3/block_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Unnatural blinking pattern"
-    ],
+    "tells": ["Red mushroom duplicated"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "UI elements flickered",
+      "Lighting didn't match sun",
+      "Player hand motion glitched"
     ]
   },
   {
@@ -65,13 +57,11 @@
     "videoA": "/videos/set4/milk_ai.mp4",
     "videoB": "/videos/set4/milk_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Face warped when turning"
-    ],
+    "tells": ["Liquid movement was unnatural"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Glass jar reflection was distorted",
+      "Liquid stream broke physics",
+      "Blender spout changed shape"
     ]
   },
   {
@@ -80,13 +70,11 @@
     "videoA": "/videos/set5/soup_real.mp4",
     "videoB": "/videos/set5/soup_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Motion blur looks unnatural"
-    ],
+    "tells": ["Chicken and carrots morphed"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Ladle metal reflection distorted",
+      "Pot handles shifted position",
+      "Steam motion was frozen"
     ]
   },
   {
@@ -95,13 +83,11 @@
     "videoA": "/videos/set6/deer_ai.mp4",
     "videoB": "/videos/set6/deer_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Physics of objects are wrong"
-    ],
+    "tells": ["Deer head and horns morphed when lifting"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Leg movement glitched",
+      "Background feeder shifted position",
+      "Grass texture distorted"
     ]
   },
   {
@@ -110,13 +96,11 @@
     "videoA": "/videos/set7/mario_real.mp4",
     "videoB": "/videos/set7/mario_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Artifacts around the edges"
-    ],
+    "tells": ["UI elements and speedometer morphed"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Kart tires clipped through track",
+      "Rainbow arch glitched",
+      "Shadows didn't match light source"
     ]
   },
   {
@@ -125,13 +109,11 @@
     "videoA": "/videos/set8/flower_ai.mp4",
     "videoB": "/videos/set8/flower_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Lighting was inconsistent"
-    ],
+    "tells": ["Petals and stamens morphed unnaturally"],
     "distractorTells": [
-      "Hands/fingers looked wrong",
-      "Background objects morphing",
-      "Unnatural blinking pattern"
+      "Stem position shifted",
+      "Background lighting flickered",
+      "Shadows didn't match light source"
     ]
   },
   {
@@ -140,13 +122,11 @@
     "videoA": "/videos/set9/orange_real.mp4",
     "videoB": "/videos/set9/orange_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Hands/fingers looked wrong"
-    ],
+    "tells": ["An orange disappeared"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Background objects morphing",
-      "Unnatural blinking pattern"
+      "Water ripples froze mid-air",
+      "Bubbles vanished unnaturally",
+      "Lighting shifted color"
     ]
   },
   {
@@ -155,13 +135,11 @@
     "videoA": "/videos/set10/cake_ai.mp4",
     "videoB": "/videos/set10/cake_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Background objects morphing"
-    ],
+    "tells": ["Frosting morphed"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Unnatural blinking pattern"
+      "Piping tip shifted position",
+      "Cake board shifted position",
+      "Shadows didn't match light source"
     ]
   },
   {
@@ -170,13 +148,11 @@
     "videoA": "/videos/set11/roblox_real.mp4",
     "videoB": "/videos/set11/roblox_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Unnatural blinking pattern"
-    ],
+    "tells": ["Path platforms morphed and shifted unnaturally"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Character avatar limbs warped",
+      "UI elements flickered",
+      "Background floating island distorted"
     ]
   },
   {
@@ -185,13 +161,11 @@
     "videoA": "/videos/set12/cat_ai.mp4",
     "videoB": "/videos/set12/cat_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Face warped when turning"
-    ],
+    "tells": ["Kitten paws and face morphed"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Bed sheet pattern shifted",
+      "Lighting flickered unnaturally",
+      "Background blurred unevenly"
     ]
   },
   {
@@ -200,13 +174,11 @@
     "videoA": "/videos/set13/bird_real.mp4",
     "videoB": "/videos/set13/bird_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Motion blur looks unnatural"
-    ],
+    "tells": ["Parrot beaks didn't touch while feeding"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Feather texture blurred",
+      "Branch shape shifted",
+      "Background lighting flickered"
     ]
   },
   {
@@ -215,13 +187,11 @@
     "videoA": "/videos/set14/pop_ai.mp4",
     "videoB": "/videos/set14/pop_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Physics of objects are wrong"
-    ],
+    "tells": ["Balloon popped without rubber tear"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Pool water surface froze",
+      "Hand shape warped on pop",
+      "Background trees shifted position"
     ]
   },
   {
@@ -230,13 +200,11 @@
     "videoA": "/videos/set15/eat_real.mp4",
     "videoB": "/videos/set15/eat_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Artifacts around the edges"
-    ],
+    "tells": ["Unnatural eating action"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Facial features warped while chewing",
+      "Shirt neckline changed shape",
+      "Background blurred unnaturally"
     ]
   },
   {
@@ -245,13 +213,11 @@
     "videoA": "/videos/set16/pixel_ai.mp4",
     "videoB": "/videos/set16/pixel_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Lighting was inconsistent"
-    ],
+    "tells": ["Water animation was unnatural"],
     "distractorTells": [
-      "Hands/fingers looked wrong",
-      "Background objects morphing",
-      "Unnatural blinking pattern"
+      "Character outline flickered",
+      "Wooden dock tiles shifted alignment",
+      "Lily pad size changed unexpectedly"
     ]
   },
   {
@@ -260,13 +226,11 @@
     "videoA": "/videos/set17/salad_real.mp4",
     "videoB": "/videos/set17/salad_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Hands/fingers looked wrong"
-    ],
+    "tells": ["Physics of mixing the salad was wrong"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Background objects morphing",
-      "Unnatural blinking pattern"
+      "Bowl outline flickered",
+      "Table texture shifted",
+      "Background lighting changed"
     ]
   },
   {
@@ -275,13 +239,11 @@
     "videoA": "/videos/set18/chop_ai.mp4",
     "videoB": "/videos/set18/chop_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Background objects morphing"
-    ],
+    "tells": ["Physics of chopping cabbage looked wrong"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Unnatural blinking pattern"
+      "Cutting board shifted position",
+      "Hand position changed unnaturally",
+      "Background objects morphed"
     ]
   },
   {
@@ -290,13 +252,11 @@
     "videoA": "/videos/set19/slime_real.mp4",
     "videoB": "/videos/set19/slime_ai.mp4",
     "correctPanel": "B",
-    "tells": [
-      "Unnatural blinking pattern"
-    ],
+    "tells": ["Slime texture and hand fingers morphed"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Table edge shifted position",
+      "Sleeve cuff changed shape",
+      "Background wall color shifted"
     ]
   },
   {
@@ -305,13 +265,11 @@
     "videoA": "/videos/set20/ball_ai.mp4",
     "videoB": "/videos/set20/ball_real.mp4",
     "correctPanel": "A",
-    "tells": [
-      "Face warped when turning"
-    ],
+    "tells": ["Physics of cutting kinetic sand was wrong"],
     "distractorTells": [
-      "Lighting was inconsistent",
-      "Hands/fingers looked wrong",
-      "Background objects morphing"
+      "Sand ball texture flickered",
+      "Tray surface shifted position",
+      "Hand fingers warped"
     ]
   }
 ]

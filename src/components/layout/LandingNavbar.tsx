@@ -6,7 +6,13 @@ import { Menu, X, Play } from "lucide-react";
 import { BrutalButton } from "@/components/ui/brutal-button";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function LandingNavbar() {
+interface LandingNavbarProps {
+  ctaLabel?: string;
+  ctaHref?: string;
+  onCtaClick?: () => void;
+}
+
+export function LandingNavbar({ ctaLabel = "Start Training", ctaHref = "/how-to-play", onCtaClick }: LandingNavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -35,6 +41,18 @@ export function LandingNavbar() {
     setIsMobileMenuOpen(false);
   };
 
+  const CtaButton = () => (
+    <BrutalButton 
+      size="nav" 
+      variant="hero"
+      className="w-full md:w-auto group"
+      onClick={onCtaClick}
+    >
+      <Play className="mr-2 w-5 h-5" />
+      {ctaLabel}
+    </BrutalButton>
+  );
+
   const NavContent = () => (
     <>
       <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full md:w-auto">
@@ -51,16 +69,15 @@ export function LandingNavbar() {
         ))}
       </div>
 
-      <Link href="/how-to-play" passHref className="w-full md:w-auto">
-        <BrutalButton 
-          size="nav" 
-          variant="hero"
-          className="w-full md:w-auto group"
-        >
-          <Play className="mr-2 w-5 h-5" />
-          Start Training
-        </BrutalButton>
-      </Link>
+      {onCtaClick ? (
+        <div className="w-full md:w-auto">
+          <CtaButton />
+        </div>
+      ) : (
+        <Link href={ctaHref} passHref className="w-full md:w-auto">
+          <CtaButton />
+        </Link>
+      )}
     </>
   );
 

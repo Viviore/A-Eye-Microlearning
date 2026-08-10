@@ -16,7 +16,6 @@ import {
   ArrowRight
 } from "lucide-react";
 import case003Data from "@/data/case003.json";
-import { AnimatedBackground } from "@/components/ui/animated-background";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
 import { GameOverModal } from "@/components/game/VerdictModal";
@@ -84,6 +83,8 @@ export default function Level3Page() {
   const isDriverInitialized = useRef(false);
   const driverObjRef = useRef<any>(null);
   const [isTourActive, setIsTourActive] = useState(true);
+
+  const currentRound = sessionRounds[currentRoundIndex];
   
   const {
     roundScore,
@@ -98,9 +99,17 @@ export default function Level3Page() {
   } = useLevelScoring({
     isReady,
     hasTimer: true,
-    isPaused: isPanelLocked || isTourActive || showConfirm || showReveal,
+    isPaused: currentRound?.isTutorial || isPanelLocked || isTourActive || showConfirm || showReveal,
     onTimeout: () => {
+      // Pause both videos immediately
+      if (videoARef.current && videoBRef.current) {
+        videoARef.current.pause();
+        videoBRef.current.pause();
+      }
       applyDeduction(50);
+      addCumulativeScore(-50);
+      addCase003Score(-50);
+      markCase003RoundPlayed(currentRound?.id || "");
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
@@ -130,21 +139,21 @@ export default function Level3Page() {
     setIsReady(true);
   }, [playedCase003Rounds]);
 
-  const currentRound = sessionRounds[currentRoundIndex];
 
   const [currentTells, setCurrentTells] = useState<string[]>([]);
 
   useEffect(() => {
     if (!currentRound) return;
-    const tells = [...currentRound.tells];
-    if (!currentRound.isTutorial) {
-      // Add a decoy
-      const decoys = ["Mismatched Shadows", "Glitchy Audio", "Unnatural Blinking"];
-      tells.push(decoys[Math.floor(Math.random() * decoys.length)]);
+    // 1 correct tell + all 3 distractors = 4 options
+    const tells = [...currentRound.tells, ...(currentRound.distractorTells || [])];
+    // Fisher-Yates shuffle
+    for (let i = tells.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tells[i], tells[j]] = [tells[j], tells[i]];
     }
-    setCurrentTells(tells.sort(() => 0.5 - Math.random()));
+    setCurrentTells(tells);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentRoundIndex]);
+  }, [currentRoundIndex, currentRound]);
 
   // Check Game Over condition
   useEffect(() => {
@@ -243,7 +252,7 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "WRONG PANEL",
-        message: "You picked the wrong panel. The other video was the AI-generated one.",
+        message: (<>You picked the wrong panel. The other video was the AI-generated one. <span className="block mt-2 font-black text-[#E11D48]">The correct tell was: &ldquo;{currentRound.tells[0]}&rdquo;</span></>),
         scoreBadge: !currentRound.isTutorial ? (
           <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
             -50 Points
@@ -257,7 +266,7 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "LUCKY GUESS",
-        message: "You picked the correct panel, but your reasoning was wrong.",
+        message: (<>You picked the correct panel, but your reasoning was wrong. <span className="block mt-2 font-black text-[#FFB800]">The actual tell was: &ldquo;{currentRound.tells[0]}&rdquo;</span></>),
         scoreBadge: !currentRound.isTutorial ? (
           <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
             -25 Points
@@ -299,7 +308,7 @@ export default function Level3Page() {
       } else {
         completeLevel(3);
         setTimeout(() => {
-          startTransition("/results", { variant: 'results' });
+          startTransition("/post", { variant: 'next-case' });
         }, 1500);
       }
     }
@@ -374,9 +383,8 @@ export default function Level3Page() {
 
   return (
     <main
-      className="min-h-[100dvh] bg-[#FAFAFA] text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
+      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
-      <AnimatedBackground theme="light" />
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
         
         {/* Header Section */}
@@ -426,7 +434,11 @@ export default function Level3Page() {
 
             <div id="tutorial-timer" className="text-right">
               <div className="text-sm font-bold uppercase text-red-500">Timer</div>
-              <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+              {currentRound.isTutorial ? (
+                <div className="text-lg font-black font-heading text-[#0F172A]/30 uppercase tracking-wider">Paused</div>
+              ) : (
+                <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+              )}
             </div>
           </CaseHeader>
         </motion.div>

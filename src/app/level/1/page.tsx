@@ -112,7 +112,7 @@ export default function Level1Page() {
   
   useEffect(() => {
     if (!currentRound) return;
-    setShuffledTacticOptions(prev => {
+    setShuffledTacticOptions(() => {
       const arr = [...currentRound.tacticOptions];
       for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -121,7 +121,7 @@ export default function Level1Page() {
       return arr;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentRoundIndex]);
+  }, [currentRoundIndex, currentRound]);
 
   const [isTourActive, setIsTourActive] = useState(true);
   
@@ -190,7 +190,7 @@ export default function Level1Page() {
           { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
           { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.", side: "bottom" } },
           { element: '#btn-source-check', popover: { title: 'A-Eye Agent', description: "Always gather facts first! We'll click 'Open Source Check' to see verified information.", side: "left" } },
-          { element: '#tutorial-source', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" }, onHighlightStarted: (element) => { setSourceCheckOpen(true); element?.scrollIntoView({ behavior: "smooth", block: "center" }); } },
+          { element: '#tutorial-source-inline', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" } },
           { element: '#segment-t-2', popover: { title: 'A-Eye Agent', description: "Look at the highlighted sentence. It contradicts our verified facts! You'll need to flag such clues.", side: "bottom" } },
           { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board. Watch out for decoys!", side: "left" } },
           { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Each round starts at 100 points. Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points.", side: "bottom" } },
@@ -248,6 +248,7 @@ export default function Level1Page() {
   };
   
   const handleOpenSourceCheck = () => {
+    if (isTourActive) return;
     setSourceCheckOpen(!sourceCheckOpen);
   };
   
@@ -336,9 +337,9 @@ export default function Level1Page() {
     <main 
       className={`min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans ${currentRoundIndex === 0 ? 'pb-72 md:pb-56 lg:pb-48' : 'pb-32'}`}
     >
-      {/* Global Tutorial Backdrop removed so UI is not dimmed */}
+      {/* Block all interactions during driver.js tour */}
       
-      <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8 pb-20">
+      <div className={`w-full max-w-[1200px] z-10 flex flex-col gap-8 pb-20 ${isTourActive ? 'pointer-events-none' : ''}`}>
         
         {/* Header Info */}
         <CaseHeader 
@@ -460,7 +461,7 @@ export default function Level1Page() {
             }
           >
             {foundClues.length === 0 ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/30 mt-16">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-[#0F172A]/30">
                 <Flag className="w-10 h-10 mb-2 opacity-50" strokeWidth={2} />
                 <p className="font-heading font-bold text-lg uppercase tracking-widest text-center">
                   [ No clues flagged yet ]
@@ -488,8 +489,26 @@ export default function Level1Page() {
             )}
           </EvidenceBoard>
 
+          {/* Inline verified sources shown during tutorial for driver.js to highlight */}
+          {currentRoundIndex === 0 && isTourActive && (
+            <div id="tutorial-source-inline" className="p-5 bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A]">
+              <h3 className="text-xl font-black font-heading text-[#0F172A] uppercase tracking-wider flex items-center gap-3 mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3">
+                <Search className="w-6 h-6 text-[#0F172A]" strokeWidth={3} />
+                Verified Sources
+              </h3>
+              <div className="space-y-3 font-sans">
+                {currentRound.verifiedSources.map((source, i) => (
+                  <div key={i} className="p-3 bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+                    <h4 className="font-bold text-[#2563EB] mb-1 font-mono uppercase tracking-widest text-xs">{source.name}</h4>
+                    <p className="text-[#0F172A] font-bold leading-relaxed text-sm">{source.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <VerifiedSourcesModal
-            isOpen={sourceCheckOpen}
+            isOpen={sourceCheckOpen && !isTourActive}
             onClose={() => setSourceCheckOpen(false)}
             sources={currentRound.verifiedSources}
           />
