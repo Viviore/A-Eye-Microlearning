@@ -121,6 +121,9 @@ export default function Level3Page() {
   });
 
   useEffect(() => {
+    // Only initialize once to prevent round shuffling mid-game
+    if (sessionRounds.length > 0) return;
+
     const tutorial = VIDEO_ROUNDS.find(r => r.isTutorial);
     let unplayed = VIDEO_ROUNDS.filter(r => !r.isTutorial && !playedCase003Rounds.includes(r.id));
     
@@ -137,7 +140,7 @@ export default function Level3Page() {
       setSessionRounds(selected);
     }
     setIsReady(true);
-  }, [playedCase003Rounds]);
+  }, []);
 
 
   const [currentTells, setCurrentTells] = useState<string[]>([]);
@@ -165,16 +168,20 @@ export default function Level3Page() {
   // Timer and deduct logic replaced by useLevelScoring hook
 
   const swapToRandomRound = () => {
-    const availableIndices = sessionRounds
-      .map((_, i) => i)
-      .filter(i => i !== currentRoundIndex && !playedCase003Rounds.includes(sessionRounds[i].id) && !sessionRounds[i].isTutorial);
+    const usedIds = sessionRounds.map(r => r.id);
+    let available = VIDEO_ROUNDS.filter(r => !r.isTutorial && !usedIds.includes(r.id) && !playedCase003Rounds.includes(r.id));
       
-    if (availableIndices.length > 0) {
-      // eslint-disable-next-line
-      const nextIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-      setCurrentRoundIndex(nextIdx);
-    } else {
-      setCurrentRoundIndex((prev) => (prev + 1) % sessionRounds.length);
+    if (available.length === 0) {
+      available = VIDEO_ROUNDS.filter(r => !r.isTutorial && r.id !== currentRound?.id);
+    }
+    
+    if (available.length > 0) {
+      const nextRound = available[Math.floor(Math.random() * available.length)];
+      setSessionRounds(prev => {
+        const next = [...prev];
+        next[currentRoundIndex] = nextRound;
+        return next;
+      });
     }
     resetRoundState();
   };

@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
-type TransitionVariant = 'init' | 'next-case' | 'results';
+type TransitionVariant = 'init' | 'next-case' | 'results' | 'post-assessment';
 
 export type TransitionOptions = {
   waitFor?: Promise<any>;
@@ -39,6 +39,13 @@ const getVariantConfig = (variant: TransitionVariant) => {
       titleColor: 'text-[#0F172A]',
       textColor: 'text-[#0F172A]/70',
       title: 'ACCESSING NEXT CASE...'
+    };
+    case 'post-assessment': return {
+      bg: 'bg-[#FFB800]',
+      border: 'border-[#0F172A]',
+      titleColor: 'text-[#0F172A]',
+      textColor: 'text-[#0F172A]/70',
+      title: 'CONCLUDING INVESTIGATIONS...'
     };
     case 'results': return {
       bg: 'bg-[#FFB800]',
