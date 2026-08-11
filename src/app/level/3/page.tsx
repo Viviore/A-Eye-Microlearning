@@ -52,14 +52,14 @@ const fadeUp = {
 export default function Level3Page() {
   const router = useRouter();
   const { startTransition, isTransitioning } = useAppTransition();
-  const { 
-    completeLevel, 
-    cumulativeScore, 
+  const {
+    completeLevel,
+    cumulativeScore,
     addCumulativeScore,
     addCase003Score,
-    resetGame, 
-    playedCase003Rounds, 
-    markCase003RoundPlayed 
+    resetGame,
+    playedCase003Rounds,
+    markCase003RoundPlayed
   } = useGameStore();
 
   const [sessionRounds, setSessionRounds] = useState<VideoRound[]>([]);
@@ -71,7 +71,7 @@ export default function Level3Page() {
   const [selectedPanel, setSelectedPanel] = useState<"A" | "B" | null>(null);
   const [isPanelLocked, setIsPanelLocked] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  
+
   const [selectedTell, setSelectedTell] = useState<string | null>(null);
   const [showReveal, setShowReveal] = useState(false);
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; penalty?: number; scoreBadge?: React.ReactNode } | null>(null);
@@ -85,7 +85,7 @@ export default function Level3Page() {
   const [isTourActive, setIsTourActive] = useState(true);
 
   const currentRound = sessionRounds[currentRoundIndex];
-  
+
   const {
     roundScore,
     setRoundScore,
@@ -126,14 +126,14 @@ export default function Level3Page() {
 
     const tutorial = VIDEO_ROUNDS.find(r => r.isTutorial);
     let unplayed = VIDEO_ROUNDS.filter(r => !r.isTutorial && !playedCase003Rounds.includes(r.id));
-    
+
     if (unplayed.length < 5) {
       unplayed = VIDEO_ROUNDS.filter(r => !r.isTutorial); // fallback
     }
-    
+
     const shuffled = [...unplayed].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 5);
-    
+
     if (tutorial) {
       setSessionRounds([tutorial, ...selected]);
     } else {
@@ -170,11 +170,11 @@ export default function Level3Page() {
   const swapToRandomRound = () => {
     const usedIds = sessionRounds.map(r => r.id);
     let available = VIDEO_ROUNDS.filter(r => !r.isTutorial && !usedIds.includes(r.id) && !playedCase003Rounds.includes(r.id));
-      
+
     if (available.length === 0) {
       available = VIDEO_ROUNDS.filter(r => !r.isTutorial && r.id !== currentRound?.id);
     }
-    
+
     if (available.length > 0) {
       const nextRound = available[Math.floor(Math.random() * available.length)];
       setSessionRounds(prev => {
@@ -196,12 +196,12 @@ export default function Level3Page() {
     setToolUsed(false);
     resetScoring();
     setReplaysUsed(0);
-    
+
     if (videoARef.current && videoBRef.current) {
-        videoARef.current.currentTime = 0;
-        videoBRef.current.currentTime = 0;
-        videoARef.current.play().catch(e => console.log(e));
-        videoBRef.current.play().catch(e => console.log(e));
+      videoARef.current.currentTime = 0;
+      videoBRef.current.currentTime = 0;
+      videoARef.current.play().catch(e => console.log(e));
+      videoBRef.current.play().catch(e => console.log(e));
     }
   };
 
@@ -225,22 +225,22 @@ export default function Level3Page() {
     setSelectedPanel(panel);
     setShowConfirm(true);
     if (videoARef.current && videoBRef.current) {
-        videoARef.current.pause();
-        videoBRef.current.pause();
+      videoARef.current.pause();
+      videoBRef.current.pause();
     }
   };
-  
+
   const handleConfirmPanel = () => {
     setIsPanelLocked(true);
     setShowConfirm(false);
   };
-  
+
   const handleCancelConfirm = () => {
     setSelectedPanel(null);
     setShowConfirm(false);
     if (videoARef.current && videoBRef.current) {
-        videoARef.current.play();
-        videoBRef.current.play();
+      videoARef.current.play();
+      videoBRef.current.play();
     }
   };
 
@@ -248,7 +248,7 @@ export default function Level3Page() {
     if (showReveal) return;
     setSelectedTell(tell);
     setShowReveal(true);
-    
+
     const isCorrectPanel = selectedPanel === currentRound.correctPanel;
     const isCorrectTell = currentRound.tells.includes(tell);
     let finalScore = roundScore;
@@ -316,7 +316,7 @@ export default function Level3Page() {
     if (currentRound?.isTutorial && !isDriverInitialized.current && isReady && !isTransitioning) {
       isDriverInitialized.current = true;
       setIsTourActive(true);
-      
+
       const d = driver({
         showProgress: true,
         allowClose: false,
@@ -360,15 +360,15 @@ export default function Level3Page() {
         onDestroyed: () => {
           setIsTourActive(false);
           if (videoARef.current && videoBRef.current) {
-              videoARef.current.play().catch(e => console.log(e));
-              videoBRef.current.play().catch(e => console.log(e));
+            videoARef.current.play().catch(e => console.log(e));
+            videoBRef.current.play().catch(e => console.log(e));
           }
         }
       });
       driverObjRef.current = d;
       d.drive();
     }
-    
+
     return () => {
       if (driverObjRef.current) {
         driverObjRef.current.destroy();
@@ -383,10 +383,10 @@ export default function Level3Page() {
       className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
     >
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
-        
+
         {/* Header Section */}
         <motion.div variants={fadeUp} className="w-full">
-          <CaseHeader 
+          <CaseHeader
             caseNumber="CASE 003"
             caseTitle="VIDEO INVESTIGATION"
             isTutorial={currentRound.isTutorial}
@@ -451,7 +451,7 @@ export default function Level3Page() {
             <h2 className="text-xl md:text-2xl font-black font-heading uppercase tracking-widest text-[#0F172A]">Which one is AI?</h2>
             <div className="w-20"></div>
           </div>
-          
+
           <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#FAFAFA]">
             {/* Panel A */}
             {(() => {
@@ -459,20 +459,20 @@ export default function Level3Page() {
               const isTutorial = currentRound.isTutorial && !isTourActive;
               const isDisabled = isTutorial && !isCorrect && !isPanelLocked;
               const showPulse = isTutorial && isCorrect && !selectedPanel;
-              
+
               return (
-                <div 
+                <div
                   onClick={() => !isDisabled && handlePanelClick("A")}
                   className={`relative cursor-pointer transition-all border-[4px] ${selectedPanel === "A" ? "border-[#FFB800] shadow-[0_0_0_4px_#FFB800]" : showPulse ? "border-[#FFB800] border-solid shadow-[0_0_0_4px_#FFB800] animate-pulse" : "border-[#0F172A] hover:border-[#FFB800] hover:scale-[1.02]"} ${(isPanelLocked && selectedPanel !== "A") || isDisabled ? "opacity-50 pointer-events-none grayscale" : ""}`}
                 >
                   <div className="absolute top-2 left-2 bg-[#0F172A] text-white font-mono font-bold px-3 py-1 z-10 border-2 border-white shadow-sm">PANEL A</div>
-                  <video 
-                    ref={videoARef} 
-                    src={currentRound.videoA} 
-                    className="w-full h-auto object-cover aspect-video" 
+                  <video
+                    ref={videoARef}
+                    src={currentRound.videoA}
+                    className="w-full h-auto object-cover aspect-video"
                     autoPlay
-                    loop 
-                    muted 
+                    loop
+                    muted
                     playsInline
                     onEnded={() => { videoARef.current?.pause(); }}
                   />
@@ -494,7 +494,7 @@ export default function Level3Page() {
                     </div>
                   )}
                   {showPulse && (
-                    <motion.span 
+                    <motion.span
                       animate={{ x: [0, 12, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
                       className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none z-10 drop-shadow-xl"
@@ -515,20 +515,20 @@ export default function Level3Page() {
               const isTutorial = currentRound.isTutorial && !isTourActive;
               const isDisabled = isTutorial && !isCorrect && !isPanelLocked;
               const showPulse = isTutorial && isCorrect && !selectedPanel;
-              
+
               return (
-                <div 
+                <div
                   onClick={() => !isDisabled && handlePanelClick("B")}
                   className={`relative cursor-pointer transition-all border-[4px] ${selectedPanel === "B" ? "border-[#FFB800] shadow-[0_0_0_4px_#FFB800]" : showPulse ? "border-[#FFB800] border-solid shadow-[0_0_0_4px_#FFB800] animate-pulse" : "border-[#0F172A] hover:border-[#FFB800] hover:scale-[1.02]"} ${(isPanelLocked && selectedPanel !== "B") || isDisabled ? "opacity-50 pointer-events-none grayscale" : ""}`}
                 >
                   <div className="absolute top-2 left-2 bg-[#0F172A] text-white font-mono font-bold px-3 py-1 z-10 border-2 border-white shadow-sm">PANEL B</div>
-                  <video 
-                    ref={videoBRef} 
-                    src={currentRound.videoB} 
-                    className="w-full h-auto object-cover aspect-video" 
+                  <video
+                    ref={videoBRef}
+                    src={currentRound.videoB}
+                    className="w-full h-auto object-cover aspect-video"
                     autoPlay
-                    loop 
-                    muted 
+                    loop
+                    muted
                     playsInline
                     onEnded={() => { videoBRef.current?.pause(); }}
                   />
@@ -550,7 +550,7 @@ export default function Level3Page() {
                     </div>
                   )}
                   {showPulse && (
-                    <motion.span 
+                    <motion.span
                       animate={{ x: [0, 12, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
                       className="absolute top-1/2 -translate-y-1/2 left-4 pointer-events-none z-10 drop-shadow-xl"
@@ -569,7 +569,7 @@ export default function Level3Page() {
           {/* Confirm Dialog */}
           <AnimatePresence>
             {showConfirm && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -589,7 +589,7 @@ export default function Level3Page() {
         {/* Verdict Form Area */}
         <AnimatePresence>
           {isPanelLocked && !showReveal && (
-            <motion.div 
+            <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
@@ -600,7 +600,7 @@ export default function Level3Page() {
                 Explain Your Tell
               </h2>
               <p className="text-center font-bold text-[#0F172A]/70 mb-8">Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.</p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentTells.map((tell) => {
                   const isCorrect = currentRound.tells.includes(tell);
@@ -609,7 +609,7 @@ export default function Level3Page() {
                   const showPulse = isTutorial && isCorrect;
 
                   let btnClass = "relative px-6 py-4 border-[4px] font-black font-heading uppercase text-lg md:text-xl transition-all text-[#0F172A] cursor-pointer text-center flex items-center justify-center min-h-[5rem] ";
-                  
+
                   if (isDisabled) {
                     btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 !cursor-not-allowed ";
                   } else if (showPulse) {
@@ -639,7 +639,7 @@ export default function Level3Page() {
         {/* Feedback / Reveal Area */}
         <AnimatePresence>
           {showReveal && feedback && (
-            <motion.div 
+            <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
@@ -686,7 +686,7 @@ export default function Level3Page() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="px-6 pb-4 pt-4 flex gap-4">
                 <BrutalButton
                   onClick={handleNextAction}
@@ -694,7 +694,7 @@ export default function Level3Page() {
                   size="lg"
                   className="w-full h-16 md:h-20 text-xl md:text-2xl group"
                 >
-                  {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
+                  {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : (feedback.isSuccess ? "Finish Case 003" : "Retry with New Video")}
                   <ArrowRight className="ml-4 w-8 h-8 transition-transform group-hover:translate-x-2" strokeWidth={3} />
                 </BrutalButton>
               </div>
