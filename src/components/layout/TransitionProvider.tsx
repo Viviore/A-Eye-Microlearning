@@ -133,6 +133,16 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   }, [isTransitioning, navigated, minTimeElapsed]);
 
   useEffect(() => {
+    if (isTransitioning) {
+      const fallback = setTimeout(() => {
+        setIsTransitioning(false);
+        console.warn("Transition fallback triggered. Navigation may have failed.");
+      }, 5000);
+      return () => clearTimeout(fallback);
+    }
+  }, [isTransitioning]);
+
+  useEffect(() => {
     if (!isTransitioning) return;
     
     // eslint-disable-next-line react-hooks/set-state-in-effect
