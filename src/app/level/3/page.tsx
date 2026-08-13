@@ -76,7 +76,7 @@ export default function Level3Page() {
   const [selectedTell, setSelectedTell] = useState<string | null>(null);
   const [showReveal, setShowReveal] = useState(false);
   const [showTimeoutModal, setShowTimeoutModal] = useState(false);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; penalty?: number; scoreBadge?: React.ReactNode } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; penalty?: number; scoreBadge?: React.ReactNode; forceNext?: boolean; retryButtonText?: string; } | null>(null);
   const [hoveredTell, setHoveredTell] = useState<string | null>(null);
   const [showGameOverModal, setShowGameOverModal] = useState(false);
 
@@ -604,12 +604,20 @@ export default function Level3Page() {
       </motion.div>
 
       <VerdictModalContainer isOpen={isPanelLocked || showTimeoutModal}>
-        {isPanelLocked && !showReveal && !showTimeoutModal && (
-          <>
-            <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
-              Explain Your Tell
-            </h2>
-            <div className="space-y-4 font-sans">
+        <AnimatePresence mode="wait">
+          {isPanelLocked && !showReveal && !showTimeoutModal && (
+            <motion.div
+              key="verdict-form"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+              className="p-6 md:p-8 flex flex-col"
+            >
+              <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
+                Explain Your Tell
+              </h2>
+              <div className="space-y-4 font-sans">
               <h3 className="font-bold text-xl mb-3 font-heading">
                 Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.
               </h3>
@@ -650,42 +658,59 @@ export default function Level3Page() {
                   </BrutalButton>
                 </div>
               )}
-            </div>
-          </>
-        )}
+              </div>
+            </motion.div>
+          )}
 
-        {showReveal && feedback && !showTimeoutModal && (
-          <VerdictFeedback
-            isSuccess={feedback.isSuccess}
-            title={feedback.title}
-            message={feedback.message}
-            scoreBadge={feedback.scoreBadge}
-            forceNextAction={feedback.forceNext}
-            onNext={handleNextAction}
-            onRetry={handleRetryAction}
-            retryButtonText={feedback.retryButtonText}
-            nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
-            isFinalRound={currentRoundIndex === sessionRounds.length - 1}
-          />
-        )}
+          {showReveal && feedback && !showTimeoutModal && (
+            <motion.div
+              key="verdict-feedback"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <VerdictFeedback
+                isSuccess={feedback.isSuccess}
+                title={feedback.title}
+                message={feedback.message}
+                scoreBadge={feedback.scoreBadge}
+                forceNextAction={feedback.forceNext}
+                onNext={handleNextAction}
+                onRetry={handleRetryAction}
+                retryButtonText={feedback.retryButtonText}
+                nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
+                isFinalRound={currentRoundIndex === sessionRounds.length - 1}
+              />
+            </motion.div>
+          )}
 
-        {showTimeoutModal && feedback && (
-          <VerdictFeedback
-            isSuccess={feedback.isSuccess}
-            title={feedback.title}
-            message={feedback.message}
-            onNext={handleNextAction}
-            onRetry={handleRetryAction}
-            nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
-            retryButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
-            forceNextAction={true}
-            scoreBadge={
-              <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
-                -50 Points
-              </span>
-            }
-          />
-        )}
+          {showTimeoutModal && feedback && (
+            <motion.div
+              key="verdict-timeout"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <VerdictFeedback
+                isSuccess={feedback.isSuccess}
+                title={feedback.title}
+                message={feedback.message}
+                onNext={handleNextAction}
+                onRetry={handleRetryAction}
+                nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
+                retryButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
+                forceNextAction={true}
+                scoreBadge={
+                  <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+                    -50 Points
+                  </span>
+                }
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </VerdictModalContainer>
 
       <GameOverModal

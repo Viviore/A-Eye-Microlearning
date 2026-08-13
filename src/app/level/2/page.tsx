@@ -751,13 +751,20 @@ export default function Level2Page() {
       </div>
 
 
-      {/* Verdict Modal */}
       <VerdictModalContainer
         isOpen={showVerdictModal}
       >
-        {!feedback ? (
-          <>
-            <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
+        <AnimatePresence mode="wait">
+          {!feedback ? (
+            <motion.div
+              key="verdict-form"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+              className="p-6 md:p-8 flex flex-col"
+            >
+              <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
               Final Verdict Form
             </h2>
 
@@ -876,21 +883,30 @@ export default function Level2Page() {
                 </div>
               )}
             </div>
-          </>
+          </motion.div>
         ) : (
-          <VerdictFeedback
-            isSuccess={feedback.isSuccess}
-            title={feedback.title}
-            message={feedback.message}
-            scoreBadge={feedback.scoreBadge}
-            forceNextAction={feedback.forceNext}
-            onNext={handleNextRound}
-            onRetry={handleRetryRound}
-            retryButtonText={feedback.retryButtonText}
-            nextButtonText={feedback.nextButtonText || "Next Photo"}
-            isFinalRound={currentRoundIndex === sessionRounds.length - 1}
-          />
+          <motion.div
+            key="verdict-feedback"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <VerdictFeedback
+              isSuccess={feedback.isSuccess}
+              title={feedback.title}
+              message={feedback.message}
+              scoreBadge={feedback.scoreBadge}
+              forceNextAction={feedback.forceNext}
+              onNext={handleNextRound}
+              onRetry={handleRetryRound}
+              retryButtonText={feedback.retryButtonText}
+              nextButtonText={feedback.nextButtonText || "Next Photo"}
+              isFinalRound={currentRoundIndex === sessionRounds.length - 1}
+            />
+          </motion.div>
         )}
+        </AnimatePresence>
       </VerdictModalContainer>
 
       <GameOverModal

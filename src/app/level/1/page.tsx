@@ -524,8 +524,16 @@ export default function Level1Page() {
       <VerdictModalContainer
         isOpen={showVerdictModal}
       >
-        {!feedback ? (
-          <>
+        <AnimatePresence mode="wait">
+          {!feedback ? (
+            <motion.div 
+              key="verdict-form"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+              className="p-6 md:p-8 flex flex-col"
+            >
             <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
               Final Verdict Form
             </h2>
@@ -593,19 +601,28 @@ export default function Level1Page() {
                 </BrutalButton>
               </div>
             </div>
-          </>
-        ) : (
-          <VerdictFeedback
-            isSuccess={feedback.isSuccess}
-            title={feedback.title}
-            message={feedback.message}
-            scoreBadge={feedback.scoreBadge}
-            onNext={handleNextRound}
-            onRetry={handleRetryRound}
-            nextButtonText={currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"}
-            isFinalRound={currentRoundIndex === sessionRounds.length - 1}
-          />
-        )}
+          </motion.div>
+          ) : (
+            <motion.div
+              key="verdict-feedback"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <VerdictFeedback
+                isSuccess={feedback.isSuccess}
+                title={feedback.title}
+                message={feedback.message}
+                scoreBadge={feedback.scoreBadge}
+                onNext={handleNextRound}
+                onRetry={handleRetryRound}
+                nextButtonText={currentRoundIndex === 0 ? "Start Real Cases" : "Next Round"}
+                isFinalRound={currentRoundIndex === sessionRounds.length - 1}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </VerdictModalContainer>
 
       {/* Click Animations */}
