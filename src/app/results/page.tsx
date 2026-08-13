@@ -9,6 +9,129 @@ import { ChartBarMultiple } from "@/components/charts/chart-bar-multiple";
 import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
 
+const ALL_PROFILES = [
+  {
+    id: "T1_TEXT",
+    name: "THE EXPERT FACT-CHECKER",
+    threshold: "80% - 100%",
+    desc: "Master of dismantling narrative manipulation. You spot fake stories with ease.",
+    icon: Shield,
+    color: "bg-emerald-400",
+    cognitivePrimary: "Spotting Fake Stories",
+    cognitiveSecondary: "Double-Checking Sources",
+  },
+  {
+    id: "T1_PHOTO",
+    name: "THE DETAIL INVESTIGATOR",
+    threshold: "80% - 100%",
+    desc: "Uncanny ability to spot microscopic visual anomalies in any image.",
+    icon: Target,
+    color: "bg-emerald-400",
+    cognitivePrimary: "Finding Tiny Photo Errors",
+    cognitiveSecondary: "Noticing Weird Backgrounds",
+  },
+  {
+    id: "T1_VIDEO",
+    name: "THE DEEPFAKE SPOTTER",
+    threshold: "80% - 100%",
+    desc: "Flawlessly detects deepfakes, motion inconsistencies, and audio manipulation.",
+    icon: Activity,
+    color: "bg-emerald-400",
+    cognitivePrimary: "Catching Unnatural Movement",
+    cognitiveSecondary: "Spotting Fake Voices & Faces",
+  },
+  {
+    id: "T2_TEXT",
+    name: "THE CAREFUL READER",
+    threshold: "60% - 79%",
+    desc: "Strong at cross-referencing claims and linguistic tricks, though cautious.",
+    icon: FileText,
+    color: "bg-blue-400",
+    cognitivePrimary: "Questioning Big Claims",
+    cognitiveSecondary: "Looking for Solid Proof",
+  },
+  {
+    id: "T2_PHOTO",
+    name: "THE PHOTO INSPECTOR",
+    threshold: "60% - 79%",
+    desc: "Meticulous at observing spatial and lighting inconsistencies in pictures.",
+    icon: Camera,
+    color: "bg-blue-400",
+    cognitivePrimary: "Zooming in on Images",
+    cognitiveSecondary: "Checking Shadows and Lighting",
+  },
+  {
+    id: "T2_VIDEO",
+    name: "THE VIDEO REVIEWER",
+    threshold: "60% - 79%",
+    desc: "Skilled at spotting temporal glitches and frame drops upon closer review.",
+    icon: Video,
+    color: "bg-blue-400",
+    cognitivePrimary: "Replaying Suspicious Clips",
+    cognitiveSecondary: "Watching for Glitches",
+  },
+  {
+    id: "T3_TEXT",
+    name: "THE HEADLINE SKIMMER",
+    threshold: "40% - 59%",
+    desc: "Catches obvious lies but falls for subtle narrative framing and emotional hooks.",
+    icon: AlertTriangle,
+    color: "bg-amber-400",
+    cognitivePrimary: "Reading Too Fast",
+    cognitiveSecondary: "Believing Emotional Stories",
+  },
+  {
+    id: "T3_PHOTO",
+    name: "THE QUICK GLANCER",
+    threshold: "40% - 59%",
+    desc: "Good at catching obvious AI artifacts, but misses complex visual fakes.",
+    icon: AlertTriangle,
+    color: "bg-amber-400",
+    cognitivePrimary: "Looking Only at the Main Subject",
+    cognitiveSecondary: "Missing Edited Details",
+  },
+  {
+    id: "T3_VIDEO",
+    name: "THE CASUAL WATCHER",
+    threshold: "40% - 59%",
+    desc: "Susceptible to high-quality deepfakes despite trusting your gut.",
+    icon: AlertTriangle,
+    color: "bg-amber-400",
+    cognitivePrimary: "Trusting What Looks Real",
+    cognitiveSecondary: "Missing Clever Deepfakes",
+  },
+  {
+    id: "T4_TEXT",
+    name: "THE TRUSTING READER",
+    threshold: "0% - 39%",
+    desc: "Easily manipulated by emotional or urgent text claims.",
+    icon: XCircle,
+    color: "bg-red-400",
+    cognitivePrimary: "Believing Everything Written",
+    cognitiveSecondary: "Falling for Text Scams",
+  },
+  {
+    id: "T4_PHOTO",
+    name: "THE EASY TARGET",
+    threshold: "0% - 39%",
+    desc: "Blind to obvious spatial and structural AI artifacts.",
+    icon: XCircle,
+    color: "bg-red-400",
+    cognitivePrimary: "Ignoring Bad Photoshop",
+    cognitiveSecondary: "Tricked by Fake Pictures",
+  },
+  {
+    id: "T4_VIDEO",
+    name: "THE DEEPFAKE VICTIM",
+    threshold: "0% - 39%",
+    desc: "Completely unprepared for temporal manipulation and synthetic video.",
+    icon: XCircle,
+    color: "bg-red-400",
+    cognitivePrimary: "Thinking All Videos are Real",
+    cognitiveSecondary: "Missing Robot Voices",
+  },
+];
+
 export default function ResultsDashboardPage() {
   const {
     cumulativeScore,
@@ -89,7 +212,7 @@ export default function ResultsDashboardPage() {
     }
   };
 
-  // AI Proficiency Profile calculation (Based on Accuracy since Pre/Post test was removed)
+  // AI Proficiency Profile calculation (Based on Accuracy and Best Case)
   let calibrationProfile = "THE INITIATE";
   let calibrationDesc = "Complete your case reports to establish a full calibration profile.";
   let ProfileIcon = Activity;
@@ -98,34 +221,36 @@ export default function ResultsDashboardPage() {
   let cognitiveSecondary = "Awaiting Data";
 
   if (case001Score > 0 || case002Score > 0 || case003Score > 0) {
-    if (accuracyPercent >= 80) {
-      calibrationProfile = "THE ALGORITHM ARCHITECT";
-      calibrationDesc = "You possess a master-level understanding of digital manipulation. You spot synthetic artifacts with ruthless efficiency and trust your systemic logic to separate reality from fiction.";
-      ProfileIcon = Shield;
-      profileColor = "bg-emerald-400";
-      cognitivePrimary = "Deep Pattern Recognition";
-      cognitiveSecondary = "Decisive Verification";
-    } else if (accuracyPercent >= 60) {
-      calibrationProfile = "THE DEEP ANALYST";
-      calibrationDesc = "Highly accurate but cautious. You spot the fakes, but you prefer to cross-reference multiple times rather than jumping to a verdict.";
-      ProfileIcon = Target;
-      profileColor = "bg-blue-400";
-      cognitivePrimary = "Meticulous Cross-Referencing";
-      cognitiveSecondary = "Perpetual Skepticism";
-    } else if (accuracyPercent >= 40) {
-      calibrationProfile = "THE BOLD THEORIST";
-      calibrationDesc = "You move fast and trust your gut, but often fall for advanced AI trickery. You are highly confident in your assessments, but your rapid processing misses crucial microscopic artifacts.";
-      ProfileIcon = AlertTriangle;
-      profileColor = "bg-amber-400";
-      cognitivePrimary = "Rapid Heuristic Processing";
-      cognitiveSecondary = "Over-Extrapolation";
-    } else {
-      calibrationProfile = "THE VULNERABLE INITIATE";
-      calibrationDesc = "Unsure of what is real and struggling to spot manipulations. You are currently vulnerable to synthetic media operations and need to build your foundational detection protocols.";
-      ProfileIcon = XCircle;
-      profileColor = "bg-red-400";
-      cognitivePrimary = "Surface-Level Observation";
-      cognitiveSecondary = "Baseline Trust";
+    // Determine highest scoring category
+    let bestCase = "TEXT";
+    let highestScore = case001Score;
+    
+    if (case002Score > highestScore) {
+      bestCase = "PHOTO";
+      highestScore = case002Score;
+    }
+    if (case003Score > highestScore) {
+      bestCase = "VIDEO";
+      highestScore = case003Score;
+    }
+
+    // Determine tier
+    let tier = "T4";
+    if (accuracyPercent >= 80) tier = "T1";
+    else if (accuracyPercent >= 60) tier = "T2";
+    else if (accuracyPercent >= 40) tier = "T3";
+
+    // Find the matching profile
+    const profileId = `${tier}_${bestCase}`;
+    const matchedProfile = ALL_PROFILES.find(p => p.id === profileId);
+
+    if (matchedProfile) {
+      calibrationProfile = matchedProfile.name;
+      calibrationDesc = matchedProfile.desc;
+      ProfileIcon = matchedProfile.icon;
+      profileColor = matchedProfile.color;
+      cognitivePrimary = matchedProfile.cognitivePrimary;
+      cognitiveSecondary = matchedProfile.cognitiveSecondary;
     }
   }
 
@@ -335,6 +460,76 @@ export default function ResultsDashboardPage() {
                 Spot temporal flickering & facial masks.
               </div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* ALL CALIBRATION TIERS SECTION */}
+        <motion.div variants={itemVariants} className="pt-12 pb-4">
+          <div className="flex items-center gap-3 mb-8 border-b-[4px] border-[#0F172A] pb-4">
+            <div className="p-2 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+              <Target className="w-6 h-6 text-[#0F172A]" strokeWidth={3} />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black font-heading tracking-widest uppercase text-[#0F172A]">
+              ALL CALIBRATION TIERS
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {ALL_PROFILES.map((profile, i) => {
+              const isCurrent = calibrationProfile === profile.name;
+              const Icon = profile.icon;
+              return (
+                <div key={i} className={`border-[4px] border-[#0F172A] p-6 shadow-[6px_6px_0px_0px_#0F172A] flex flex-col relative transition-all duration-300 ${isCurrent ? `${profile.color} -translate-y-2 shadow-[10px_10px_0px_0px_#0F172A] z-10` : 'bg-white hover:-translate-y-1'}`}>
+                  {isCurrent && (
+                    <div className="absolute -top-4 -right-4 bg-white border-[3px] border-[#0F172A] px-3 py-1 font-black font-heading text-sm shadow-[4px_4px_0px_0px_#0F172A] rotate-3 text-[#0F172A] z-20">
+                      YOUR TIER
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className={`p-3 border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] ${isCurrent ? 'bg-white' : profile.color}`}>
+                      <Icon className="w-6 h-6 text-[#0F172A]" strokeWidth={2.5} />
+                    </div>
+                    <div className="font-mono font-bold text-sm text-[#0F172A] bg-white border-[2px] border-[#0F172A] px-2 py-0.5 shadow-[2px_2px_0px_0px_#0F172A]">
+                      {profile.threshold}
+                    </div>
+                  </div>
+                  <h3 className={`text-xl font-black font-heading uppercase leading-tight mb-3 ${isCurrent ? 'text-white drop-shadow-[2px_2px_0_rgba(15,23,42,1)]' : 'text-[#0F172A]'}`}>
+                    {profile.name}
+                  </h3>
+                  <p className={`text-sm font-bold font-sans flex-1 mb-6 ${isCurrent ? 'text-[#0F172A]' : 'text-[#0F172A]/70'}`}>
+                    {profile.desc}
+                  </p>
+                  
+                  <div className={`mt-auto p-4 border-[3px] border-[#0F172A] ${isCurrent ? 'bg-white' : 'bg-[#FAFAFA]'}`}>
+                    <div className="text-xs font-black font-heading uppercase tracking-widest text-[#0F172A] border-b-[2px] border-[#0F172A]/20 pb-2 mb-3">
+                      COGNITIVE SUBSYSTEMS
+                    </div>
+                    
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 shrink-0 bg-[#0F172A] text-white flex items-center justify-center font-black font-heading text-xs shadow-[2px_2px_0px_0px_#FFB800] border-[1.5px] border-[#0F172A]">
+                          P1
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-bold font-mono text-[#0F172A]/70 uppercase leading-none mb-0.5">Primary Trait</div>
+                          <div className="text-sm font-black font-heading text-[#0F172A] uppercase leading-tight">{profile.cognitivePrimary}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 shrink-0 bg-white border-[1.5px] border-[#0F172A] text-[#0F172A] flex items-center justify-center font-black font-heading text-xs shadow-[2px_2px_0px_0px_#0F172A]">
+                          S2
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-bold font-mono text-[#0F172A]/70 uppercase leading-none mb-0.5">Secondary Trait</div>
+                          <div className="text-sm font-black font-heading text-[#0F172A] uppercase leading-tight">{profile.cognitiveSecondary}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
 
