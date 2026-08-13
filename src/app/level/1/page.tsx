@@ -20,6 +20,7 @@ import { VerifiedSourcesModal } from "@/components/game/VerifiedSourcesModal";
 import { VerdictModalContainer, VerdictFeedback, GameOverModal } from "@/components/game/VerdictModal";
 import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
+import { useProgressionGuard } from "@/hooks/useProgressionGuard";
 
 export type TextSegment = {
   id: string;
@@ -54,6 +55,7 @@ const TEXT_ROUNDS: TextRound[] = case001Data.TEXT_ROUNDS as TextRound[];
 const TACTIC_DESCRIPTIONS: Record<string, string> = case001Data.TACTIC_DESCRIPTIONS as Record<string, string>;
 
 export default function Level1Page() {
+  useProgressionGuard();
   const router = useRouter();
   const { startTransition, startInPlaceTransition, isTransitioning } = useAppTransition();
   const completeLevel = useGameStore((state) => state.completeLevel);

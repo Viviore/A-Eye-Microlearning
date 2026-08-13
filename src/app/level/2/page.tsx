@@ -38,6 +38,7 @@ import { DecoyWarning } from "@/components/game/DecoyWarning";
 import { DetectiveHandbook } from "@/components/game/DetectiveHandbook";
 import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
+import { useProgressionGuard } from "@/hooks/useProgressionGuard";
 
 type VisualClue = {
   id: string;
@@ -108,6 +109,7 @@ const DETECTIVE_TIPS = [
 ];
 
 export default function Level2Page() {
+  useProgressionGuard();
   const router = useRouter();
   const { startTransition, startInPlaceTransition, isTransitioning } = useAppTransition();
   const { completeLevel, cumulativeScore, addCumulativeScore, addCase002Score, resetGame, playedCase002Rounds, markCase002RoundPlayed } = useGameStore();

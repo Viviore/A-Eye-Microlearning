@@ -146,7 +146,10 @@ const ALL_PROFILES = [
   },
 ];
 
+import { useProgressionGuard } from "@/hooks/useProgressionGuard";
+
 export default function ResultsDashboardPage() {
+  useProgressionGuard();
   const {
     cumulativeScore,
     case001Score,

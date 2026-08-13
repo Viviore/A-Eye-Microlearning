@@ -18,6 +18,7 @@ import {
 import case003Data from "@/data/case003";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
+import { useProgressionGuard } from "@/hooks/useProgressionGuard";
 import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";
 import { GameOverModal, VerdictModalContainer, VerdictFeedback } from "@/components/game/VerdictModal";
 
@@ -51,6 +52,7 @@ const fadeUp = {
 };
 
 export default function Level3Page() {
+  useProgressionGuard();
   const router = useRouter();
   const { startTransition, startInPlaceTransition, isTransitioning } = useAppTransition();
   const {

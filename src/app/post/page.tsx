@@ -3,8 +3,10 @@
 import { useAppTransition } from "@/components/layout/TransitionProvider";
 import { useGameStore, type AssessmentAnswers } from "@/store/gameStore";
 import { AssessmentQuiz } from "@/components/game/AssessmentQuiz";
+import { useProgressionGuard } from "@/hooks/useProgressionGuard";
 
 export default function PostQuizPage() {
+  useProgressionGuard();
   const { startTransition } = useAppTransition();
   const { completePostAssessment } = useGameStore();
 

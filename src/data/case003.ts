@@ -31,7 +31,7 @@ const case003Data = [
     "videoA": "/videos/set1/sushi_real.mp4",
     "videoB": "/videos/set1/sushi_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Sushi doesn't react to flame"],
+    "tells": ["Sushi cooks unnaturally fast"],
     "distractorTells": [
       "Salmon dissolved like plastic",
       "Plate edge warped slightly",
