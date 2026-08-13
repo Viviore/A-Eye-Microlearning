@@ -1,5 +1,5 @@
-import case002 from '@/data/case002.json';
-import case003 from '@/data/case003.json';
+import case002 from '@/data/case002';
+import case003 from '@/data/case003';
 
 export async function preloadGameAssets(onProgress?: (progress: number) => void): Promise<void> {
   const imageUrls = case002.map((c: { imageSrc: string }) => c.imageSrc);

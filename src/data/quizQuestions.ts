@@ -25,44 +25,39 @@ export type AssessmentQuestion = SkillQuestion | ScaleQuestion;
 
 // ─── Assessment Questions (Exact content per specification) ──────────
 export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
-  // Q1 — Text Post (FAKE)
+  // Q1 — Text Post (REAL)
   {
     id: "q1",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Aunt Susan",
-    postHandle: "@SusanLovesMinions55",
+    postAuthorName: "Fact Checker",
+    postHandle: "@DailyFacts",
     postTime: "10 mins ago",
-    content:
-      "🚨🚨 URGENT GLOBAL WARNING!! 🚨🚨 — Meta is DEACTIVATING all Facebook & Instagram accounts worldwide tonight at MIDNIGHT unless you pay the $50 (USD) verification fee!! 😱💸💸 — Send this to 15 people to prove your account is active and bypass the charge! DO NOT IGNORE THIS MESSAGE 🛑🛑👎👎",
-    expected: "fake",
-  },
-
-  // Q2 — Photo (REAL)
-  {
-    id: "q2",
-    type: "image",
-    questionType: "skill",
-    postAuthorName: "Coastal Cleanup Crew",
-    postHandle: "@CoastalCleanupCrew",
-    postTime: "3 hrs ago",
-    content:
-      "Community cleanup drive this weekend, thank you to everyone who joined! 🧹🌊",
-    imageSrc: "https://images.unsplash.com/photo-1565803974275-dccd2f933cbb?q=80&w=1200&auto=format&fit=crop",
+    content: "A healthy, normal adult chicken has 2 legs.",
     expected: "real",
   },
 
-  // Q3 — Photo (FAKE)
+  // Q2 — Text Post (REAL)
+  {
+    id: "q2",
+    type: "text",
+    questionType: "skill",
+    postAuthorName: "City Info",
+    postHandle: "@CityInfo",
+    postTime: "3 hrs ago",
+    content: "Standard traffic lights have 3 colors: Red, Yellow, and Green.",
+    expected: "real",
+  },
+
+  // Q3 — Text Post (FAKE)
   {
     id: "q3",
-    type: "image",
+    type: "text",
     questionType: "skill",
-    postAuthorName: "UrbanArt Daily",
-    postHandle: "@UrbanArtDaily",
+    postAuthorName: "Trivia Master",
+    postHandle: "@TriviaM",
     postTime: "1 hr ago",
-    content:
-      "Can't believe how realistic this new statue installation looks downtown! 😳",
-    imageSrc: "/photos/quiz/assessment_q3.png",
+    content: "Did you know? Spiders belong to the insect family and only have 6 legs.",
     expected: "fake",
   },
 
@@ -71,24 +66,22 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     id: "q4",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Apple Support",
-    postHandle: "@AppleSupport",
+    postAuthorName: "Science Daily",
+    postHandle: "@ScienceDaily",
     postTime: "5 hrs ago",
-    content:
-      "iOS 17.2 is now available. This update introduces the new Journal app, improvements to the Action Button, and important bug fixes for your iPhone.",
+    content: "A single water molecule is composed of two hydrogen atoms and one oxygen atom.",
     expected: "real",
   },
 
-  // Q5 — Photo (FAKE)
+  // Q5 — Text Post (FAKE)
   {
     id: "q5",
-    type: "image",
+    type: "text",
     questionType: "skill",
-    postAuthorName: "Office Vibes",
-    postHandle: "@OfficeVibes",
+    postAuthorName: "Space Bot",
+    postHandle: "@SpaceBot",
     postTime: "45 mins ago",
-    content: "Grabbed this candid shot of my coworkers during lunch today 😄",
-    imageSrc: "/photos/quiz/assessment_q5.png",
+    content: "NASA confirmed yesterday that the Earth is actually shaped like a perfect cube.",
     expected: "fake",
   },
 

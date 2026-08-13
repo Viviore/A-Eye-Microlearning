@@ -1,4 +1,4 @@
-{
+const case001Data = {
   "TEXT_ROUNDS": [
     {
       "id": 0,
@@ -476,7 +476,7 @@
       "segments": [
         {
           "id": "9-1",
-          "text": "$1 FLIGHT ALERT! ✈️ "
+          "text": "$1 FLIGHT ALERT! âœˆï¸ "
         },
         {
           "id": "9-2",
@@ -562,6 +562,536 @@
           "text": "No reports of a data breach from the said Telecom provider."
         }
       ]
+    },
+    {
+      "id": 11,
+      "difficulty": "Medium",
+      "badgeColor": "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+      "title": "Fake Gadget Pre-order",
+      "postAuthor": "Tech Deals Daily",
+      "postHandle": "@GadgetSteals_PH",
+      "postTime": "2 hrs ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Suspicious Storefront",
+        "Artificial Urgency",
+        "Advance Fee Fraud",
+        "Too Good to Be True"
+      ],
+      "segments": [
+        {
+          "id": "11-1",
+          "text": "The highly anticipated X-Phone 15 Pro is finally here! "
+        },
+        {
+          "id": "11-2",
+          "text": "We secured 50 units straight from the factory at 60% off the retail price! ",
+          "isClue": true,
+          "explanation": "Brand new flagship phones are never sold at a 60% discount by third-party sellers.",
+          "tactic": "Too Good to Be True"
+        },
+        {
+          "id": "11-3",
+          "text": "Pre-order now to reserve yours before they sell out tonight. ",
+          "isDecoy": true,
+          "explanation": "Pre-orders do sell out, but this urgency is artificial given the impossible price."
+        },
+        {
+          "id": "11-4",
+          "text": "Secure your slot by paying a $100 reservation fee to our Gcash: 09123456789. ",
+          "isClue": true,
+          "explanation": "Legitimate electronics retailers don't ask for reservation fees via personal mobile wallets.",
+          "tactic": "Advance Fee Fraud"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Official Tech Brand",
+          "text": "\"The X-Phone 15 Pro will be available exclusively through our official website and authorized retail partners.\""
+        },
+        {
+          "name": "Consumer Watchdog",
+          "text": "Mobile wallet payments for high-end electronics 'reservations' are a common scam tactic."
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "difficulty": "Medium",
+      "badgeColor": "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+      "title": "Miracle Weight Loss Tea",
+      "postAuthor": "Slim Life Organics",
+      "postHandle": "@SlimLife_Ph",
+      "postTime": "14 hrs ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Unregistered Product",
+        "Fabricated Quote",
+        "Artificial Urgency",
+        "Suspicious Storefront"
+      ],
+      "segments": [
+        {
+          "id": "12-1",
+          "text": "Lose 10kg in just 7 days without diet or exercise! "
+        },
+        {
+          "id": "12-2",
+          "text": "This traditional detox tea is FDA approved and highly recommended by top doctors. ",
+          "isClue": true,
+          "explanation": "Checking the FDA verification portal shows zero records for this brand. It is unregistered.",
+          "tactic": "Unregistered Product"
+        },
+        {
+          "id": "12-3",
+          "text": "Dr. Santos says: 'I prescribe this to all my patients, it's a medical breakthrough!' ",
+          "isClue": true,
+          "explanation": "Dr. Santos has publicly denied endorsing this product. The quote is completely invented.",
+          "tactic": "Fabricated Quote"
+        },
+        {
+          "id": "12-4",
+          "text": "Order now, sale ends in 3 hours! ",
+          "isDecoy": true,
+          "explanation": "Sales do end, but this is artificial urgency for an illegal product."
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "FDA Database",
+          "text": "0 results found for 'Slim Life Organics Detox Tea'. Product is not registered."
+        },
+        {
+          "name": "Dr. Santos Official Page",
+          "text": "\"I do not endorse any weight loss teas. Scammers are illegally using my name and photo.\""
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "difficulty": "Hard",
+      "badgeColor": "bg-[#EF4444] text-[#FAFAFA] border-[#EF4444]",
+      "title": "Fake Police Warrant Warning",
+      "postAuthor": "National Police Cybercrime Unit",
+      "postHandle": "@CyberPolice_Official",
+      "postTime": "1 hr ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Impersonation",
+        "Phishing Link",
+        "Emotional Manipulation",
+        "Artificial Urgency"
+      ],
+      "segments": [
+        {
+          "id": "13-1",
+          "text": "FINAL NOTICE: An arrest warrant has been issued under your IP address for illegal activities. "
+        },
+        {
+          "id": "13-2",
+          "text": "Law enforcement is monitoring this device. ",
+          "isDecoy": true,
+          "explanation": "Law enforcement does monitor illegal activities, making the threat sound scary and legitimate."
+        },
+        {
+          "id": "13-3",
+          "text": "You will be detained within 24 hours unless you immediately clear your record. ",
+          "isClue": true,
+          "explanation": "Police do not issue public threats of arrest via social media posts to extort immediate compliance.",
+          "tactic": "Emotional Manipulation"
+        },
+        {
+          "id": "13-4",
+          "text": "Click here to pay the settlement fine and cancel the warrant: police-fine-payment-portal.com",
+          "isClue": true,
+          "explanation": "Law enforcement agencies do not use unofficial '.com' domains to collect 'settlement fines'.",
+          "tactic": "Phishing Link"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Official Police Statement",
+          "text": "\"We do not send arrest warrants via email or social media, nor do we demand instant payment to 'cancel' them.\""
+        },
+        {
+          "name": "Domain Registry Check",
+          "text": "Domain 'police-fine-payment-portal.com' was registered in a foreign jurisdiction yesterday."
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "difficulty": "Medium",
+      "badgeColor": "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+      "title": "Romance Military Scam",
+      "postAuthor": "Capt. James Walker",
+      "postHandle": "@CaptJames_USMC",
+      "postTime": "6 hrs ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Vague Attribution",
+        "Advance Fee Fraud",
+        "Emotional Manipulation",
+        "Impersonation"
+      ],
+      "segments": [
+        {
+          "id": "14-1",
+          "text": "Currently deployed on a secret peacekeeping mission. Missing home so much. 💔 "
+        },
+        {
+          "id": "14-2",
+          "text": "I met someone special online and I want to send her a care package with my savings and medals. ",
+          "isDecoy": true,
+          "explanation": "Soldiers do send packages, but the context here leads to a classic scam."
+        },
+        {
+          "id": "14-3",
+          "text": "But the military won't let me ship it unless she pays the diplomatic courier fee of $500. ",
+          "isClue": true,
+          "explanation": "There is no such thing as a 'diplomatic courier fee' required by the military to send personal packages.",
+          "tactic": "Advance Fee Fraud"
+        },
+        {
+          "id": "14-4",
+          "text": "If she doesn't pay it today, the package will be confiscated. Please pray for us! ",
+          "isClue": true,
+          "explanation": "Scammers use time limits and emotional pleas to rush the victim into paying.",
+          "tactic": "Emotional Manipulation"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Military Advisory",
+          "text": "\"Military personnel do not need anyone to pay 'diplomatic courier fees' to go on leave or send packages. This is a scam.\""
+        },
+        {
+          "name": "Reverse Image Search",
+          "text": "The profile photo belongs to a real soldier whose photos have been repeatedly stolen by scammers."
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "difficulty": "Hard",
+      "badgeColor": "bg-[#EF4444] text-[#FAFAFA] border-[#EF4444]",
+      "title": "Fake Free Pet Adoption",
+      "postAuthor": "Golden Retriever Rescue PH",
+      "postHandle": "@GoldenRescue_PH",
+      "postTime": "3 hrs ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Too Good to Be True",
+        "Advance Fee Fraud",
+        "Emotional Manipulation",
+        "Vague Attribution"
+      ],
+      "segments": [
+        {
+          "id": "15-1",
+          "text": "We have 5 purebred Golden Retriever puppies left that need loving homes ASAP! 🐶 "
+        },
+        {
+          "id": "15-2",
+          "text": "Their previous owner passed away and we cannot afford to feed them. ",
+          "isClue": true,
+          "explanation": "Scammers often invent tragic backstories to manipulate victims into acting quickly out of pity.",
+          "tactic": "Emotional Manipulation"
+        },
+        {
+          "id": "15-3",
+          "text": "Adoption is 100% FREE! We just want them to be loved. ",
+          "isDecoy": true,
+          "explanation": "Legitimate rescues usually charge adoption fees to cover medical costs; completely 'free' purebreds are highly suspect."
+        },
+        {
+          "id": "15-4",
+          "text": "You only need to cover the $60 pet transport crate fee via Western Union before we ship them to you. ",
+          "isClue": true,
+          "explanation": "Asking for shipping or crate fees via untraceable wire transfers for 'free' pets is a hallmark advance-fee fraud.",
+          "tactic": "Advance Fee Fraud"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Animal Welfare Alert",
+          "text": "\"Beware of free pet offers that require upfront shipping or crate fees via wire transfer or mobile wallets.\""
+        },
+        {
+          "name": "Reverse Image Search",
+          "text": "The photo of the puppies is a stock image from a pet food blog."
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "difficulty": "Hard",
+      "badgeColor": "bg-[#EF4444] text-[#FAFAFA] border-[#EF4444]",
+      "title": "Unofficial Crypto Airdrop",
+      "postAuthor": "Ethereum Foundation Updates",
+      "postHandle": "@ETH_Foundation_Announce",
+      "postTime": "10 mins ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Impersonation",
+        "Phishing Link",
+        "Artificial Urgency",
+        "Too Good to Be True"
+      ],
+      "segments": [
+        {
+          "id": "16-1",
+          "text": "To celebrate our latest network upgrade, we are doing a massive 10,000 ETH airdrop! "
+        },
+        {
+          "id": "16-2",
+          "text": "Send anywhere from 0.5 to 5 ETH to the address below, and we will send double the amount back instantly! ",
+          "isClue": true,
+          "explanation": "No legitimate organization runs 'send us money and we'll double it' promotions. It is a mathematical impossibility.",
+          "tactic": "Too Good to Be True"
+        },
+        {
+          "id": "16-3",
+          "text": "Only 1,500 ETH left in the pool. Hurry before it runs out! ",
+          "isDecoy": true,
+          "explanation": "Airdrops do have limits, but here it's used to rush the victim into sending funds."
+        },
+        {
+          "id": "16-4",
+          "text": "Verify your wallet and claim here: eth-foundation-airdrop-bonus.network",
+          "isClue": true,
+          "explanation": "The link directs to a fake domain meant to steal private keys, not the official ethereum.org.",
+          "tactic": "Phishing Link"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Official Crypto Exchange",
+          "text": "\"Any promotion asking you to send crypto in order to receive more back is definitively a scam.\""
+        },
+        {
+          "name": "Domain Authority",
+          "text": "Official announcements only happen on ethereum.org. This alternative network domain is malicious."
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "difficulty": "Medium",
+      "badgeColor": "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+      "title": "Counterfeit Designer Goods",
+      "postAuthor": "Luxury Outlet Finds",
+      "postHandle": "@LuxuryBags_Sale",
+      "postTime": "5 hrs ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Suspicious Storefront",
+        "Too Good to Be True",
+        "Unverified Claim",
+        "Artificial Urgency"
+      ],
+      "segments": [
+        {
+          "id": "17-1",
+          "text": "Massive Warehouse Clearance Sale! Authentic designer bags up to 90% off! "
+        },
+        {
+          "id": "17-2",
+          "text": "Get the latest Parisian tote for only $150 (Retail: $1,500). ",
+          "isClue": true,
+          "explanation": "Authentic luxury brands do not discount their flagship products by 90% online.",
+          "tactic": "Too Good to Be True"
+        },
+        {
+          "id": "17-3",
+          "text": "100% genuine and comes with authenticity cards and original receipts. ",
+          "isDecoy": true,
+          "explanation": "Counterfeiters frequently fake authenticity cards and receipts to fool buyers."
+        },
+        {
+          "id": "17-4",
+          "text": "Shop now at our pop-up store: luxury-clearance-outlet-24.vip",
+          "isClue": true,
+          "explanation": "Luxury brands do not use cheap, unverified domains like '.vip' to sell clearance items.",
+          "tactic": "Suspicious Storefront"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Brand Protection Agency",
+          "text": "\"We do not operate online clearance outlets. If the price is too good to be true, it is a counterfeit.\""
+        },
+        {
+          "name": "Scam Advisor",
+          "text": "The website 'luxury-clearance-outlet-24.vip' has a trust score of 1/100 and numerous complaints."
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "difficulty": "Medium",
+      "badgeColor": "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+      "title": "Fake Power Outage Notice",
+      "postAuthor": "National Grid Advisories",
+      "postHandle": "@GridAlerts_Official",
+      "postTime": "45 mins ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Fabricated Memo",
+        "Impersonation",
+        "Unverified Claim",
+        "Artificial Urgency"
+      ],
+      "segments": [
+        {
+          "id": "18-1",
+          "text": "NOTICE OF NATIONWIDE BLACKOUT: Due to a massive grid failure, "
+        },
+        {
+          "id": "18-2",
+          "text": "the entire country will experience a total power outage starting at 6:00 PM tonight. ",
+          "isClue": true,
+          "explanation": "No legitimate news outlet or government energy department has corroborated this massive claim.",
+          "tactic": "Unverified Claim"
+        },
+        {
+          "id": "18-3",
+          "text": "Prepare your flashlights and stock up on food immediately. ",
+          "isDecoy": true,
+          "explanation": "It is good practice to be prepared, which makes the panic-inducing message seem helpful."
+        },
+        {
+          "id": "18-4",
+          "text": "As per Department of Energy Memo Order #99-X4. Share to warn your families!",
+          "isClue": true,
+          "explanation": "Checking the Department of Energy records reveals Memo #99-X4 does not exist.",
+          "tactic": "Fabricated Memo"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Department of Energy",
+          "text": "\"There is no impending nationwide blackout. The grid is operating at normal capacity. Memo #99-X4 is fake.\""
+        },
+        {
+          "name": "Major News Outlets",
+          "text": "Zero reports of any nationwide grid failure from credible journalists."
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "difficulty": "Hard",
+      "badgeColor": "bg-[#EF4444] text-[#FAFAFA] border-[#EF4444]",
+      "title": "Lottery Winner Donation Scam",
+      "postAuthor": "John Powerball Winner",
+      "postHandle": "@John_GivesBack",
+      "postTime": "12 hrs ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Too Good to Be True",
+        "Advance Fee Fraud",
+        "Vague Attribution",
+        "Impersonation"
+      ],
+      "segments": [
+        {
+          "id": "19-1",
+          "text": "Hi, I recently won the $500 Million Powerball jackpot! "
+        },
+        {
+          "id": "19-2",
+          "text": "I've decided to donate $50,000 to the first 100 people who reply to this post! ",
+          "isClue": true,
+          "explanation": "Strangers on the internet do not randomly give away $5 million just for replying to a post.",
+          "tactic": "Too Good to Be True"
+        },
+        {
+          "id": "19-3",
+          "text": "My lawyer says it's for tax write-off purposes. ",
+          "isDecoy": true,
+          "explanation": "Using pseudo-legal terms like 'tax write-off' makes the scam sound credible to victims."
+        },
+        {
+          "id": "19-4",
+          "text": "Just DM my financial manager 'Agent Smith' and pay the $150 state clearance fee to get your $50,000.",
+          "isClue": true,
+          "explanation": "Asking for an upfront 'clearance fee' to receive a massive cash prize is classic advance-fee fraud.",
+          "tactic": "Advance Fee Fraud"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Lottery Commission",
+          "text": "\"Lottery winners do not conduct random giveaways on social media. Any request for a clearance fee is a scam.\""
+        },
+        {
+          "name": "News Verification",
+          "text": "The real jackpot winner has requested anonymity and has no active social media accounts."
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "difficulty": "Medium",
+      "badgeColor": "bg-[#FFB800] text-[#0F172A] border-[#0F172A]",
+      "title": "Fake Celebrity Passing",
+      "postAuthor": "Breaking News Network",
+      "postHandle": "@Breaking_UpdatesNow",
+      "postTime": "20 mins ago",
+      "correctVerdict": "Fake",
+      "cluesNeeded": 2,
+      "tacticOptions": [
+        "Emotional Manipulation",
+        "Phishing Link",
+        "Unverified Claim",
+        "Impersonation"
+      ],
+      "segments": [
+        {
+          "id": "20-1",
+          "text": "RIP to a legend. 😭 World-famous actor Jackie Chan has just passed away from a sudden heart attack. "
+        },
+        {
+          "id": "20-2",
+          "text": "Our hearts are broken. He was a true martial arts icon. ",
+          "isDecoy": true,
+          "explanation": "He is a famous icon, making the emotional impact of the news very high and triggering sharing."
+        },
+        {
+          "id": "20-3",
+          "text": "His family has just released a heartbreaking final video. ",
+          "isClue": true,
+          "explanation": "No reputable news outlets have confirmed this massive story. It is a completely unverified claim.",
+          "tactic": "Unverified Claim"
+        },
+        {
+          "id": "20-4",
+          "text": "Watch the unedited footage of his final moments here: celebrity-news-exclusive-video.tv",
+          "isClue": true,
+          "explanation": "The link does not go to a news site, but to a malicious domain designed to steal your login credentials.",
+          "tactic": "Phishing Link"
+        }
+      ],
+      "verifiedSources": [
+        {
+          "name": "Actor's Official Agent",
+          "text": "\"Jackie Chan is alive and well, currently filming his next project. Please do not fall for these death hoaxes.\""
+        },
+        {
+          "name": "Major News Networks",
+          "text": "Zero coverage of this alleged passing on CNN, BBC, or Reuters."
+        }
+      ]
     }
   ],
   "TACTIC_DESCRIPTIONS": {
@@ -580,3 +1110,5 @@
     "Emotional Manipulation": "Exploiting fear, pity, or tragedy to bypass critical thinking."
   }
 }
+
+export default case001Data;

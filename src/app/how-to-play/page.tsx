@@ -1,13 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, MousePointerClick, BrainCircuit, ShieldCheck, Play, NotebookPen } from "lucide-react";
+import { Search, MousePointerClick, BrainCircuit, ShieldCheck, Play, NotebookPen, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { BrutalButton } from "@/components/ui/brutal-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
 import { Badge } from "@/components/ui/badge";
 import { LandingNavbar } from "@/components/layout/LandingNavbar";
+import { useGameStore } from "@/store/gameStore";
 
 const steps = [
   {
@@ -34,16 +35,27 @@ const steps = [
     description: "Rate your certainty. Top investigators know when they need more data.",
     colSpan: "md:col-span-2 lg:col-span-3",
   },
+  {
+    icon: ShieldAlert,
+    title: "Zero Hints Provided",
+    description: "Real-world misinformation doesn't come with hints. To train true digital resilience, you are completely on your own. Rely entirely on your observation.",
+    colSpan: "md:col-span-4 lg:col-span-5",
+    isWarning: true,
+  }
 ];
 
 export default function HowToPlay() {
   const { startTransition } = useAppTransition();
+  const { resetGame } = useGameStore();
 
   return (
     <>
       <LandingNavbar 
         ctaLabel="Init Assessment" 
-        onCtaClick={() => startTransition("/pre", { variant: 'init' })} 
+        onCtaClick={() => {
+          resetGame();
+          startTransition("/pre", { variant: 'init' });
+        }} 
       />
       <main className="min-h-[100dvh] relative overflow-hidden font-sans py-16 md:py-24 pt-28 md:pt-32">
         <div className="max-w-[1400px] mx-auto px-6 relative z-10">
@@ -95,24 +107,24 @@ export default function HowToPlay() {
               transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className={`${step.colSpan} flex`}
             >
-              <Card className="bg-white w-full border-[4px] border-[#0F172A] rounded-none p-6 md:p-8 flex flex-col justify-between group hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] shadow-[8px_8px_0px_0px_#0F172A] transition-all duration-300">
+              <Card className={`w-full border-[4px] border-[#0F172A] rounded-none p-6 md:p-8 flex flex-col justify-between group hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] shadow-[8px_8px_0px_0px_#0F172A] transition-all duration-300 ${(step as any).isWarning ? 'bg-[#EF4444]' : 'bg-white'}`}>
                 <CardContent className="p-0 flex flex-col flex-grow">
                   <div className="flex justify-between items-start mb-12">
                     <div 
-                      className="p-4 bg-white border-[4px] border-[#0F172A] text-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] group-hover:bg-[#FFB800] transition-colors duration-300"
+                      className={`p-4 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] transition-colors duration-300 ${(step as any).isWarning ? 'bg-white text-[#EF4444] group-hover:bg-[#0F172A] group-hover:text-white' : 'bg-white text-[#0F172A] group-hover:bg-[#FFB800]'}`}
                     >
                       <step.icon className="w-8 h-8" strokeWidth={2.5} />
                     </div>
-                    <div className="font-heading text-2xl text-[#0F172A] font-black bg-[#FFB800] border-[4px] border-[#0F172A] px-3 shadow-[4px_4px_0px_0px_#0F172A] group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform duration-300">
+                    <div className={`font-heading text-2xl font-black border-[4px] border-[#0F172A] px-3 shadow-[4px_4px_0px_0px_#0F172A] group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform duration-300 ${(step as any).isWarning ? 'bg-white text-[#EF4444]' : 'bg-[#FFB800] text-[#0F172A]'}`}>
                       0{index + 1}
                     </div>
                   </div>
 
                   <div className="mt-auto">
-                    <h3 className="text-3xl lg:text-4xl font-black text-[#0F172A] mb-4 font-heading uppercase tracking-wide group-hover:text-[#FFB800] transition-colors duration-300 drop-shadow-[1px_1px_0_#0F172A]">
+                    <h3 className={`text-3xl lg:text-4xl font-black mb-4 font-heading uppercase tracking-wide transition-colors duration-300 drop-shadow-[1px_1px_0_#0F172A] ${(step as any).isWarning ? 'text-white group-hover:text-[#0F172A]' : 'text-[#0F172A] group-hover:text-[#FFB800]'}`}>
                       {step.title}
                     </h3>
-                    <p className="text-[#0F172A]/80 leading-relaxed text-lg max-w-[40ch] font-sans font-bold">
+                    <p className={`leading-relaxed text-lg max-w-[40ch] md:max-w-[60ch] font-sans font-bold ${(step as any).isWarning ? 'text-white/95' : 'text-[#0F172A]/80'}`}>
                       {step.description}
                     </p>
                   </div>
@@ -132,6 +144,7 @@ export default function HowToPlay() {
           <div className="w-full sm:w-auto">
             <BrutalButton 
               onClick={() => {
+                resetGame();
                 startTransition("/pre", { variant: 'init' });
               }}
               size="xl" 

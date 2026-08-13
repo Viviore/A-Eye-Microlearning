@@ -15,7 +15,7 @@ import {
   RotateCcw,
   ArrowRight
 } from "lucide-react";
-import case003Data from "@/data/case003.json";
+import case003Data from "@/data/case003";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
 import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";

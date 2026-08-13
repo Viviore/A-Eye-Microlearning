@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Flag, FileText, CheckCircle2, XCircle, User, ShieldAlert, ArrowRight, RotateCcw, Trophy, FileCheck, MessageCircle, Repeat2, Heart, Eye, Share } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppTransition } from "@/components/layout/TransitionProvider";
-import case001Data from "@/data/case001.json";
+import case001Data from "@/data/case001";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { PostAuthorHeader } from "@/components/game/PostAuthorHeader";
 import { SocialEngagementFooter } from "@/components/game/SocialEngagementFooter";
@@ -412,7 +412,7 @@ export default function Level1Page() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-8 mx-6 md:mx-8 mb-6 md:mb-8 p-4 bg-[#FF3366] border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] flex items-start gap-3 text-white font-bold font-sans relative z-10"
+                className="mt-8 mb-6 md:mb-8 px-6 md:px-8 py-4 bg-[#FF3366] border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_#0F172A] flex items-start gap-3 text-white font-bold font-sans relative z-10"
               >
                 <ShieldAlert className="w-6 h-6 text-white shrink-0 mt-0.5" strokeWidth={3} />
                 <p className="text-sm md:text-base"><strong className="font-heading uppercase tracking-widest text-lg block mb-1">Careful!</strong> You flagged something that looks suspicious but is actually true. That&apos;s a decoy. Focus on the core claims.</p>
@@ -430,7 +430,7 @@ export default function Level1Page() {
           
           <ObjectivePanel>
             Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
-            Find at least <span className="bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] ml-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong></span> to proceed.
+            Find at least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] mx-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong></span> to proceed.
           </ObjectivePanel>
 
           <EvidenceBoard
@@ -511,14 +511,15 @@ export default function Level1Page() {
             </div>
           )}
 
-          <VerifiedSourcesModal
-            isOpen={sourceCheckOpen && !isTourActive}
-            onClose={() => setSourceCheckOpen(false)}
-            sources={currentRound.verifiedSources}
-          />
         </div>
       </div>
     </div>
+      
+      <VerifiedSourcesModal
+        isOpen={sourceCheckOpen && !isTourActive}
+        onClose={() => setSourceCheckOpen(false)}
+        sources={currentRound.verifiedSources}
+      />
       
       {/* Verdict Modal */}
       <VerdictModalContainer
