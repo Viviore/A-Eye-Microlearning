@@ -154,7 +154,7 @@ export default function Level1Page() {
         disableActiveInteraction: true,
         onHighlightStarted: (element) => {
           if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "center" });
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         },
         onPopoverRender: (popover, { state }) => {
@@ -189,15 +189,17 @@ export default function Level1Page() {
           setIsTourActive(false);
           setSourceCheckOpen(false);
         },
+        popoverOffset: 20,
+        stagePadding: 8,
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome recruit! I'm your A-Eye Agent. Your job is to review suspicious social media posts." } },
-          { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.", side: "bottom" } },
-          { element: '#btn-source-check', popover: { title: 'A-Eye Agent', description: "Always gather facts first! We'll click 'Open Source Check' to see verified information.", side: "left" } },
-          { element: '#tutorial-source-inline', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "left" } },
-          { element: '#segment-t-2', popover: { title: 'A-Eye Agent', description: "Look at the highlighted sentence. It contradicts our verified facts! You'll need to flag such clues.", side: "bottom" } },
-          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board. Watch out for decoys!", side: "left" } },
-          { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Each round starts at 100 points. Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points.", side: "bottom" } },
-          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report.", side: "left" } },
+          { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Read the post on the left. It looks suspicious, but we shouldn't jump to conclusions.", side: "bottom", align: "center" } },
+          { element: '#btn-source-check', popover: { title: 'A-Eye Agent', description: "Always gather facts first! We'll click 'Open Source Check' to see verified information.", side: "bottom", align: "center" } },
+          { element: '#tutorial-source-inline', popover: { title: 'A-Eye Agent', description: "Read the verified sources carefully and cross-check them against the claims made in the post.", side: "bottom", align: "center" } },
+          { element: '#segment-t-2', popover: { title: 'A-Eye Agent', description: "Look at the highlighted sentence. It contradicts our verified facts! You'll need to flag such clues.", side: "bottom", align: "center" } },
+          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board. Watch out for decoys!", side: "bottom", align: "center" } },
+          { element: '#tutorial-score', popover: { title: 'A-Eye Agent', description: "Each round starts at 100 points. Flagging a decoy costs -10 points, and filing a wrong verdict costs -25 points.", side: "bottom", align: "center" } },
+          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report.", side: "bottom", align: "center" } },
           { popover: { title: 'A-Eye Agent', description: "Now you do it yourself! Find the evidence, identify the tactic, and submit your verdict. Good luck!", doneBtnText: "Start Playing" } }
         ]
       });

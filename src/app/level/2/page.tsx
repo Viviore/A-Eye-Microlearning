@@ -245,7 +245,7 @@ export default function Level2Page() {
         disableActiveInteraction: true,
         onHighlightStarted: (element) => {
           if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "center" });
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         },
         onPopoverRender: (popover, { state }) => {
@@ -282,15 +282,17 @@ export default function Level2Page() {
         onDestroyed: () => {
           setIsTourActive(false);
         },
+        popoverOffset: 20,
+        stagePadding: 8,
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome to Case 002! A viral photo claims to show an official receiving a secret cash payout." } },
-          { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Is this a real scandal, or an AI-generated smear campaign? We need to look closely to find out.", side: "bottom" } },
-          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "When analyzing photos, we use the Magnifier Tool. You will hover your mouse over the photo to activate it.", side: "bottom" } },
-          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "Look for AI mistakes like double thumbs or warped backgrounds. When you spot one, you will click it to flag it as evidence.", side: "bottom" } },
-          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board on the right.", side: "left" } },
-          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "Notice the timer above? Real cases only give you 60 seconds! Running out of time costs -50 points.", side: "bottom" } },
-          { element: '#tutorial-tool', popover: { title: 'A-Eye Agent', description: "Need more time? You can use the +30s tool, but it costs -80 points! Only use it if you really have to.", side: "bottom" } },
-          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report.", side: "left" } },
+          { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Is this a real scandal, or an AI-generated smear campaign? We need to look closely to find out.", side: "bottom", align: "center" } },
+          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "When analyzing photos, we use the Magnifier Tool. You will hover your mouse over the photo to activate it.", side: "bottom", align: "center" } },
+          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "Look for AI mistakes like double thumbs or warped backgrounds. When you spot one, you will click it to flag it as evidence.", side: "bottom", align: "center" } },
+          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board on the right.", side: "bottom", align: "center" } },
+          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "Notice the timer above? Real cases only give you 60 seconds! Running out of time costs -50 points.", side: "bottom", align: "center" } },
+          { element: '#tutorial-tool', popover: { title: 'A-Eye Agent', description: "Need more time? You can use the +30s tool, but it costs -80 points! Only use it if you really have to.", side: "bottom", align: "center" } },
+          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report.", side: "bottom", align: "center" } },
           { popover: { title: 'A-Eye Agent', description: "Now you do it yourself! Find the evidence, identify the tactic, and submit your verdict. Good luck!", doneBtnText: "Start Playing" } }
         ]
       });

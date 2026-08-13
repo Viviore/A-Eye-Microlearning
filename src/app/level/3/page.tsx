@@ -355,7 +355,7 @@ export default function Level3Page() {
         disableActiveInteraction: true,
         onHighlightStarted: (element) => {
           if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "center" });
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         },
         onPopoverRender: (popover, { state }) => {
@@ -384,11 +384,12 @@ export default function Level3Page() {
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
         },
+        popoverOffset: 20,
+        stagePadding: 8,
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome to Case 003! You need to figure out which video is AI generated." } },
-          { element: '#tutorial-videos', popover: { title: 'A-Eye Agent', description: "Watch both panels carefully. They play simultaneously." } },
-
-          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "You have 60 seconds per round. Running out of time means a -50 penalty and a new round." } },
+          { element: '#tutorial-videos', popover: { title: 'A-Eye Agent', description: "Watch both panels carefully. They play simultaneously.", side: "bottom", align: "center" } },
+          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "You have 60 seconds per round. Running out of time means a -50 penalty and a new round.", side: "bottom", align: "center" } },
           { popover: { title: 'A-Eye Agent', description: "Click the panel you think is AI. After confirming, you must explain WHY. Good luck!", doneBtnText: "Start Playing" } }
         ],
         onDestroyed: () => {
