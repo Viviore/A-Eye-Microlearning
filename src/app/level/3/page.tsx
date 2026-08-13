@@ -416,7 +416,7 @@ export default function Level3Page() {
               {currentRound.isTutorial ? (
                 <div className="text-lg font-black font-heading text-[#0F172A]/30 uppercase tracking-wider">Paused</div>
               ) : (
-                <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+                <div className="text-2xl md:text-3xl font-black font-heading">{timeLeft}s</div>
               )}
             </div>
           </CaseHeader>
@@ -454,13 +454,13 @@ export default function Level3Page() {
                     <div className={`absolute inset-0 flex items-center justify-center bg-black/70 z-20`}>
                       {currentRound.correctPanel === "A" ? (
                         <div className="bg-[#FFB800] text-[#0F172A] px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg]">
-                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                          <span className="text-xl md:text-5xl font-black font-heading uppercase tracking-widest">
                             AI GENERATED
                           </span>
                         </div>
                       ) : (
                         <div className="bg-[#10B981] text-white px-4 md:px-6 py-2 border-[4px] border-[#0F172A] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] rotate-[2deg]">
-                          <span className="text-3xl md:text-5xl font-black font-heading uppercase tracking-widest">
+                          <span className="text-xl md:text-5xl font-black font-heading uppercase tracking-widest">
                             AUTHENTIC
                           </span>
                         </div>

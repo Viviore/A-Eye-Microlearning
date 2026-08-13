@@ -489,13 +489,13 @@ export default function Level2Page() {
                 {currentRound.isTutorial ? (
                   <div className="text-lg font-black font-heading text-[#0F172A]/30 uppercase tracking-wider">Paused</div>
                 ) : (
-                  <div className="text-3xl font-black font-heading">{timeLeft}s</div>
+                  <div className="text-2xl md:text-3xl font-black font-heading">{timeLeft}s</div>
                 )}
               </div>
             </PostAuthorHeader>
 
 
-            <p className="text-xl md:text-[22px] font-sans font-bold leading-[2.2] text-[#0F172A] mb-6">
+            <p className="text-base md:text-[22px] font-sans font-bold leading-[2.2] text-[#0F172A] mb-6">
               {currentRound.postText}
             </p>
 

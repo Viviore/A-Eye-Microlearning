@@ -29,8 +29,8 @@ export function CaseHeader({
 }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
-      <div className="flex items-center gap-3">
-        <div className="px-3 py-1.5 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-xs uppercase tracking-widest flex items-center gap-2">
+      <div className="flex flex-row items-center flex-wrap gap-2 md:gap-3">
+        <div className="px-2 md:px-3 py-1 md:py-1.5 border-2 md:border-[4px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] md:shadow-[4px_4px_0px_0px_#0F172A] bg-[#FFB800] text-[#0F172A] font-bold font-mono text-[10px] md:text-xs uppercase tracking-wide md:tracking-widest flex items-center gap-1 md:gap-2">
           {icon === "fileText" ? (
             <FileText className="w-4 h-4 text-[#0F172A]" />
           ) : (
@@ -40,7 +40,7 @@ export function CaseHeader({
         </div>
         
         <span
-          className={`px-3 py-1 font-mono text-xs font-bold uppercase border-[4px] shadow-[4px_4px_0px_0px_#0F172A] border-[#0F172A] ${
+          className={`px-2 md:px-3 py-1 font-mono text-[10px] md:text-xs font-bold uppercase border-2 md:border-[4px] shadow-[2px_2px_0px_0px_#0F172A] md:shadow-[4px_4px_0px_0px_#0F172A] border-[#0F172A] ${
             isTutorial ? "bg-white text-[#0F172A]" : "bg-[#FFB800] text-[#0F172A]"
           }`}
         >
@@ -55,7 +55,7 @@ export function CaseHeader({
         
         <div
           id="tutorial-score"
-          className="font-heading font-black text-xl md:text-2xl text-[#0F172A] uppercase tracking-wider flex items-center gap-2 bg-white px-4 py-1 border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] relative"
+          className="font-heading font-black text-base md:text-2xl text-[#0F172A] uppercase tracking-wide md:tracking-wider flex items-center gap-1 md:gap-2 bg-white px-2 md:px-4 py-1 border-2 md:border-[4px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] md:shadow-[4px_4px_0px_0px_#0F172A] relative"
         >
           <span>Score: </span>
           <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">

@@ -326,7 +326,7 @@ export default function Level1Page() {
                   </motion.span>
                 )}
                 
-                <div className="text-xl md:text-[22px] font-sans font-bold leading-[2.2] text-[#0F172A]">
+                <div className="text-base md:text-[22px] font-sans font-bold leading-[2.2] text-[#0F172A]">
               {currentRound.segments.map((segment) => {
                 const isFlagged = flaggedIds.has(segment.id);
                 return (

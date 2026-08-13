@@ -27,7 +27,7 @@ export function PixelTransition({ isActive }: PixelTransitionProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.1, delay: p.delay } }}
               exit={{ opacity: 0, transition: { duration: 0.15, delay: p.delay } }}
-              className="w-full h-full bg-[#0F172A]"
+              className="w-full h-full bg-[#0F172A] scale-[1.05]"
             />
           ))}
         </div>
