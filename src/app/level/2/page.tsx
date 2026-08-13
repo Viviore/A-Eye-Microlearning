@@ -204,9 +204,11 @@ export default function Level2Page() {
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
-        message: "You ran out of time. AI misinformation spreads rapidly in seconds. Proceeding to the next round.",
+        message: currentRoundIndex === sessionRounds.length - 1 
+          ? "You ran out of time. Proceeding to case summary."
+          : "You ran out of time. AI misinformation spreads rapidly in seconds. Proceeding to the next round.",
         forceNext: true,
-        nextButtonText: "Proceed to Next Photo",
+        nextButtonText: currentRoundIndex === sessionRounds.length - 1 ? "Finish Case" : "Proceed to Next Photo",
         scoreBadge: (
           <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
             -50 Points

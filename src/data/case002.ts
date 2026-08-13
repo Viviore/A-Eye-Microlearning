@@ -5,8 +5,8 @@ const case002Data = [
     "imageSrc": "/photos/tutorial/tutorial.png",
     "cluesNeeded": 1,
     "postAuthorName": "Anonymous Tipster",
-    "postHandle": "@TruthBomber â€¢ 1 hr ago",
-    "postText": "Caught red-handed! ðŸ“¸ Can't believe they thought they could get away with this right before the elections. #Scandal",
+    "postHandle": "@TruthBomber • 1 hr ago",
+    "postText": "Caught red-handed! 📸 Can't believe they thought they could get away with this right before the elections. #Scandal",
     "clues": [
       {
         "id": "v-1",
@@ -26,8 +26,8 @@ const case002Data = [
     "imageSrc": "/photos/set1/car.png",
     "cluesNeeded": 2,
     "postAuthorName": "Street Spotter",
-    "postHandle": "@AutoEnthusiast â€¢ 3 hrs ago",
-    "postText": "Just saw this crazy custom Cadillac rolling down the street! ðŸš—ðŸ’¨ The body kit on this thing is insane. Anyone know the owner? #CarSpotting #Cadillac",
+    "postHandle": "@AutoEnthusiast • 3 hrs ago",
+    "postText": "Just saw this crazy custom Cadillac rolling down the street! 🚗💨 The body kit on this thing is insane. Anyone know the owner? #CarSpotting #Cadillac",
     "clues": [
       {
         "id": "v-5",
@@ -36,7 +36,7 @@ const case002Data = [
         "y": 62.5,
         "width": 10,
         "height": 6.5,
-        "explanation": "AI often struggles with text and fonts. This license plate has a garbled character (3Î› SV 0984) and inconsistent font spacing.",
+        "explanation": "AI often struggles with text and fonts. This license plate has a garbled character (3Λ SV 0984) and inconsistent font spacing.",
         "tactic": "Text Rendering Error"
       },
       {
@@ -57,8 +57,8 @@ const case002Data = [
     "imageSrc": "/photos/set2/receipt.png",
     "cluesNeeded": 2,
     "postAuthorName": "Eagle Eye Investigates",
-    "postHandle": "@EagleEye_Inv â€¢ 2 hrs ago",
-    "postText": "Exclusive leak: We've obtained the receipt from the shadow dinner. Look at the payment terminal code at the bottomâ€”proof undeniable! ðŸ§¾ðŸ‘€ #ConspiracyConfirmed",
+    "postHandle": "@EagleEye_Inv • 2 hrs ago",
+    "postText": "Exclusive leak: We've obtained the receipt from the shadow dinner. Look at the payment terminal code at the bottom—proof undeniable! 🧾👀 #ConspiracyConfirmed",
     "clues": [
       {
         "id": "v-7",
@@ -88,8 +88,8 @@ const case002Data = [
     "imageSrc": "/photos/set3/id.png",
     "cluesNeeded": 2,
     "postAuthorName": "Corporate Watchdog",
-    "postHandle": "@CorpWhistle â€¢ 1 hr ago",
-    "postText": "Leaked ID badge of the new 'consultant' who just got full access to the server room. Does this guy even exist? ðŸ§ The picture looks completely fake. #SecurityBreach",
+    "postHandle": "@CorpWhistle • 1 hr ago",
+    "postText": "Leaked ID badge of the new 'consultant' who just got full access to the server room. Does this guy even exist? 🧑‍💼 The picture looks completely fake. #SecurityBreach",
     "clues": [
       {
         "id": "v-9",
@@ -119,8 +119,8 @@ const case002Data = [
     "imageSrc": "/photos/set4/grocery.png",
     "cluesNeeded": 2,
     "postAuthorName": "Local Shopper",
-    "postHandle": "@MarketWatcher â€¢ 4 hrs ago",
-    "postText": "Just saw this new automated cart at the grocery store. It's supposed to pack items perfectly, but this doesn't look right at all. AI taking over? ðŸ›’ðŸŒ #TechFail",
+    "postHandle": "@MarketWatcher • 4 hrs ago",
+    "postText": "Just saw this new automated cart at the grocery store. It's supposed to pack items perfectly, but this doesn't look right at all. AI taking over? 🛒🍌 #TechFail",
     "clues": [
       {
         "id": "v-11",
@@ -150,8 +150,8 @@ const case002Data = [
     "imageSrc": "/photos/set5/airport.png",
     "cluesNeeded": 2,
     "postAuthorName": "Travel Bug",
-    "postHandle": "@FrequentFlyer â€¢ 1 day ago",
-    "postText": "Chaos at terminal 3 today! Thousands stranded and it's getting crazy out here. Who is running this place? âœˆï¸ðŸ˜¡ #AirportChaos #Travel",
+    "postHandle": "@FrequentFlyer • 1 day ago",
+    "postText": "Chaos at terminal 3 today! Thousands stranded and it's getting crazy out here. Who is running this place? ✈️😡 #AirportChaos #Travel",
     "clues": [
       {
         "id": "v-13",
@@ -160,7 +160,7 @@ const case002Data = [
         "y": 48,
         "width": 25,
         "height": 30,
-        "explanation": "The hand on the left edge is a sprawling mass with multiplied, distorted fingers and a wrist that morphed into a fleshy, multi-digit structureâ€”a severe biological failure by AI.",
+        "explanation": "The hand on the left edge is a sprawling mass with multiplied, distorted fingers and a wrist that morphed into a fleshy, multi-digit structure—a severe biological failure by AI.",
         "tactic": "Anatomical/Biological Error"
       },
       {
@@ -181,8 +181,8 @@ const case002Data = [
     "imageSrc": "/photos/set6/bicycle.png",
     "cluesNeeded": 2,
     "postAuthorName": "City Commuter",
-    "postHandle": "@BikeLifeCity â€¢ 6 hrs ago",
-    "postText": "These new delivery bikes are getting out of hand. They're taking up the entire sidewalk now. ðŸš²ðŸ™ï¸",
+    "postHandle": "@BikeLifeCity • 6 hrs ago",
+    "postText": "These new delivery bikes are getting out of hand. They're taking up the entire sidewalk now. 🚲🏙️",
     "clues": [
       {
         "id": "v-15",
@@ -212,8 +212,8 @@ const case002Data = [
     "imageSrc": "/photos/set7/meal.png",
     "cluesNeeded": 2,
     "postAuthorName": "Foodie Finds",
-    "postHandle": "@EatWithMe â€¢ 2 hrs ago",
-    "postText": "Best curry I've ever had in this hidden gem downtown! ðŸ›ðŸ”¥ Highly recommend it! #Foodie #HiddenGem",
+    "postHandle": "@EatWithMe • 2 hrs ago",
+    "postText": "Best curry I've ever had in this hidden gem downtown! 🍜🔥 Highly recommend it! #Foodie #HiddenGem",
     "clues": [
       {
         "id": "v-17",
@@ -243,8 +243,8 @@ const case002Data = [
     "imageSrc": "/photos/set8/office.png",
     "cluesNeeded": 2,
     "postAuthorName": "Tech Worker",
-    "postHandle": "@DeskLife â€¢ 1 hr ago",
-    "postText": "Finally upgraded the home office setup. Productivity is going to be through the roof! ðŸ’»ðŸŽ§ #WFH #Setup",
+    "postHandle": "@DeskLife • 1 hr ago",
+    "postText": "Finally upgraded the home office setup. Productivity is going to be through the roof! 💻🎧 #WFH #Setup",
     "clues": [
       {
         "id": "v-19",
@@ -274,8 +274,8 @@ const case002Data = [
     "imageSrc": "/photos/set9/park.png",
     "cluesNeeded": 2,
     "postAuthorName": "Neighborhood Watch",
-    "postHandle": "@SafeStreets â€¢ 5 hrs ago",
-    "postText": "Another terrible accident at the corner of 5th and Main. When will they put up a stop sign?! ðŸš—ðŸ’¥ #TrafficSafety",
+    "postHandle": "@SafeStreets • 5 hrs ago",
+    "postText": "Another terrible accident at the corner of 5th and Main. When will they put up a stop sign?! 🚗💥 #TrafficSafety",
     "clues": [
       {
         "id": "v-21",
@@ -305,8 +305,8 @@ const case002Data = [
     "imageSrc": "/photos/set10/coffee.png",
     "cluesNeeded": 2,
     "postAuthorName": "Morning Grind",
-    "postHandle": "@CafeCoder â€¢ Just now",
-    "postText": "Early morning coding session. Nothing beats the smell of fresh coffee and compiling code. â˜•ðŸ’»",
+    "postHandle": "@CafeCoder • Just now",
+    "postText": "Early morning coding session. Nothing beats the smell of fresh coffee and compiling code. ☕💻",
     "clues": [
       {
         "id": "v-23",

@@ -68,7 +68,7 @@ export default function Level3Page() {
   const [isReady, setIsReady] = useState(false);
 
   const [toolUsed, setToolUsed] = useState(false);
-  const [replaysUsed, setReplaysUsed] = useState(0);
+
   const [selectedPanel, setSelectedPanel] = useState<"A" | "B" | null>(null);
   const [isPanelLocked, setIsPanelLocked] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -116,7 +116,9 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
-        message: "You ran out of time. AI misinformation spreads rapidly in seconds. Proceeding to the next round.",
+        message: currentRoundIndex === sessionRounds.length - 1 
+          ? "You ran out of time. Proceeding to case summary."
+          : "You ran out of time. AI misinformation spreads rapidly in seconds. Proceeding to the next round.",
         penalty: 50,
       });
     }
@@ -134,7 +136,17 @@ export default function Level3Page() {
     }
 
     const shuffled = [...unplayed].sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 5);
+    const selected = shuffled.slice(0, 5).map(round => {
+      if (Math.random() > 0.5) {
+        return {
+          ...round,
+          videoA: round.videoB,
+          videoB: round.videoA,
+          correctPanel: (round.correctPanel === "A" ? "B" : "A") as "A" | "B"
+        };
+      }
+      return round;
+    });
 
     if (tutorial) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -202,7 +214,7 @@ export default function Level3Page() {
     setFeedback(null);
     setToolUsed(false);
     resetScoring();
-    setReplaysUsed(0);
+
 
     if (videoARef.current && videoBRef.current) {
       videoARef.current.currentTime = 0;
@@ -212,20 +224,7 @@ export default function Level3Page() {
     }
   };
 
-  const handleReplay = () => {
-    if (isPanelLocked || showConfirm || showReveal) return;
-    const newReplays = replaysUsed + 1;
-    setReplaysUsed(newReplays);
-    if (newReplays > 5) {
-      applyDeduction(10);
-    }
-    if (videoARef.current && videoBRef.current) {
-      videoARef.current.currentTime = 0;
-      videoBRef.current.currentTime = 0;
-      videoARef.current.play();
-      videoBRef.current.play();
-    }
-  };
+
 
   const handlePanelClick = (panel: "A" | "B") => {
     if (isPanelLocked || isTourActive || showReveal) return;
@@ -275,6 +274,11 @@ export default function Level3Page() {
         title: "WRONG PANEL",
         message: (<>You picked the wrong panel. The other video was the AI-generated one.</>),
         penalty: 50,
+        scoreBadge: (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -50 Points
+          </span>
+        )
       });
     } else if (!isCorrectTell) {
       applyDeduction(25);
@@ -284,6 +288,11 @@ export default function Level3Page() {
         title: "LUCKY GUESS",
         message: (<>You picked the correct panel, but your reasoning was wrong.</>),
         penalty: 25,
+        scoreBadge: (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -25 Points
+          </span>
+        )
       });
     } else {
       if (!currentRound.isTutorial) {
@@ -378,7 +387,7 @@ export default function Level3Page() {
         steps: [
           { popover: { title: 'A-Eye Agent', description: "Welcome to Case 003! You need to figure out which video is AI generated." } },
           { element: '#tutorial-videos', popover: { title: 'A-Eye Agent', description: "Watch both panels carefully. They play simultaneously." } },
-          { element: '#tutorial-replay', popover: { title: 'A-Eye Agent', description: "You have 5 free grace replays. Use them wisely! Beyond 5, it costs -10 points each." } },
+
           { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "You have 60 seconds per round. Running out of time means a -50 penalty and a new round." } },
           { popover: { title: 'A-Eye Agent', description: "Click the panel you think is AI. After confirming, you must explain WHY. Good luck!", doneBtnText: "Start Playing" } }
         ],
@@ -442,19 +451,7 @@ export default function Level3Page() {
               </div>
             </div>
 
-            <div id="tutorial-replay" className="relative group">
-              <BrutalButton
-                variant="icon"
-                size="circle"
-                disabled={isPanelLocked || showConfirm || showReveal}
-                onClick={handleReplay}
-              >
-                <RotateCcw className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
-              </BrutalButton>
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg z-50">
-                {replaysUsed < 5 ? `Replays: ${5 - replaysUsed} free` : "Replay (-10 pts)"}
-              </div>
-            </div>
+
 
             <div id="tutorial-timer" className="text-right">
               <div className="text-sm font-bold uppercase text-red-500">Timer</div>
