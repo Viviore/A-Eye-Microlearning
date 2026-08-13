@@ -21,6 +21,8 @@ const brutalButtonVariants = cva(
           "bg-[#FFB800] hover:bg-white text-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] hover:shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px]",
         ghost:
           "bg-transparent text-[#0F172A] border-dashed hover:border-solid hover:bg-gray-100 shadow-none hover:shadow-[4px_4px_0px_0px_#0F172A] hover:-translate-y-[2px]",
+        icon:
+          "bg-[#FAFAFA] text-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none hover:bg-[#FFB800]",
       },
       size: {
         default: "h-12 px-6 md:h-14 md:px-8 text-lg md:text-xl",
@@ -29,6 +31,7 @@ const brutalButtonVariants = cva(
         xl: "h-16 px-8 md:h-20 md:px-16 text-xl md:text-3xl",
         nav: "h-10 px-5 md:h-12 md:px-6 text-sm md:text-base border-[4px]",
         icon: "h-10 w-10 md:h-12 md:w-12",
+        circle: "h-10 w-10 p-0 rounded-full border-[3px]",
       },
     },
     defaultVariants: {

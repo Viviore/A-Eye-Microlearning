@@ -519,7 +519,6 @@ export default function Level1Page() {
       {/* Verdict Modal */}
       <VerdictModalContainer
         isOpen={showVerdictModal}
-        alignTop={currentRoundIndex === 0}
       >
         {!feedback ? (
           <>

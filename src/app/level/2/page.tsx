@@ -489,7 +489,9 @@ export default function Level2Page() {
               avatarColor="bg-[#FFB800]"
             >
               <div id="tutorial-tool" className="relative group">
-                <button
+                <BrutalButton
+                  variant="icon"
+                  size="circle"
                   disabled={currentRound.isTutorial || toolUsed || (cumulativeScore + roundScore < 80)}
                   onClick={() => {
                     if (!toolUsed && (cumulativeScore + roundScore >= 80)) {
@@ -498,11 +500,10 @@ export default function Level2Page() {
                       setTimeLeft((prev) => prev + 30);
                     }
                   }}
-                  className="w-10 h-10 p-0 rounded-full bg-[#FAFAFA] border-[3px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#0F172A] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all flex items-center justify-center text-[#0F172A] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FFB800]"
                   title="+30 Seconds (-80 pts)"
                 >
                   <Plus className="w-5 h-5 transition-transform group-hover:scale-110" strokeWidth={3} />
-                </button>
+                </BrutalButton>
                 {/* Tooltip */}
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[#0F172A] text-white text-xs font-bold font-mono py-1 px-2 rounded whitespace-nowrap shadow-lg">
                   +30s (-80 pts)
@@ -749,7 +750,6 @@ export default function Level2Page() {
       {/* Verdict Modal */}
       <VerdictModalContainer
         isOpen={showVerdictModal}
-        alignTop={currentRoundIndex === 0}
       >
         {!feedback ? (
           <>

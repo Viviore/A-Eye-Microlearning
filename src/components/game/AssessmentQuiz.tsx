@@ -315,7 +315,7 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
   // ─── INTRO PHASE ──────────────────────────────────────────────────
   if (phase === "intro") {
     return (
-      <main className="flex-1 w-full flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
+      <main className="min-h-[calc(100dvh-72px)] md:min-h-[calc(100dvh-80px)] w-full flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -369,7 +369,7 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
   // ─── COMPLETE PHASE ───────────────────────────────────────────────
   if (phase === "complete") {
     return (
-      <main className="flex-1 w-full flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
+      <main className="min-h-[calc(100dvh-72px)] md:min-h-[calc(100dvh-80px)] w-full flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -404,7 +404,7 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
 
   // ─── QUIZ PHASE ───────────────────────────────────────────────────
   return (
-    <main className="flex-1 w-full flex flex-col bg-[#FAFAFA] text-[#0F172A] font-sans bg-cubes">
+    <main className="min-h-[calc(100dvh-72px)] md:min-h-[calc(100dvh-80px)] w-full flex flex-col bg-[#FAFAFA] text-[#0F172A] font-sans bg-cubes">
       {/* Question Content */}
       <div className="flex-1 flex flex-col items-center justify-start px-4 py-8 md:py-12">
         <div className="w-full max-w-2xl">

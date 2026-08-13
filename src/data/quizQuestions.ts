@@ -30,11 +30,11 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     id: "q1",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Health Alert PH",
-    postHandle: "@HealthAlertPH",
+    postAuthorName: "Global Health Network",
+    postHandle: "@GlobalHealthNet",
     postTime: "10 mins ago",
     content:
-      "URGENT: Local hospital giving out free medical checkups today only! No appointment needed, just bring ₱200 registration fee in cash. Limited slots, first come first served!",
+      "URGENT: Local hospital giving out free medical checkups today only! No appointment needed, just bring a $20 processing fee in cash. Limited slots, first come first served!",
     expected: "fake",
   },
 
@@ -71,11 +71,11 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     id: "q4",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Barangay Hall Official",
-    postHandle: "@BrgyHallOfficial",
+    postAuthorName: "City Council Updates",
+    postHandle: "@CityCouncilNews",
     postTime: "5 hrs ago",
     content:
-      "Reminder: barangay hall will be closed this Friday for a scheduled holiday. Regular hours resume Monday. Thank you for your understanding.",
+      "Reminder: city council offices will be closed this Friday for a scheduled public holiday. Regular hours resume Monday. Thank you for your understanding.",
     expected: "real",
   },
 

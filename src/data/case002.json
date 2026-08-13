@@ -313,7 +313,7 @@
         "title": "Duplicate Laptop Key",
         "x": 1.5,
         "y": 78,
-        "width": 15,
+        "width": 25,
         "height": 10,
         "explanation": "Two adjacent keyboard keys incorrectly display the exact same letter/symbol, while the neighboring key is completely missing.",
         "tactic": "Text Rendering Error"
