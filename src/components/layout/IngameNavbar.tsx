@@ -32,6 +32,9 @@ export function IngameNavbar() {
     postAssessmentCompleted,
     completedLevels,
     resetGame,
+    cumulativeScore,
+    currentRoundScore,
+    currentRoundTimeLeft,
   } = useGameStore();
 
   if (pathname === "/") {
@@ -110,17 +113,33 @@ export function IngameNavbar() {
           </div>
         </Link>
 
-        {/* Mobile Hamburger Button */}
-        <button
-          className="xl:hidden ml-auto p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors cursor-pointer"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Menu className="w-6 h-6" />
+        {/* Mobile Actions */}
+        <div className="xl:hidden ml-auto flex items-center gap-2 sm:gap-3">
+          {pathname.startsWith("/level") && (
+            <div className="font-heading font-black text-xs sm:text-sm text-[#0F172A] uppercase tracking-wide flex items-stretch bg-white border-[4px] border-[#0F172A] shadow-[3px_3px_0px_0px_#0F172A] divide-x-[4px] divide-[#0F172A] h-full">
+              {currentRoundTimeLeft !== null && (
+                <div className={`flex items-center px-2 py-2 sm:px-3 drop-shadow-[1px_1px_0px_rgba(15,23,42,1)] ${currentRoundTimeLeft <= 10 ? 'text-[#FF3366] animate-pulse bg-red-50' : 'text-[#FFB800]'}`}>
+                  {Math.floor(currentRoundTimeLeft / 60)}:{(currentRoundTimeLeft % 60).toString().padStart(2, '0')}
+                </div>
+              )}
+              <div className="flex items-center px-2 py-2 sm:px-3">
+                <span className="text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">
+                  {cumulativeScore + currentRoundScore} PTS
+                </span>
+              </div>
+            </div>
           )}
-        </button>
+          <button
+            className="p-2 text-[#0F172A] border-[4px] border-[#0F172A] bg-white shadow-[3px_3px_0px_0px_#0F172A] hover:bg-[#FFB800] transition-colors cursor-pointer"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
+            ) : (
+              <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+            )}
+          </button>
+        </div>
 
         {/* Navigation & Actions Wrapper */}
         <div

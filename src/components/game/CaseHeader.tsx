@@ -55,7 +55,7 @@ export function CaseHeader({
         
         <div
           id="tutorial-score"
-          className="font-heading font-black text-base md:text-2xl text-[#0F172A] uppercase tracking-wide md:tracking-wider flex items-center gap-1 md:gap-2 bg-white px-2 md:px-4 py-1 border-2 md:border-[4px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] md:shadow-[4px_4px_0px_0px_#0F172A] relative"
+          className="font-heading font-black text-base md:text-2xl text-[#0F172A] uppercase tracking-wide md:tracking-wider hidden xl:flex items-center gap-1 md:gap-2 bg-white px-2 md:px-4 py-1 border-2 md:border-[4px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] md:shadow-[4px_4px_0px_0px_#0F172A] relative"
         >
           <span>Score: </span>
           <span className="relative text-[#FFB800] drop-shadow-[1px_1px_0px_rgba(15,23,42,1)]">

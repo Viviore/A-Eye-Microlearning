@@ -63,7 +63,9 @@ export default function Level3Page() {
     addCase003Score,
     resetGame,
     playedCase003Rounds,
-    markCase003RoundPlayed
+    markCase003RoundPlayed,
+    setCurrentRoundScore,
+    setCurrentRoundTimeLeft
   } = useGameStore();
 
   const [sessionRounds, setSessionRounds] = useState<VideoRound[]>([]);
@@ -124,6 +126,15 @@ export default function Level3Page() {
       });
     }
   });
+
+  useEffect(() => {
+    setCurrentRoundScore(roundScore);
+  }, [roundScore, setCurrentRoundScore]);
+
+  useEffect(() => {
+    setCurrentRoundTimeLeft(timeLeft);
+    return () => setCurrentRoundTimeLeft(null);
+  }, [timeLeft, setCurrentRoundTimeLeft]);
 
   useEffect(() => {
     // Only initialize once to prevent round shuffling mid-game

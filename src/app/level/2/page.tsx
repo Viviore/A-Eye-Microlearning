@@ -183,6 +183,9 @@ export default function Level2Page() {
 
   const [showVideoTutorial, setShowVideoTutorial] = useState(false);
   
+  const setCurrentRoundScore = useGameStore((state) => state.setCurrentRoundScore);
+  const setCurrentRoundTimeLeft = useGameStore((state) => state.setCurrentRoundTimeLeft);
+
   const {
     roundScore,
     setRoundScore,
@@ -230,6 +233,15 @@ export default function Level2Page() {
     imgWidth: 0,
     imgHeight: 0,
   });
+
+  useEffect(() => {
+    setCurrentRoundScore(roundScore);
+  }, [roundScore, setCurrentRoundScore]);
+
+  useEffect(() => {
+    setCurrentRoundTimeLeft(timeLeft);
+    return () => setCurrentRoundTimeLeft(null);
+  }, [timeLeft, setCurrentRoundTimeLeft]);
 
   useEffect(() => {
     if (currentRound?.isTutorial && isReady && !isTransitioning) {

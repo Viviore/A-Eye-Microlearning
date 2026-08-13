@@ -137,6 +137,14 @@ interface GameState {
   setLevel3Verdict: (verdict: string) => void;
   setLevel3Confidence: (confidence: number) => void;
   resetLevel3: () => void;
+
+  // Active round score for mobile navbar
+  currentRoundScore: number;
+  setCurrentRoundScore: (score: number) => void;
+
+  // Active round time left for mobile navbar
+  currentRoundTimeLeft: number | null;
+  setCurrentRoundTimeLeft: (time: number | null) => void;
 }
 
 const initialSessions = (): Record<string, InvestigationSession> => ({
@@ -446,6 +454,12 @@ export const useGameStore = create<GameState>()(
       setLevel3Confidence: (confidence) => set({ level3Confidence: confidence }),
       resetLevel3: () =>
         set({ level3FoundArtifacts: [], level3Verdict: null, level3Confidence: null }),
+
+      currentRoundScore: 0,
+      setCurrentRoundScore: (score) => set({ currentRoundScore: score }),
+
+      currentRoundTimeLeft: null,
+      setCurrentRoundTimeLeft: (time) => set({ currentRoundTimeLeft: time }),
     }),
     {
       name: 'a-eye-game-state',

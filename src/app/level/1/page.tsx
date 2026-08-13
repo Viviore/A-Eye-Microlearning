@@ -71,6 +71,10 @@ export default function Level1Page() {
   const [sessionRounds, setSessionRounds] = useState<TextRound[]>([]);
   const [isReady, setIsReady] = useState(false);
 
+  const setCurrentRoundScore = useGameStore((state) => state.setCurrentRoundScore);
+  
+
+
   useEffect(() => {
     // Prevent reappearance of rounds played in previous sessions
     const allPlayable = TEXT_ROUNDS.filter(r => r.id !== 0);
@@ -139,6 +143,10 @@ export default function Level1Page() {
     isReady,
     isPaused: showVerdictModal || showVideoTutorial,
   });
+  
+  useEffect(() => {
+    setCurrentRoundScore(roundScore);
+  }, [roundScore, setCurrentRoundScore]);
   
   useEffect(() => {
     if (currentRoundIndex === 0 && isReady && !isTransitioning) {
