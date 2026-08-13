@@ -319,13 +319,22 @@ export default function ResultsDashboardPage() {
         </motion.div>
 
         {/* Top Overview Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mt-12 md:mt-16">
           {/* Left Column: Total Score & Accuracy */}
           <motion.div
             variants={itemVariants}
             className="lg:col-span-5 flex flex-col gap-6"
           >
             <div className="flex-1 bg-white border-[4px] border-[#0F172A] p-8 pb-12 shadow-[8px_8px_0px_0px_#0F172A] relative flex flex-col items-center justify-center text-center">
+              {/* Mascot Sitting on Box */}
+              <div className="absolute -top-24 right-4 md:-right-8 z-20 pointer-events-none">
+                <img 
+                  src={accuracyPercent < 50 ? "/character_mascot/oops_expression.png" : "/character_mascot/confident_expression.png"} 
+                  alt="Mascot Score Feedback" 
+                  className="w-32 md:w-40 h-auto object-contain filter drop-shadow-[4px_4px_0px_#0F172A] animate-[bounce_4s_ease-in-out_infinite]" 
+                />
+              </div>
+
               <div className="absolute top-0 left-0 bg-[#0F172A] text-white font-mono font-bold text-[10px] sm:text-xs px-3 py-1 uppercase border-r-[4px] border-b-[4px] border-[#0F172A] flex items-center gap-2">
                 <Activity className="w-4 h-4" /> TOTAL MISSION SCORE
               </div>

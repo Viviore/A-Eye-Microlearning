@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const brutalButtonVariants = cva(
-  "cursor-pointer inline-flex items-center justify-center text-center font-heading font-black tracking-wider uppercase transition-all border-[4px] border-[#0F172A] rounded-none focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:border-dashed",
+  "cursor-pointer inline-flex items-center justify-center text-center font-heading font-black tracking-wider uppercase transition-all border-[4px] border-[#0F172A] rounded-none focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0",
   {
     variants: {
       variant: {

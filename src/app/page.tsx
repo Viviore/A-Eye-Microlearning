@@ -240,7 +240,7 @@ export default function Home() {
         {/* ============================================================ */}
         <section
           id="what-is-mil"
-          className="w-full py-20 md:py-28 bg-white relative overflow-hidden"
+          className="w-full py-20 md:py-28 bg-white relative overflow-visible"
         >
           <AnimatedBackground theme="light" />
           <Star8 className="absolute top-20 right-[5%] w-32 h-32 text-[#0F172A] opacity-5 z-0 hidden lg:block animate-[pulse_8s_ease-in-out_infinite]" />
@@ -258,18 +258,29 @@ export default function Home() {
                 variants={scaleIn}
                 className="relative lg:order-1"
               >
-                <Card className="bg-[#FFB800] p-8 md:p-12 relative flex flex-col justify-center min-h-[300px] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] transition-all shadow-[8px_8px_0px_0px_#0F172A] border-[4px] border-[#0F172A] rounded-none">
-                  <div className="absolute top-0 left-0 w-full border-b-[4px] border-[#0F172A] bg-white p-2 flex gap-2">
+                <Card className="bg-[#FFB800] p-8 md:p-12 relative flex flex-col justify-center min-h-[400px] md:min-h-[480px] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#0F172A] transition-all shadow-[8px_8px_0px_0px_#0F172A] border-[4px] border-[#0F172A] rounded-none overflow-visible">
+                  <div className="absolute top-0 left-0 w-full border-b-[4px] border-[#0F172A] bg-white p-2 flex gap-2 z-10">
                     <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-[#0F172A]" />
                     <div className="w-4 h-4 border-[4px] border-[#0F172A] bg-white" />
                   </div>
-                  <CardContent className="p-0 pt-8 font-sans text-3xl md:text-4xl font-black text-[#0F172A] leading-tight uppercase tracking-tight text-center">
+                  <CardContent className="p-0 pt-8 font-sans text-3xl md:text-4xl font-black text-[#0F172A] leading-tight uppercase tracking-tight text-center relative z-10">
                     &ldquo;Don&apos;t just consume media.
                     <br />
                     <span className="text-white drop-shadow-[2px_2px_0px_#0F172A]">
                       Interrogate it.&rdquo;
                     </span>
                   </CardContent>
+
+                  {/* Mascot Peeking from inside */}
+                  <motion.div 
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                    className="absolute -top-16 -right-6 md:-top-24 md:-right-12 z-20 pointer-events-none"
+                  >
+                    <img src="/character_mascot/idea_expression.png" alt="Idea Mascot" className="w-40 md:w-56 h-auto object-contain filter drop-shadow-[4px_4px_0px_#0F172A] animate-[bounce_4s_ease-in-out_infinite]" />
+                  </motion.div>
                 </Card>
 
                 {/* Spinning Star Decoration */}
