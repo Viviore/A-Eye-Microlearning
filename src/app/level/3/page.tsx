@@ -18,7 +18,7 @@ import {
 import case003Data from "@/data/case003.json";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
-import { GameOverModal } from "@/components/game/VerdictModal";
+import { GameOverModal, VerdictModalContainer, VerdictFeedback } from "@/components/game/VerdictModal";
 
 type VideoRound = {
   id: string;
@@ -74,6 +74,7 @@ export default function Level3Page() {
 
   const [selectedTell, setSelectedTell] = useState<string | null>(null);
   const [showReveal, setShowReveal] = useState(false);
+  const [showTimeoutModal, setShowTimeoutModal] = useState(false);
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; penalty?: number; scoreBadge?: React.ReactNode } | null>(null);
   const [hoveredTell, setHoveredTell] = useState<string | null>(null);
   const [showGameOverModal, setShowGameOverModal] = useState(false);
@@ -99,7 +100,7 @@ export default function Level3Page() {
   } = useLevelScoring({
     isReady,
     hasTimer: true,
-    isPaused: currentRound?.isTutorial || isPanelLocked || isTourActive || showConfirm || showReveal,
+    isPaused: currentRound?.isTutorial || isPanelLocked || isTourActive || showConfirm || showReveal || showTimeoutModal,
     onTimeout: () => {
       // Pause both videos immediately
       if (videoARef.current && videoBRef.current) {
@@ -110,10 +111,11 @@ export default function Level3Page() {
       addCumulativeScore(-50);
       addCase003Score(-50);
       markCase003RoundPlayed(currentRound?.id || "");
+      setShowTimeoutModal(true);
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
-        message: "You ran out of time. AI misinformation spreads rapidly in seconds. This case has been compromised, so we are assigning you a new one. You must act faster.",
+        message: "You ran out of time. AI misinformation spreads rapidly in seconds. Proceeding to the next round.",
         penalty: 50,
       });
     }
@@ -195,6 +197,7 @@ export default function Level3Page() {
     setShowConfirm(false);
     setSelectedTell(null);
     setShowReveal(false);
+    setShowTimeoutModal(false);
     setFeedback(null);
     setToolUsed(false);
     resetScoring();
@@ -299,18 +302,16 @@ export default function Level3Page() {
   };
 
   const handleNextAction = () => {
-    if (timeLeft === 0 || selectedPanel !== currentRound.correctPanel) {
+    if (currentRoundIndex >= sessionRounds.length - 1) {
+      completeLevel(3);
+      setTimeout(() => {
+        startTransition("/post", { variant: 'post-assessment' });
+      }, 1500);
+    } else if (selectedPanel !== null && selectedPanel !== currentRound.correctPanel) {
       swapToRandomRound();
     } else {
-      if (currentRoundIndex < sessionRounds.length - 1) {
-        setCurrentRoundIndex((prev) => prev + 1);
-        resetRoundState();
-      } else {
-        completeLevel(3);
-        setTimeout(() => {
-          startTransition("/post", { variant: 'post-assessment' });
-        }, 1500);
-      }
+      setCurrentRoundIndex((prev) => prev + 1);
+      resetRoundState();
     }
   };
 
@@ -699,7 +700,7 @@ export default function Level3Page() {
                   size="lg"
                   className="w-full h-16 md:h-20 text-xl md:text-2xl group"
                 >
-                  {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : (feedback.isSuccess ? "Finish Case 003" : "Retry with New Video")}
+                  {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
                   <ArrowRight className="ml-4 w-8 h-8 transition-transform group-hover:translate-x-2" strokeWidth={3} />
                 </BrutalButton>
               </div>
@@ -707,6 +708,26 @@ export default function Level3Page() {
           )}
         </AnimatePresence>
       </motion.div>
+
+      <VerdictModalContainer isOpen={showTimeoutModal}>
+        {feedback && (
+          <VerdictFeedback
+            isSuccess={feedback.isSuccess}
+            title={feedback.title}
+            message={feedback.message}
+            onNext={handleNextAction}
+            onRetry={handleNextAction}
+            nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
+            retryButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
+            forceNextAction={true}
+            scoreBadge={
+              <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+                -50 Points
+              </span>
+            }
+          />
+        )}
+      </VerdictModalContainer>
 
       <GameOverModal
         isOpen={showGameOverModal}

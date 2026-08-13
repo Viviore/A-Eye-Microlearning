@@ -30,11 +30,11 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     id: "q1",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Global Health Network",
-    postHandle: "@GlobalHealthNet",
+    postAuthorName: "Aunt Susan",
+    postHandle: "@SusanLovesMinions55",
     postTime: "10 mins ago",
     content:
-      "URGENT: Local hospital giving out free medical checkups today only! No appointment needed, just bring a $20 processing fee in cash. Limited slots, first come first served!",
+      "🚨🚨 URGENT GLOBAL WARNING!! 🚨🚨 — Meta is DEACTIVATING all Facebook & Instagram accounts worldwide tonight at MIDNIGHT unless you pay the $50 (USD) verification fee!! 😱💸💸 — Send this to 15 people to prove your account is active and bypass the charge! DO NOT IGNORE THIS MESSAGE 🛑🛑👎👎",
     expected: "fake",
   },
 
