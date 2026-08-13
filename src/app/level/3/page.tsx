@@ -242,6 +242,15 @@ export default function Level3Page() {
     setShowConfirm(false);
   };
 
+  const handleCancelSelection = () => {
+    setIsPanelLocked(false);
+    setSelectedPanel(null);
+    if (videoARef.current && videoBRef.current) {
+      videoARef.current.play().catch(e => console.log(e));
+      videoBRef.current.play().catch(e => console.log(e));
+    }
+  };
+
   const handleTellClick = (tell: string) => {
     if (showReveal) return;
     setSelectedTell(tell);
@@ -275,11 +284,6 @@ export default function Level3Page() {
         message: (<>You picked the correct panel, but your reasoning was wrong.</>),
         penalty: 25,
       });
-      if (!currentRound.isTutorial) {
-        addCumulativeScore(finalScore);
-        addCase003Score(finalScore);
-        markCase003RoundPlayed(currentRound.id);
-      }
     } else {
       if (!currentRound.isTutorial) {
         addCumulativeScore(finalScore);
@@ -305,11 +309,26 @@ export default function Level3Page() {
       setTimeout(() => {
         startTransition("/post", { variant: 'post-assessment' });
       }, 1500);
-    } else if (selectedPanel !== null && selectedPanel !== currentRound.correctPanel) {
-      swapToRandomRound();
     } else {
       setCurrentRoundIndex((prev) => prev + 1);
       resetRoundState();
+    }
+  };
+
+  const handleRetryAction = () => {
+    // Soft reset: unlock panels and play videos, but PRESERVE score deductions and timer
+    setSelectedPanel(null);
+    setIsPanelLocked(false);
+    setShowConfirm(false);
+    setSelectedTell(null);
+    setShowReveal(false);
+    setFeedback(null);
+    
+    if (videoARef.current && videoBRef.current) {
+      videoARef.current.currentTime = 0;
+      videoBRef.current.currentTime = 0;
+      videoARef.current.play().catch(e => console.log(e));
+      videoBRef.current.play().catch(e => console.log(e));
     }
   };
 
@@ -633,6 +652,14 @@ export default function Level3Page() {
                   );
                 })}
               </div>
+              
+              {(!currentRound.isTutorial || !isTourActive) && (
+                <div className="pt-2 mt-2">
+                  <BrutalButton onClick={handleCancelSelection} variant="secondary" className="w-full flex justify-center items-center">
+                    <RotateCcw className="mr-2 w-5 h-5" strokeWidth={2.5} /> CANCEL & RE-WATCH
+                  </BrutalButton>
+                </div>
+              )}
             </div>
           </>
         )}
@@ -645,7 +672,7 @@ export default function Level3Page() {
             scoreBadge={feedback.scoreBadge}
             forceNextAction={feedback.forceNext}
             onNext={handleNextAction}
-            onRetry={handleNextAction}
+            onRetry={handleRetryAction}
             retryButtonText={feedback.retryButtonText}
             nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
             isFinalRound={currentRoundIndex === sessionRounds.length - 1}
@@ -658,7 +685,7 @@ export default function Level3Page() {
             title={feedback.title}
             message={feedback.message}
             onNext={handleNextAction}
-            onRetry={handleNextAction}
+            onRetry={handleRetryAction}
             nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
             retryButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
             forceNextAction={true}
