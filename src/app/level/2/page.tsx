@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { driver } from "driver.js";
+import { VideoTutorialOverlay } from "@/components/game/VideoTutorialOverlay";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { BrutalButton } from "@/components/ui/brutal-button";
@@ -181,14 +181,14 @@ export default function Level2Page() {
   const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode; forceNext?: boolean; retryButtonText?: string; nextButtonText?: string } | null>(null);
   const [foundDecoys, setFoundDecoys] = useState<VisualClue[]>([]);
 
-  const [isTourActive, setIsTourActive] = useState(true);
+  const [showVideoTutorial, setShowVideoTutorial] = useState(false);
   
   const {
     roundScore,
     setRoundScore,
     timeLeft,
     setTimeLeft,
-    clickPopups: deductions, // Map clickPopups to deductions for UI compatibility
+    clickPopups: deductions,
     scorePopups,
     triggerScoreAnimation,
     applyDeduction,
@@ -196,7 +196,7 @@ export default function Level2Page() {
   } = useLevelScoring({
     isReady,
     hasTimer: true,
-    isPaused: currentRound?.isTutorial || showVerdictModal || feedback !== null,
+    isPaused: showVideoTutorial || showVerdictModal || feedback !== null,
     onTimeout: () => {
       triggerScoreAnimation(-50);
       addCumulativeScore(-50);
@@ -220,8 +220,6 @@ export default function Level2Page() {
     }
   });
 
-  const driverObjRef = useRef<any>(null);
-  
   const [isHoveringImage, setIsHoveringImage] = useState(false);
   const [magnifier, setMagnifier] = useState({
     show: false,
@@ -233,93 +231,27 @@ export default function Level2Page() {
     imgHeight: 0,
   });
 
-  const isDriverInitialized = useRef(false);
-
   useEffect(() => {
-    if (currentRound?.isTutorial && !isDriverInitialized.current && !isTransitioning) {
-      isDriverInitialized.current = true;
-      setIsTourActive(true);
-
-      const d = driver({
-        showProgress: true,
-        allowClose: false,
-        smoothScroll: true,
-        disableActiveInteraction: true,
-        onHighlightStarted: (element) => {
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        },
-        onPopoverRender: (popover, { state }) => {
-          if (!driverObjRef.current?.hasNextStep()) return;
-
-          const navBtns = popover.wrapper.querySelector(".driver-popover-navigation-btns");
-          if (navBtns && !navBtns.querySelector(".driver-skip-btn")) {
-            const skipBtn = document.createElement("button");
-            skipBtn.innerText = "Skip";
-            skipBtn.className = "driver-popover-footer-btn driver-skip-btn";
-            skipBtn.setAttribute("aria-label", "Skip Tutorial");
-            skipBtn.addEventListener("click", () => {
-              if (driverObjRef.current) {
-                driverObjRef.current.destroy();
-              }
-              
-              startInPlaceTransition(() => {
-                // Auto-advance past the tutorial round
-                setCurrentRoundIndex(1);
-                resetScoring();
-                setFlaggedIds(new Set());
-                setFoundClues([]);
-                setFoundDecoys([]);
-                setFeedback(null);
-                setSelectedEvidenceId(null);
-                setSelectedTactic(null);
-                setShowVerdictModal(false);
-                setToolUsed(false);
-              });
-            });
-            navBtns.insertBefore(skipBtn, navBtns.firstChild);
-          }
-        },
-        onDestroyed: () => {
-          setIsTourActive(false);
-        },
-        popoverOffset: 20,
-        stagePadding: 8,
-        steps: [
-          { popover: { title: 'A-Eye Agent', description: "Welcome to Case 002! A viral photo claims to show an official receiving a secret cash payout." } },
-          { element: '#tutorial-post', popover: { title: 'A-Eye Agent', description: "Is this a real scandal, or an AI-generated smear campaign? We need to look closely to find out.", side: "bottom", align: "center" } },
-          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "When analyzing photos, we use the Magnifier Tool. You will hover your mouse over the photo to activate it.", side: "bottom", align: "center" } },
-          { element: '#tutorial-image-container', popover: { title: 'A-Eye Agent', description: "Look for AI mistakes like double thumbs or warped backgrounds. When you spot one, you will click it to flag it as evidence.", side: "bottom", align: "center" } },
-          { element: '#tutorial-evidence', popover: { title: 'A-Eye Agent', description: "Flagged clues appear on the Evidence Board on the right.", side: "bottom", align: "center" } },
-          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "Notice the timer above? Real cases only give you 60 seconds! Running out of time costs -50 points.", side: "bottom", align: "center" } },
-          { element: '#tutorial-tool', popover: { title: 'A-Eye Agent', description: "Need more time? You can use the +30s tool, but it costs -80 points! Only use it if you really have to.", side: "bottom", align: "center" } },
-          { element: '#tutorial-verdict-btn', popover: { title: 'A-Eye Agent', description: "Once you have enough evidence, click 'File Verdict' to submit your report.", side: "bottom", align: "center" } },
-          { popover: { title: 'A-Eye Agent', description: "Now you do it yourself! Find the evidence, identify the tactic, and submit your verdict. Good luck!", doneBtnText: "Start Playing" } }
-        ]
-      });
-      driverObjRef.current = d;
-      d.drive();
+    if (currentRound?.isTutorial && isReady && !isTransitioning) {
+      setShowVideoTutorial(true);
     }
+  }, [currentRound?.isTutorial, isReady, isTransitioning]);
 
-    return () => {
-      if (driverObjRef.current) {
-        driverObjRef.current.destroy();
-      }
-    };
-  }, [currentRound?.isTutorial, isTransitioning]);
-
-  useEffect(() => {
-    if (currentRound?.isTutorial && !isTourActive && flaggedIds.size === 0 && !showVerdictModal) {
-      const timeout = setTimeout(() => {
-        const el = document.getElementById("tutorial-image-container");
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 300);
-      return () => clearTimeout(timeout);
-    }
-  }, [isTourActive, currentRound, flaggedIds.size, showVerdictModal]);
+  const handleTutorialComplete = () => {
+    startInPlaceTransition(() => {
+      setShowVideoTutorial(false);
+      setCurrentRoundIndex(1);
+      resetScoring();
+      setFlaggedIds(new Set());
+      setFoundClues([]);
+      setFoundDecoys([]);
+      setFeedback(null);
+      setSelectedEvidenceId(null);
+      setSelectedTactic(null);
+      setShowVerdictModal(false);
+      setToolUsed(false);
+    });
+  };
 
   useEffect(() => {
     if (currentRoundIndex !== 0 && cumulativeScore + roundScore <= 0 && !feedback?.forceNext) {
@@ -367,7 +299,7 @@ export default function Level2Page() {
   
   const handleClueClick = (clue: VisualClue) => {
     if (flaggedIds.has(clue.id)) return;
-    if (currentRound.isTutorial && isTourActive)
+    if (currentRound.isTutorial && showVideoTutorial)
       return;
 
     setFlaggedIds((prev) => new Set([...prev, clue.id]));
@@ -493,6 +425,15 @@ export default function Level2Page() {
     <main
       className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-8 md:pb-12"
     >
+      <AnimatePresence>
+        {showVideoTutorial && (
+          <VideoTutorialOverlay
+            key="video-tutorial"
+            videoSrc="/tutorials/Case002-Tutorial.mp4"
+            onComplete={handleTutorialComplete}
+          />
+        )}
+      </AnimatePresence>
       <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8">
         
         {/* Header Info */}
@@ -861,9 +802,9 @@ export default function Level2Page() {
                     {shuffledTactics.map((tactic) => {
                       const correctTactic = currentRound.clues.find(c => c.id === selectedEvidenceId)?.tactic;
                       const isCorrect = tactic === correctTactic;
-                      const isTutorial = currentRound.isTutorial && !isTourActive;
-                      const isDisabled = isTutorial && !isCorrect;
-                      
+                      const isTutorial = currentRound.isTutorial;
+                      const isDisabled = false;
+
                       let buttonClass = `p-3 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer `;
                       if (isDisabled) {
                         buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";

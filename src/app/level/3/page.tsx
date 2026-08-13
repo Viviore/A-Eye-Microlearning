@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { driver } from "driver.js";
+import { VideoTutorialOverlay } from "@/components/game/VideoTutorialOverlay";
 import { useGameStore } from "@/store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { BrutalButton } from "@/components/ui/brutal-button";
@@ -84,9 +84,7 @@ export default function Level3Page() {
 
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
-  const isDriverInitialized = useRef(false);
-  const driverObjRef = useRef<any>(null);
-  const [isTourActive, setIsTourActive] = useState(true);
+  const [showVideoTutorial, setShowVideoTutorial] = useState(false);
 
   const currentRound = sessionRounds[currentRoundIndex];
 
@@ -103,7 +101,7 @@ export default function Level3Page() {
   } = useLevelScoring({
     isReady,
     hasTimer: true,
-    isPaused: currentRound?.isTutorial || isTourActive || showReveal || showTimeoutModal,
+    isPaused: currentRound?.isTutorial || showVideoTutorial || showReveal || showTimeoutModal,
     onTimeout: () => {
       // Pause both videos immediately
       if (videoARef.current && videoBRef.current) {
@@ -229,7 +227,7 @@ export default function Level3Page() {
 
 
   const handlePanelClick = (panel: "A" | "B") => {
-    if (isPanelLocked || isTourActive || showReveal) return;
+    if (isPanelLocked || showVideoTutorial || showReveal) return;
     setSelectedPanel(panel);
     setShowConfirm(true);
   };
@@ -344,74 +342,22 @@ export default function Level3Page() {
     }
   };
 
-  // Driver.js tutorial
   useEffect(() => {
-    if (currentRound?.isTutorial && !isDriverInitialized.current && isReady && !isTransitioning) {
-      isDriverInitialized.current = true;
-      setIsTourActive(true);
-
-      const d = driver({
-        showProgress: true,
-        allowClose: false,
-        smoothScroll: true,
-        disableActiveInteraction: true,
-        onHighlightStarted: (element) => {
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        },
-        onPopoverRender: (popover, { state }) => {
-          if (!driverObjRef.current?.hasNextStep()) return;
-
-          const navBtns = popover.wrapper.querySelector(".driver-popover-navigation-btns");
-          if (navBtns && !navBtns.querySelector(".driver-skip-btn")) {
-            const skipBtn = document.createElement("button");
-            skipBtn.innerText = "Skip";
-            skipBtn.className = "driver-popover-footer-btn driver-skip-btn";
-            skipBtn.setAttribute("aria-label", "Skip Tutorial");
-            skipBtn.addEventListener("click", () => {
-              if (driverObjRef.current) {
-                driverObjRef.current.destroy();
-              }
-              
-              startInPlaceTransition(() => {
-                // Auto-advance past the tutorial round
-                setCurrentRoundIndex(1);
-                resetScoring();
-                setToolUsed(false);
-                setSelectedTell(null);
-                resetRoundState();
-              });
-            });
-            navBtns.insertBefore(skipBtn, navBtns.firstChild);
-          }
-        },
-        popoverOffset: 20,
-        stagePadding: 8,
-        steps: [
-          { popover: { title: 'A-Eye Agent', description: "Welcome to Case 003! You need to figure out which video is AI generated." } },
-          { element: '#tutorial-videos', popover: { title: 'A-Eye Agent', description: "Watch both panels carefully. They play simultaneously.", side: "bottom", align: "center" } },
-          { element: '#tutorial-timer', popover: { title: 'A-Eye Agent', description: "You have 60 seconds per round. Running out of time means a -50 penalty and a new round.", side: "bottom", align: "center" } },
-          { popover: { title: 'A-Eye Agent', description: "Click the panel you think is AI. After confirming, you must explain WHY. Good luck!", doneBtnText: "Start Playing" } }
-        ],
-        onDestroyed: () => {
-          setIsTourActive(false);
-          if (videoARef.current && videoBRef.current) {
-            videoARef.current.play().catch(e => console.log(e));
-            videoBRef.current.play().catch(e => console.log(e));
-          }
-        }
-      });
-      driverObjRef.current = d;
-      d.drive();
+    if (currentRound?.isTutorial && isReady && !isTransitioning) {
+      setShowVideoTutorial(true);
     }
-
-    return () => {
-      if (driverObjRef.current) {
-        driverObjRef.current.destroy();
-      }
-    };
   }, [currentRound?.isTutorial, isReady, isTransitioning]);
+
+  const handleTutorialComplete = () => {
+    startInPlaceTransition(() => {
+      setShowVideoTutorial(false);
+      setCurrentRoundIndex(1);
+      resetScoring();
+      setToolUsed(false);
+      setSelectedTell(null);
+      resetRoundState();
+    });
+  };
 
   if (!isReady || !currentRound) return null;
 
@@ -419,6 +365,15 @@ export default function Level3Page() {
     <main
       className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-8 md:pb-12"
     >
+      <AnimatePresence>
+        {showVideoTutorial && (
+          <VideoTutorialOverlay
+            key="video-tutorial"
+            videoSrc="/tutorials/Case003-Tutorial.mp4"
+            onComplete={handleTutorialComplete}
+          />
+        )}
+      </AnimatePresence>
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start">
 
         {/* Header Section */}
@@ -475,9 +430,9 @@ export default function Level3Page() {
             {/* Panel A */}
             {(() => {
               const isCorrect = currentRound.correctPanel === "A";
-              const isTutorial = currentRound.isTutorial && !isTourActive;
-              const isDisabled = isTutorial && !isCorrect && !isPanelLocked;
-              const showPulse = isTutorial && isCorrect && !selectedPanel;
+              const isTutorial = currentRound.isTutorial;
+              const isDisabled = false;
+              const showPulse = false;
 
               return (
                 <div
@@ -531,9 +486,9 @@ export default function Level3Page() {
             {/* Panel B */}
             {(() => {
               const isCorrect = currentRound.correctPanel === "B";
-              const isTutorial = currentRound.isTutorial && !isTourActive;
-              const isDisabled = isTutorial && !isCorrect && !isPanelLocked;
-              const showPulse = isTutorial && isCorrect && !selectedPanel;
+              const isTutorial = currentRound.isTutorial;
+              const isDisabled = false;
+              const showPulse = false;
 
               return (
                 <div
@@ -624,9 +579,9 @@ export default function Level3Page() {
               <div className="flex flex-col gap-3">
                 {currentTells.map((tell) => {
                   const isCorrect = currentRound.tells.includes(tell);
-                  const isTutorial = currentRound.isTutorial && !isTourActive;
-                  const isDisabled = isTutorial && !isCorrect;
-                  const showPulse = isTutorial && isCorrect;
+                  const isTutorial = currentRound.isTutorial;
+                  const isDisabled = false;
+                  const showPulse = false;
 
                   let buttonClass = `p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer text-left `;
 
@@ -651,7 +606,7 @@ export default function Level3Page() {
                 })}
               </div>
               
-              {(!currentRound.isTutorial || !isTourActive) && (
+              {(!currentRound.isTutorial) && (
                 <div className="pt-2 mt-2">
                   <BrutalButton onClick={handleCancelSelection} variant="secondary" className="w-full flex justify-center items-center">
                     <RotateCcw className="mr-2 w-5 h-5" strokeWidth={2.5} /> CANCEL & RE-WATCH
