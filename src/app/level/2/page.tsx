@@ -325,7 +325,22 @@ export default function Level2Page() {
     }
   }, [roundScore, cumulativeScore, currentRoundIndex, feedback?.forceNext]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const touchStartPos = useRef<{x: number, y: number} | null>(null);
+  const isDragging = useRef(false);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    touchStartPos.current = { x: e.clientX, y: e.clientY };
+    isDragging.current = false;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (touchStartPos.current) {
+      const dist = Math.hypot(e.clientX - touchStartPos.current.x, e.clientY - touchStartPos.current.y);
+      if (dist > 10) {
+        isDragging.current = true;
+      }
+    }
+    setIsHoveringImage(true);
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -340,6 +355,11 @@ export default function Level2Page() {
       imgWidth: rect.width,
       imgHeight: rect.height,
     });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    touchStartPos.current = null;
+    setTimeout(() => { isDragging.current = false; }, 50);
   };
 
   
@@ -542,12 +562,20 @@ export default function Level2Page() {
             <div
               id="tutorial-image-container"
               className={`relative cursor-crosshair w-full aspect-auto transition-all ${isHoveringImage ? "cursor-none" : "cursor-crosshair"}`}
-              onMouseEnter={() => setIsHoveringImage(true)}
-              onMouseLeave={() => {
+              style={{ touchAction: 'none' }}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerLeave={() => {
                 setIsHoveringImage(false);
                 setMagnifier((p) => ({ ...p, show: false }));
+                touchStartPos.current = null;
               }}
-              onMouseMove={handleMouseMove}
+              onPointerCancel={() => {
+                setIsHoveringImage(false);
+                setMagnifier((p) => ({ ...p, show: false }));
+                touchStartPos.current = null;
+              }}
             >
               
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -555,8 +583,9 @@ export default function Level2Page() {
                 src={currentRound.imageSrc}
                 alt="Viral Photo"
                 className="w-full h-auto block select-none border-b-[4px] border-transparent"
-                onPointerDown={() => {
-                  if (currentRound.isTutorial && isTourActive) return;
+                onClick={() => {
+                  if (isDragging.current) return;
+                  if (currentRound.isTutorial) return;
                   applyDeduction(10);
                 }}
               />
@@ -577,8 +606,9 @@ export default function Level2Page() {
                     width: `${clue.width}%`,
                     height: `${clue.height}%`,
                   }}
-                  onPointerDown={(e) => {
+                  onClick={(e) => {
                     e.stopPropagation();
+                    if (isDragging.current) return;
                     handleClueClick(clue);
                   }}
                 />
