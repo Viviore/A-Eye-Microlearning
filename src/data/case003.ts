@@ -28,8 +28,8 @@ const case003Data = [
   {
     "id": "v-round-3",
     "isTutorial": false,
-    "videoA": "/videos/set1/sushi_real.mp4",
-    "videoB": "/videos/set1/sushi_ai.mp4",
+    "videoA": "/videos/set2/sushi_real.mp4",
+    "videoB": "/videos/set2/sushi_ai.mp4",
     "correctPanel": "B",
     "tells": ["Sushi cooks unnaturally fast"],
     "distractorTells": [
