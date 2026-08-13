@@ -5,11 +5,11 @@ const case003Data = [
     "videoA": "/videos/tutorial/cut_real.mp4",
     "videoB": "/videos/tutorial/cut_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Cucumber slice duplicates directly onto the knife blade"],
+    "tells": ["Cucumber slice duplicates on blade"],
     "distractorTells": [
-      "Knife blade bent out of shape mid-slice",
-      "Lighting changed on the cutting board",
-      "Hand snapped to a different position without transition"
+      "Knife blade bent mid-slice",
+      "Lighting shifted on the board",
+      "Hand snapped to new position"
     ]
   },
   {
@@ -18,9 +18,9 @@ const case003Data = [
     "videoA": "/videos/set1/race_real.mp4",
     "videoB": "/videos/set1/race_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Background vehicles warp and melt continuously"],
+    "tells": ["Background vehicles warp and melt"],
     "distractorTells": [
-      "Car reflections were inverted",
+      "Car reflections appeared inverted",
       "Tail lights blinked erratically",
       "Street lights vanished suddenly"
     ]
@@ -31,11 +31,11 @@ const case003Data = [
     "videoA": "/videos/set1/sushi_real.mp4",
     "videoB": "/videos/set1/sushi_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Sushi doesn't react realistically to the open flame"],
+    "tells": ["Sushi doesn't react to flame"],
     "distractorTells": [
-      "Salmon dissolved like liquid plastic",
-      "Plate edge warped",
-      "Flame color was inconsistent"
+      "Salmon dissolved like plastic",
+      "Plate edge warped slightly",
+      "Flame color shifted quickly"
     ]
   },
   {
@@ -47,8 +47,8 @@ const case003Data = [
     "tells": ["Red mushroom magically duplicated"],
     "distractorTells": [
       "UI elements vanished temporarily",
-      "Lighting didn't match sun",
-      "Player hand motion skipped frames"
+      "Lighting ignored the sun",
+      "Player hand skipped frames"
     ]
   },
   {
@@ -57,9 +57,9 @@ const case003Data = [
     "videoA": "/videos/set4/milk_ai.mp4",
     "videoB": "/videos/set4/milk_real.mp4",
     "correctPanel": "A",
-    "tells": ["Milk flowed ignoring actual gravity and collision"],
+    "tells": ["Milk flowed ignoring actual gravity"],
     "distractorTells": [
-      "Glass jar reflection was distorted",
+      "Glass jar reflection distorted",
       "Liquid stream broke physics",
       "Blender spout changed shape"
     ]
@@ -70,11 +70,11 @@ const case003Data = [
     "videoA": "/videos/set5/soup_real.mp4",
     "videoB": "/videos/set5/soup_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Chicken and carrots blended together seamlessly"],
+    "tells": ["Chicken and carrots blended together"],
     "distractorTells": [
       "Ladle metal reflection distorted",
       "Pot handles shifted position",
-      "Steam motion was frozen"
+      "Steam motion completely froze"
     ]
   },
   {
@@ -83,11 +83,11 @@ const case003Data = [
     "videoA": "/videos/set6/deer_ai.mp4",
     "videoB": "/videos/set6/deer_real.mp4",
     "correctPanel": "A",
-    "tells": ["Deer antlers distorted structurally while lifting"],
+    "tells": ["Deer antlers distorted while lifting"],
     "distractorTells": [
-      "Leg joints broke and snapped erratically",
+      "Leg joints snapped erratically",
       "Background feeder drifted sideways",
-      "Grass texture distorted"
+      "Grass texture stretched out"
     ]
   },
   {
@@ -96,11 +96,11 @@ const case003Data = [
     "videoA": "/videos/set7/mario_real.mp4",
     "videoB": "/videos/set7/mario_ai.mp4",
     "correctPanel": "B",
-    "tells": ["HUD interface and speedometer digits scrambled dynamically"],
+    "tells": ["HUD and speedometer digits scrambled"],
     "distractorTells": [
-      "Kart tires clipped through track",
-      "Rainbow texture tore and fragmented",
-      "Shadows didn't match light source"
+      "Kart tires clipped the track",
+      "Rainbow texture tore suddenly",
+      "Shadows ignored light source"
     ]
   },
   {
@@ -113,7 +113,7 @@ const case003Data = [
     "distractorTells": [
       "Stem position shifted abruptly",
       "Background lighting strobed randomly",
-      "Shadows didn't match light source"
+      "Shadows ignored light source"
     ]
   },
   {
@@ -125,8 +125,8 @@ const case003Data = [
     "tells": ["An orange disappeared completely"],
     "distractorTells": [
       "Water ripples froze mid-air",
-      "Air bubbles popped out of existence without surfacing",
-      "Lighting shifted color"
+      "Air bubbles popped instantly",
+      "Lighting shifted color tones"
     ]
   },
   {
@@ -139,7 +139,7 @@ const case003Data = [
     "distractorTells": [
       "Piping tip drifted off-center",
       "Cake board shifted position",
-      "Shadows didn't match light source"
+      "Shadows ignored light source"
     ]
   },
   {
@@ -148,11 +148,11 @@ const case003Data = [
     "videoA": "/videos/set11/roblox_real.mp4",
     "videoB": "/videos/set11/roblox_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Path platforms warped and shifted unnaturally"],
+    "tells": ["Path platforms warped and shifted"],
     "distractorTells": [
-      "Player avatar limbs stretched like rubber",
-      "UI elements flickered",
-      "Background floating island distorted"
+      "Avatar limbs stretched like rubber",
+      "UI elements flickered off",
+      "Floating island distorted slightly"
     ]
   },
   {
@@ -161,10 +161,10 @@ const case003Data = [
     "videoA": "/videos/set12/cat_ai.mp4",
     "videoB": "/videos/set12/cat_real.mp4",
     "correctPanel": "A",
-    "tells": ["Kitten's actions is unnatural"],
+    "tells": ["Kitten's actions are unnatural"],
     "distractorTells": [
-      "Bed sheet pattern shifted constantly",
-      "Lighting pulsed randomly without a source",
+      "Bed sheet pattern shifted",
+      "Lighting pulsed without source",
       "Background blurred unevenly"
     ]
   },
@@ -174,11 +174,11 @@ const case003Data = [
     "videoA": "/videos/set13/bird_real.mp4",
     "videoB": "/videos/set13/bird_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Parrot beaks didn't make physical contact while feeding"],
+    "tells": ["Parrot beaks completely passed through"],
     "distractorTells": [
-      "Feather texture blurred",
-      "Branch shape shifted",
-      "Background illumination strobed erratically"
+      "Feather texture became blurry",
+      "Branch shape shifted suddenly",
+      "Background illumination strobed randomly"
     ]
   },
   {
@@ -187,10 +187,10 @@ const case003Data = [
     "videoA": "/videos/set14/pop_ai.mp4",
     "videoB": "/videos/set14/pop_real.mp4",
     "correctPanel": "A",
-    "tells": ["Balloon popped without any actual rubber tearing or fragments"],
+    "tells": ["Balloon popped without rubber tearing"],
     "distractorTells": [
-      "Pool water surface froze completely",
-      "Fingers stretched and distorted upon popping",
+      "Pool water surface froze",
+      "Fingers stretched upon popping",
       "Background trees shifted position"
     ]
   },
@@ -200,11 +200,11 @@ const case003Data = [
     "videoA": "/videos/set15/eat_real.mp4",
     "videoB": "/videos/set15/eat_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Food phased directly through the jaw instead of being chewed"],
+    "tells": ["Food phased through the jaw"],
     "distractorTells": [
-      "Facial features warped while chewing",
+      "Facial features warped slightly",
       "Shirt neckline changed shape",
-      "Background depth of field shifted erratically"
+      "Background focus shifted randomly"
     ]
   },
   {
@@ -213,11 +213,11 @@ const case003Data = [
     "videoA": "/videos/set16/pixel_ai.mp4",
     "videoB": "/videos/set16/pixel_real.mp4",
     "correctPanel": "A",
-    "tells": ["Water surface animated with inconsistent, non-grid physics"],
+    "tells": ["Water animated with broken physics"],
     "distractorTells": [
-      "Character outline flickered",
-      "Wooden dock tiles misaligned suddenly",
-      "Lily pad size changed unexpectedly"
+      "Character outline flickered briefly",
+      "Wooden dock tiles misaligned",
+      "Lily pad size changed"
     ]
   },
   {
@@ -226,11 +226,11 @@ const case003Data = [
     "videoA": "/videos/set17/salad_real.mp4",
     "videoB": "/videos/set17/salad_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Salad greens ignored gravity and mass during mixing"],
+    "tells": ["Salad greens ignored mixing physics"],
     "distractorTells": [
-      "Bowl outline flickered",
-      "Table texture shifted",
-      "Background lighting changed"
+      "Bowl outline flickered briefly",
+      "Table texture shifted slightly",
+      "Background lighting changed tone"
     ]
   },
   {
@@ -239,11 +239,11 @@ const case003Data = [
     "videoA": "/videos/set18/chop_ai.mp4",
     "videoB": "/videos/set18/chop_real.mp4",
     "correctPanel": "A",
-    "tells": ["Cabbage pieces phased directly through the cutting board"],
+    "tells": ["Cabbage phased through cutting board"],
     "distractorTells": [
       "Cutting board shifted position",
-      "Fingers snapped to new positions instantly",
-      "Kitchen appliances in the back shifted shapes"
+      "Fingers snapped to new spots",
+      "Kitchen appliances shifted shapes"
     ]
   },
   {
@@ -252,7 +252,7 @@ const case003Data = [
     "videoA": "/videos/set19/slime_real.mp4",
     "videoB": "/videos/set19/slime_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Slime and fingers fused into a single continuous texture"],
+    "tells": ["Slime and fingers fused together"],
     "distractorTells": [
       "Table edge shifted position",
       "Sleeve cuff changed shape",
@@ -265,11 +265,11 @@ const case003Data = [
     "videoA": "/videos/set20/ball_ai.mp4",
     "videoB": "/videos/set20/ball_real.mp4",
     "correctPanel": "A",
-    "tells": ["Knife sliced without creating any physical resistance or indent"],
+    "tells": ["Knife sliced without physical indent"],
     "distractorTells": [
       "Sand ball texture flickered",
       "Tray surface shifted position",
-      "Hand fingers warped"
+      "Hand fingers warped slightly"
     ]
   }
 ]
