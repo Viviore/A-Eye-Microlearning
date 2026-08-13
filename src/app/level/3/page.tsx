@@ -574,16 +574,18 @@ export default function Level3Page() {
           <AnimatePresence>
             {showConfirm && (
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="mx-6 md:mx-8 mb-6 mt-2 p-6 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex flex-col items-center gap-4"
+                initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
+                exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                className="mx-6 md:mx-8 overflow-hidden"
               >
-                <h3 className="font-heading font-black text-2xl uppercase">Are you sure?</h3>
-                <p className="font-sans font-bold text-center">You selected Panel {selectedPanel} as the AI fake. Locking this in will consume your answer.</p>
-                <div className="flex gap-4">
-                  <BrutalButton onClick={handleCancelConfirm} variant="secondary">Cancel</BrutalButton>
-                  <BrutalButton onClick={handleConfirmPanel} variant="dark">Lock Answer</BrutalButton>
+                <div className="p-6 mt-2 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex flex-col items-center gap-4">
+                  <h3 className="font-heading font-black text-2xl uppercase">Are you sure?</h3>
+                  <p className="font-sans font-bold text-center">You selected Panel {selectedPanel} as the AI fake. Locking this in will consume your answer.</p>
+                  <div className="flex gap-4">
+                    <BrutalButton onClick={handleCancelConfirm} variant="secondary">Cancel</BrutalButton>
+                    <BrutalButton onClick={handleConfirmPanel} variant="dark">Lock Answer</BrutalButton>
+                  </div>
                 </div>
               </motion.div>
             )}
