@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronRight,
+  ChevronLeft,
   ClipboardCheck,
   Shield,
   User,
@@ -299,6 +300,13 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
   };
 
   // ─── Navigation ──────────────────────────────────────────────────
+  const handleBack = () => {
+    if (currentIndex > 0) {
+      setDirection(-1);
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
   const handleNext = () => {
     if (!isAnswered) return;
 
@@ -451,13 +459,27 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
             </motion.div>
           </AnimatePresence>
 
-          {/* Next Button */}
+          {/* Action Buttons */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="mt-8 flex justify-end"
+            className="mt-8 flex justify-between items-center w-full"
           >
+            {currentIndex > 0 ? (
+              <BrutalButton
+                onClick={handleBack}
+                variant="secondary"
+                size="default"
+                className="uppercase group"
+              >
+                <ChevronLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+                Back
+              </BrutalButton>
+            ) : (
+              <div /> // Empty div for flex-between spacing
+            )}
+
             <BrutalButton
               onClick={handleNext}
               disabled={!isAnswered}

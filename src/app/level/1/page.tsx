@@ -369,6 +369,19 @@ export default function Level1Page() {
                   time={currentRound.postTime}
                 />
                 
+                {currentRoundIndex === 0 && flaggedIds.size === 0 && !isTourActive && (
+                  <motion.span 
+                    animate={{ x: [0, 10, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                    className="absolute top-1/2 -translate-y-1/2 -left-12 md:-left-16 pointer-events-none z-10 drop-shadow-md hidden sm:block"
+                  >
+                    <svg viewBox="0 0 100 100" className="w-10 h-10 md:w-12 md:h-12 overflow-visible">
+                      <polygon points="14,44 54,44 54,24 94,54 54,84 54,64 14,64" fill="#0F172A" />
+                      <polygon points="10,40 50,40 50,20 90,50 50,80 50,60 10,60" fill="#FFB800" stroke="#0F172A" strokeWidth="6" strokeLinejoin="miter" />
+                    </svg>
+                  </motion.span>
+                )}
+                
                 <div className="text-xl md:text-[22px] font-sans font-bold leading-[2.2] text-[#0F172A]">
               {currentRound.segments.map((segment) => {
                 const isFlagged = flaggedIds.has(segment.id);
@@ -378,7 +391,7 @@ export default function Level1Page() {
                     key={segment.id}
                     id={`segment-${segment.id}`}
                     onClick={(e) => handleFlagSegment(segment, e)}
-                    className={`cursor-pointer transition-all px-1 py-0.5 inline box-decoration-clone rounded-sm leading-relaxed ${
+                    className={`cursor-pointer transition-all px-1 py-0.5 inline box-decoration-clone rounded-sm leading-relaxed ${showTutorialPulse ? "relative" : ""} ${
                       isFlagged 
                         ? (segment.isClue 
                             ? "bg-[#FFB800] border-[3px] border-[#0F172A] font-black shadow-[4px_4px_0px_0px_#0F172A]" 
@@ -389,18 +402,6 @@ export default function Level1Page() {
                     }`}
                   >
                     {segment.text}
-                    {showTutorialPulse && (
-                      <motion.span 
-                        animate={{ x: [0, 10, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                        className="absolute top-1/2 -translate-y-1/2 -left-16 pointer-events-none z-10 drop-shadow-md"
-                      >
-                        <svg viewBox="0 0 100 100" className="w-12 h-12 overflow-visible">
-                          <polygon points="14,44 54,44 54,24 94,54 54,84 54,64 14,64" fill="#0F172A" />
-                          <polygon points="10,40 50,40 50,20 90,50 50,80 50,60 10,60" fill="#FFB800" stroke="#0F172A" strokeWidth="6" strokeLinejoin="miter" />
-                        </svg>
-                      </motion.span>
-                    )}
                   </span>
                 );
               })}

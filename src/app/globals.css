@@ -267,6 +267,10 @@
     max-width: 450px !important;
   }
   
+  .driver-popover-arrow {
+    display: none !important;
+  }
+
   .driver-popover-navigation-btns {
     display: flex !important;
     gap: 12px !important;

@@ -71,11 +71,11 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     id: "q4",
     type: "text",
     questionType: "skill",
-    postAuthorName: "City Council Updates",
-    postHandle: "@CityCouncilNews",
+    postAuthorName: "Apple Support",
+    postHandle: "@AppleSupport",
     postTime: "5 hrs ago",
     content:
-      "Reminder: city council offices will be closed this Friday for a scheduled public holiday. Regular hours resume Monday. Thank you for your understanding.",
+      "iOS 17.2 is now available. This update introduces the new Journal app, improvements to the Action Button, and important bug fixes for your iPhone.",
     expected: "real",
   },
 

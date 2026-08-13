@@ -47,7 +47,26 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     completedLevels,
   ]);
 
-  if (!isMounted) {
+  let isAuthorized = true;
+  if (isMounted) {
+    const isL1Done = completedLevels.includes(1);
+    const isL2Done = completedLevels.includes(2);
+    const isL3Done = completedLevels.includes(3);
+
+    if (pathname.startsWith("/level/1") && !preAssessmentCompleted) {
+      isAuthorized = false;
+    } else if (pathname.startsWith("/level/2") && !isL1Done) {
+      isAuthorized = false;
+    } else if (pathname.startsWith("/level/3") && !isL2Done) {
+      isAuthorized = false;
+    } else if (pathname === "/post" && !isL3Done) {
+      isAuthorized = false;
+    } else if (pathname === "/results" && !postAssessmentCompleted) {
+      isAuthorized = false;
+    }
+  }
+
+  if (!isMounted || !isAuthorized) {
     return null;
   }
 
