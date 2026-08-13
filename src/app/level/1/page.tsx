@@ -445,9 +445,9 @@ export default function Level1Page() {
                 <BrutalButton
                   id="btn-source-check"
                   onClick={handleOpenSourceCheck}
-                  disabled={currentRoundIndex === 0 && isTourActive}
+                  disabled={false} // Never disabled HTML-wise during tour to prevent z-index trapping
                   variant={sourceCheckOpen ? "primary" : "secondary"}
-                  className={`w-full ${sourceCheckOpen ? "bg-[#FF3366] text-white hover:bg-[#FF3366]/90" : "bg-[#0F172A] text-white hover:bg-[#FFB800] hover:text-[#0F172A]"}`}
+                  className={`w-full ${sourceCheckOpen ? "bg-[#FF3366] text-white hover:bg-[#FF3366]/90" : "bg-[#0F172A] text-white hover:bg-[#FFB800] hover:text-[#0F172A]"} ${(currentRoundIndex === 0 && isTourActive) ? "opacity-100" : ""}`}
                 >
                   <Search className="mr-3 w-6 h-6" strokeWidth={3} />
                   {sourceCheckOpen ? "CLOSE SOURCE CHECK" : "OPEN SOURCE CHECK"}
@@ -456,9 +456,10 @@ export default function Level1Page() {
                 <BrutalButton
                   id="tutorial-verdict-btn"
                   onClick={() => {
+                    if (isTourActive) return;
                     setShowVerdictModal(true);
                   }}
-                  disabled={!canFileVerdict}
+                  disabled={!canFileVerdict && !isTourActive}
                   variant="blue"
                   size="lg"
                   className="w-full flex items-center justify-center"
