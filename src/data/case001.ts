@@ -476,7 +476,7 @@ const case001Data = {
       "segments": [
         {
           "id": "9-1",
-          "text": "$1 FLIGHT ALERT! âœˆï¸ "
+          "text": "$1 FLIGHT ALERT! ✈️ "
         },
         {
           "id": "9-2",
