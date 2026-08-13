@@ -42,9 +42,9 @@ const chartConfig = {
 export function ChartBarMultiple({ c1, c2, c3 }: { c1: number, c2: number, c3: number }) {
   // Pass dynamic colors using CSS variables that shadcn/chart understands
   const chartData = [
-    { case: "TEXT", score: c1, fill: "var(--color-case001)" },
-    { case: "PHOTO", score: c2, fill: "var(--color-case002)" },
-    { case: "VIDEO", score: c3, fill: "var(--color-case003)" },
+    { case: "TEXT", score: Math.max(0, c1), fill: "var(--color-case001)" },
+    { case: "PHOTO", score: Math.max(0, c2), fill: "var(--color-case002)" },
+    { case: "VIDEO", score: Math.max(0, c3), fill: "var(--color-case003)" },
   ]
 
   const maxTotalScore = 500;
