@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import case003Data from "@/data/case003";
 import { CaseHeader } from "@/components/game/CaseHeader";
+import { ObjectivePanel } from "@/components/game/ObjectivePanel";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
 import { useProgressionGuard } from "@/hooks/useProgressionGuard";
 import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";
@@ -423,6 +424,13 @@ export default function Level3Page() {
               )}
             </div>
           </CaseHeader>
+        </motion.div>
+
+        <motion.div variants={fadeUp} className="w-full mb-2">
+          <ObjectivePanel>
+            Watch both videos carefully. One is authentic footage, and the other is an AI-generated deepfake. 
+            Identify the deepfake and select the visual artifact that gave it away.
+          </ObjectivePanel>
         </motion.div>
 
         {/* Video Area */}
