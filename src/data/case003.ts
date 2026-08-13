@@ -5,11 +5,11 @@ const case003Data = [
     "videoA": "/videos/tutorial/cut_real.mp4",
     "videoB": "/videos/tutorial/cut_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Cucumber slice glitches and duplicates on the knife blade"],
+    "tells": ["Cucumber slice duplicates directly onto the knife blade"],
     "distractorTells": [
-      "Knife blade morphed mid-slice",
+      "Knife blade bent out of shape mid-slice",
       "Lighting changed on the cutting board",
-      "Hand position shifted unnaturally"
+      "Hand snapped to a different position without transition"
     ]
   },
   {
@@ -18,10 +18,10 @@ const case003Data = [
     "videoA": "/videos/set1/race_real.mp4",
     "videoB": "/videos/set1/race_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Background objects morphing"],
+    "tells": ["Background vehicles warp and melt continuously"],
     "distractorTells": [
       "Car reflections were inverted",
-      "Tail lights flickered unnaturally",
+      "Tail lights blinked erratically",
       "Street lights vanished suddenly"
     ]
   },
@@ -31,9 +31,9 @@ const case003Data = [
     "videoA": "/videos/set1/sushi_real.mp4",
     "videoB": "/videos/set1/sushi_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Sushi doesn't react to flame"],
+    "tells": ["Sushi doesn't react realistically to the open flame"],
     "distractorTells": [
-      "Salmon melted unnaturally",
+      "Salmon dissolved like liquid plastic",
       "Plate edge warped",
       "Flame color was inconsistent"
     ]
@@ -44,11 +44,11 @@ const case003Data = [
     "videoA": "/videos/set3/block_real.mp4",
     "videoB": "/videos/set3/block_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Red mushroom duplicated"],
+    "tells": ["Red mushroom magically duplicated"],
     "distractorTells": [
-      "UI elements flickered",
+      "UI elements vanished temporarily",
       "Lighting didn't match sun",
-      "Player hand motion glitched"
+      "Player hand motion skipped frames"
     ]
   },
   {
@@ -57,7 +57,7 @@ const case003Data = [
     "videoA": "/videos/set4/milk_ai.mp4",
     "videoB": "/videos/set4/milk_real.mp4",
     "correctPanel": "A",
-    "tells": ["Liquid movement was unnatural"],
+    "tells": ["Milk flowed ignoring actual gravity and collision"],
     "distractorTells": [
       "Glass jar reflection was distorted",
       "Liquid stream broke physics",
@@ -70,7 +70,7 @@ const case003Data = [
     "videoA": "/videos/set5/soup_real.mp4",
     "videoB": "/videos/set5/soup_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Chicken and carrots morphed"],
+    "tells": ["Chicken and carrots blended together seamlessly"],
     "distractorTells": [
       "Ladle metal reflection distorted",
       "Pot handles shifted position",
@@ -83,10 +83,10 @@ const case003Data = [
     "videoA": "/videos/set6/deer_ai.mp4",
     "videoB": "/videos/set6/deer_real.mp4",
     "correctPanel": "A",
-    "tells": ["Deer head and horns morphed when lifting"],
+    "tells": ["Deer antlers distorted structurally while lifting"],
     "distractorTells": [
-      "Leg movement glitched",
-      "Background feeder shifted position",
+      "Leg joints broke and snapped erratically",
+      "Background feeder drifted sideways",
       "Grass texture distorted"
     ]
   },
@@ -96,10 +96,10 @@ const case003Data = [
     "videoA": "/videos/set7/mario_real.mp4",
     "videoB": "/videos/set7/mario_ai.mp4",
     "correctPanel": "B",
-    "tells": ["UI elements and speedometer morphed"],
+    "tells": ["HUD interface and speedometer digits scrambled dynamically"],
     "distractorTells": [
       "Kart tires clipped through track",
-      "Rainbow arch glitched",
+      "Rainbow texture tore and fragmented",
       "Shadows didn't match light source"
     ]
   },
@@ -109,10 +109,10 @@ const case003Data = [
     "videoA": "/videos/set8/flower_ai.mp4",
     "videoB": "/videos/set8/flower_real.mp4",
     "correctPanel": "A",
-    "tells": ["Petals and stamens morphed unnaturally"],
+    "tells": ["Petals and stamens morphing"],
     "distractorTells": [
-      "Stem position shifted",
-      "Background lighting flickered",
+      "Stem position shifted abruptly",
+      "Background lighting strobed randomly",
       "Shadows didn't match light source"
     ]
   },
@@ -122,10 +122,10 @@ const case003Data = [
     "videoA": "/videos/set9/orange_real.mp4",
     "videoB": "/videos/set9/orange_ai.mp4",
     "correctPanel": "B",
-    "tells": ["An orange disappeared"],
+    "tells": ["An orange disappeared completely"],
     "distractorTells": [
       "Water ripples froze mid-air",
-      "Bubbles vanished unnaturally",
+      "Air bubbles popped out of existence without surfacing",
       "Lighting shifted color"
     ]
   },
@@ -135,9 +135,9 @@ const case003Data = [
     "videoA": "/videos/set10/cake_ai.mp4",
     "videoB": "/videos/set10/cake_real.mp4",
     "correctPanel": "A",
-    "tells": ["Frosting morphed"],
+    "tells": ["Frosting physics don't match reality"],
     "distractorTells": [
-      "Piping tip shifted position",
+      "Piping tip drifted off-center",
       "Cake board shifted position",
       "Shadows didn't match light source"
     ]
@@ -148,9 +148,9 @@ const case003Data = [
     "videoA": "/videos/set11/roblox_real.mp4",
     "videoB": "/videos/set11/roblox_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Path platforms morphed and shifted unnaturally"],
+    "tells": ["Path platforms warped and shifted unnaturally"],
     "distractorTells": [
-      "Character avatar limbs warped",
+      "Player avatar limbs stretched like rubber",
       "UI elements flickered",
       "Background floating island distorted"
     ]
@@ -161,10 +161,10 @@ const case003Data = [
     "videoA": "/videos/set12/cat_ai.mp4",
     "videoB": "/videos/set12/cat_real.mp4",
     "correctPanel": "A",
-    "tells": ["Kitten paws and face morphed"],
+    "tells": ["Kitten's actions is unnatural"],
     "distractorTells": [
-      "Bed sheet pattern shifted",
-      "Lighting flickered unnaturally",
+      "Bed sheet pattern shifted constantly",
+      "Lighting pulsed randomly without a source",
       "Background blurred unevenly"
     ]
   },
@@ -174,11 +174,11 @@ const case003Data = [
     "videoA": "/videos/set13/bird_real.mp4",
     "videoB": "/videos/set13/bird_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Parrot beaks didn't touch while feeding"],
+    "tells": ["Parrot beaks didn't make physical contact while feeding"],
     "distractorTells": [
       "Feather texture blurred",
       "Branch shape shifted",
-      "Background lighting flickered"
+      "Background illumination strobed erratically"
     ]
   },
   {
@@ -187,10 +187,10 @@ const case003Data = [
     "videoA": "/videos/set14/pop_ai.mp4",
     "videoB": "/videos/set14/pop_real.mp4",
     "correctPanel": "A",
-    "tells": ["Balloon popped without rubber tear"],
+    "tells": ["Balloon popped without any actual rubber tearing or fragments"],
     "distractorTells": [
-      "Pool water surface froze",
-      "Hand shape warped on pop",
+      "Pool water surface froze completely",
+      "Fingers stretched and distorted upon popping",
       "Background trees shifted position"
     ]
   },
@@ -200,11 +200,11 @@ const case003Data = [
     "videoA": "/videos/set15/eat_real.mp4",
     "videoB": "/videos/set15/eat_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Unnatural eating action"],
+    "tells": ["Food phased directly through the jaw instead of being chewed"],
     "distractorTells": [
       "Facial features warped while chewing",
       "Shirt neckline changed shape",
-      "Background blurred unnaturally"
+      "Background depth of field shifted erratically"
     ]
   },
   {
@@ -213,10 +213,10 @@ const case003Data = [
     "videoA": "/videos/set16/pixel_ai.mp4",
     "videoB": "/videos/set16/pixel_real.mp4",
     "correctPanel": "A",
-    "tells": ["Water animation was unnatural"],
+    "tells": ["Water surface animated with inconsistent, non-grid physics"],
     "distractorTells": [
       "Character outline flickered",
-      "Wooden dock tiles shifted alignment",
+      "Wooden dock tiles misaligned suddenly",
       "Lily pad size changed unexpectedly"
     ]
   },
@@ -226,7 +226,7 @@ const case003Data = [
     "videoA": "/videos/set17/salad_real.mp4",
     "videoB": "/videos/set17/salad_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Physics of mixing the salad was wrong"],
+    "tells": ["Salad greens ignored gravity and mass during mixing"],
     "distractorTells": [
       "Bowl outline flickered",
       "Table texture shifted",
@@ -239,11 +239,11 @@ const case003Data = [
     "videoA": "/videos/set18/chop_ai.mp4",
     "videoB": "/videos/set18/chop_real.mp4",
     "correctPanel": "A",
-    "tells": ["Physics of chopping cabbage looked wrong"],
+    "tells": ["Cabbage pieces phased directly through the cutting board"],
     "distractorTells": [
       "Cutting board shifted position",
-      "Hand position changed unnaturally",
-      "Background objects morphed"
+      "Fingers snapped to new positions instantly",
+      "Kitchen appliances in the back shifted shapes"
     ]
   },
   {
@@ -252,7 +252,7 @@ const case003Data = [
     "videoA": "/videos/set19/slime_real.mp4",
     "videoB": "/videos/set19/slime_ai.mp4",
     "correctPanel": "B",
-    "tells": ["Slime texture and hand fingers morphed"],
+    "tells": ["Slime and fingers fused into a single continuous texture"],
     "distractorTells": [
       "Table edge shifted position",
       "Sleeve cuff changed shape",
@@ -265,7 +265,7 @@ const case003Data = [
     "videoA": "/videos/set20/ball_ai.mp4",
     "videoB": "/videos/set20/ball_real.mp4",
     "correctPanel": "A",
-    "tells": ["Physics of cutting kinetic sand was wrong"],
+    "tells": ["Knife sliced without creating any physical resistance or indent"],
     "distractorTells": [
       "Sand ball texture flickered",
       "Tray surface shifted position",
@@ -273,6 +273,5 @@ const case003Data = [
     ]
   }
 ]
-
 
 export default case003Data;
