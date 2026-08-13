@@ -25,28 +25,29 @@ export type AssessmentQuestion = SkillQuestion | ScaleQuestion;
 
 // ─── Assessment Questions (Exact content per specification) ──────────
 export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
-  // Q1 — Text Post (REAL)
+  // Q1 — Text Post (FAKE)
   {
     id: "q1",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Fact Checker",
-    postHandle: "@DailyFacts",
+    postAuthorName: "CyberSec Alert",
+    postHandle: "@CyberSec_Alerts",
     postTime: "10 mins ago",
-    content: "A healthy, normal adult chicken has 2 legs.",
-    expected: "real",
+    content: "Sure, here is an engaging and urgent social media post about a data breach: URGENT! Major Telecom provider just suffered a massive data breach! Over 5 million customer records have been leaked online. Check if your number was compromised by entering it at: telecom-breach-check.xyz",
+    expected: "fake",
   },
 
-  // Q2 — Text Post (REAL)
+  // Q2 — Photo (FAKE)
   {
     id: "q2",
-    type: "text",
+    type: "image",
     questionType: "skill",
-    postAuthorName: "City Info",
-    postHandle: "@CityInfo",
-    postTime: "3 hrs ago",
-    content: "Standard traffic lights have 3 colors: Red, Yellow, and Green.",
-    expected: "real",
+    postAuthorName: "Home Reno DIY",
+    postHandle: "@DIY_RenoQueen",
+    postTime: "2 hrs ago",
+    content: "Just finished renovating the kitchen! I'm completely in love with the new modern setup. 🍳🏡 #HomeDesign",
+    imageSrc: "/photos/quiz/kitchen_fake.png",
+    expected: "fake",
   },
 
   // Q3 — Text Post (FAKE)
@@ -54,35 +55,36 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     id: "q3",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Trivia Master",
-    postHandle: "@TriviaM",
+    postAuthorName: "Fäceb00k Security Team",
+    postHandle: "@FB_Security_Official",
     postTime: "1 hr ago",
-    content: "Did you know? Spiders belong to the insect family and only have 6 legs.",
+    content: "⚠️ 🔴 URGENT SECURITY NOTICE 🔴 ⚠️ — Your account has been flagged for violating our community standards! 😱 — To prevent PERMANENT DEACTIVATION in the next 24 hours ⏰ — Please verify your identity by sending a small security deposit of $10 to the link below 💸 — We will refund it immediately! 💯 👉 www.fb-account-recovery-urgent.xyz 👈 — DO NOT IGNORE THIS MESSAGE! 🛑",
     expected: "fake",
   },
 
-  // Q4 — Text Post (REAL)
+  // Q4 — Photo (REAL)
   {
     id: "q4",
-    type: "text",
+    type: "image",
     questionType: "skill",
-    postAuthorName: "Science Daily",
-    postHandle: "@ScienceDaily",
-    postTime: "5 hrs ago",
-    content: "A single water molecule is composed of two hydrogen atoms and one oxygen atom.",
+    postAuthorName: "City News Network",
+    postHandle: "@CityNews_Live",
+    postTime: "3 hrs ago",
+    content: "Massive protests downtown today! This crowd is unbelievable. They are demanding immediate action on the new policy. #BreakingNews",
+    imageSrc: "/photos/quiz/protest_real.png",
     expected: "real",
   },
 
-  // Q5 — Text Post (FAKE)
+  // Q5 — Text Post (REAL)
   {
     id: "q5",
     type: "text",
     questionType: "skill",
-    postAuthorName: "Space Bot",
-    postHandle: "@SpaceBot",
-    postTime: "45 mins ago",
-    content: "NASA confirmed yesterday that the Earth is actually shaped like a perfect cube.",
-    expected: "fake",
+    postAuthorName: "Science Facts Daily",
+    postHandle: "@ScienceFacts",
+    postTime: "5 hrs ago",
+    content: "The Sun is a star at the center of our solar system. It is composed primarily of hydrogen and helium, and its gravity holds the entire solar system together.",
+    expected: "real",
   },
 
   // Q6 — Awareness Scale

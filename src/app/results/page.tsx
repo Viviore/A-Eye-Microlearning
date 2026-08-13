@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "@/store/gameStore";
 import { BrutalButton } from "@/components/ui/brutal-button";
 import Link from "next/link";
@@ -168,19 +168,22 @@ export default function ResultsDashboardPage() {
   const confidenceGrowthSign = confidenceGrowth >= 0 ? "+" : "";
 
   const profileRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const handleDownloadImage = async () => {
-    if (!profileRef.current) return;
+  const handleExportModal = async () => {
+    if (!modalRef.current) return;
     try {
       setIsDownloading(true);
+      // Wait for any animations to settle
       await new Promise((resolve) => setTimeout(resolve, 100));
       
-      const dataUrl = await toPng(profileRef.current, {
+      const dataUrl = await toPng(modalRef.current, {
         pixelRatio: 2,
         backgroundColor: "#FAFAFA",
       });
-      const fileName = `AEye_Profile_${calibrationProfile.replace(/\s+/g, '_')}.png`;
+      const fileName = `AEye_Result_${calibrationProfile.replace(/\s+/g, '_')}.png`;
 
       if (navigator.share) {
         try {
@@ -293,13 +296,12 @@ export default function ResultsDashboardPage() {
           </div>
 
           <BrutalButton 
-            onClick={handleDownloadImage}
-            disabled={isDownloading}
+            onClick={() => setIsModalOpen(true)}
             variant="blue" 
             size="lg"
           >
-            <Share2 className="mr-3 w-6 h-6" strokeWidth={2.5} />
-            {isDownloading ? "GENERATING..." : "EXPORT & SHARE"}
+            <Download className="mr-3 w-6 h-6" strokeWidth={2.5} />
+            EXPORT RESULT
           </BrutalButton>
         </motion.div>
 
@@ -699,6 +701,70 @@ export default function ResultsDashboardPage() {
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/80 backdrop-blur-sm">
+            <motion.div
+              ref={modalRef}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-xl bg-white border-[4px] border-[#0F172A] p-8 shadow-[12px_12px_0px_0px_rgba(255,184,0,1)]"
+            >
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-4 right-4 text-[#0F172A] hover:text-red-500 transition-colors"
+              >
+                <XCircle className="w-8 h-8" strokeWidth={2.5} />
+              </button>
+              
+              <div className="flex items-center gap-4 mb-8 border-b-[4px] border-[#0F172A] pb-4">
+                <div className="p-2 bg-[#FFB800] border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A]">
+                  <Share2 className="w-6 h-6 text-[#0F172A]" strokeWidth={2.5} />
+                </div>
+                <h2 className="text-3xl font-black font-heading uppercase text-[#0F172A]">Result Summary</h2>
+              </div>
+
+              <div className="space-y-4 font-mono text-[#0F172A]">
+                <div>
+                  <h3 className="font-bold text-xs text-[#0F172A]/60 uppercase tracking-widest mb-1">Your Profile</h3>
+                  <div className={`p-3 border-[3px] border-[#0F172A] ${profileColor} font-black text-xl flex items-center gap-3 shadow-[4px_4px_0px_0px_#0F172A]`}>
+                    <ProfileIcon className="w-6 h-6" />
+                    {calibrationProfile}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <h3 className="font-bold text-xs text-[#0F172A]/60 uppercase tracking-widest mb-1">Primary Cognitive</h3>
+                    <div className="bg-[#FAFAFA] border-[3px] border-[#0F172A] p-2 text-sm font-bold shadow-[4px_4px_0px_0px_#0F172A]">
+                      {cognitivePrimary}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xs text-[#0F172A]/60 uppercase tracking-widest mb-1">Secondary Cognitive</h3>
+                    <div className="bg-[#FAFAFA] border-[3px] border-[#0F172A] p-2 text-sm font-bold shadow-[4px_4px_0px_0px_#0F172A]">
+                      {cognitiveSecondary}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#FAFAFA] border-[3px] border-[#0F172A] p-4 text-center relative shadow-[4px_4px_0px_0px_#0F172A] mt-2">
+                  <div className="text-xs font-bold text-[#0F172A]/60 uppercase tracking-widest mb-1">Overall Accuracy</div>
+                  <div className="text-4xl font-black">{accuracyPercent}%</div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex gap-4">
+                <BrutalButton className="w-full text-xl" variant="blue" size="lg" disabled={isDownloading} onClick={handleExportModal}>
+                  <Download className="mr-2 w-5 h-5" /> {isDownloading ? "EXPORTING..." : "EXPORT RESULT"}
+                </BrutalButton>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
