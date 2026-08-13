@@ -734,7 +734,7 @@ export default function Level2Page() {
                           {clue.title}
                         </p>
                         <p className="text-[15px] text-[#1D2A3C] font-sans font-bold mt-2 pt-2 border-t-[3px] border-dashed border-[#0F172A]/30">
-                          {showVerdictModal || feedback ? clue.explanation : "Analyze the image to determine why this is suspicious."}
+                          {clue.explanation}
                         </p>
                       </div>
                     </div>

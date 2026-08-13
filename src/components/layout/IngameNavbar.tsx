@@ -30,9 +30,6 @@ export function IngameNavbar() {
     preAssessmentCompleted,
     postAssessmentCompleted,
     completedLevels,
-    level1Verdict,
-    level2Verdict,
-    level3Verdict,
     resetGame,
   } = useGameStore();
 
@@ -41,9 +38,9 @@ export function IngameNavbar() {
   }
 
   const isPreQuizDone = preAssessmentCompleted;
-  const isC1Done = completedLevels.includes(1) || level1Verdict !== null;
-  const isC2Done = completedLevels.includes(2) || level2Verdict !== null;
-  const isC3Done = completedLevels.includes(3) || level3Verdict !== null;
+  const isC1Done = completedLevels.includes(1);
+  const isC2Done = completedLevels.includes(2);
+  const isC3Done = completedLevels.includes(3);
 
   const navItems = [
     {
@@ -145,21 +142,19 @@ export function IngameNavbar() {
                     key={item.path}
                     className="flex flex-col xl:flex-row items-stretch xl:items-center gap-3 xl:gap-0"
                   >
-                    <Link
-                      href={item.path}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center justify-center gap-2 transition-all whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#0F172A] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] group ${
+                    <div
+                      className={`flex items-center justify-center gap-2 whitespace-nowrap border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] cursor-default ${
                         isActive
                           ? "bg-[#FFB800] text-[#0F172A] px-4 py-3 xl:py-2"
-                          : "bg-white text-[#0F172A] hover:bg-[#FFB800] hover:text-white px-4 py-3 xl:p-2 xl:w-11 xl:h-11"
+                          : "bg-white text-[#0F172A] px-4 py-3 xl:p-2 xl:w-11 xl:h-11"
                       }`}
                       title={!isActive ? item.label : undefined}
                     >
                       {item.done && !isActive ? (
-                        <CheckCircle2 className="w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A] group-hover:text-white" />
+                        <CheckCircle2 className="w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A]" />
                       ) : (
                         <Icon
-                          className={`w-5 h-5 xl:w-5 xl:h-5 ${isActive ? "text-[#0F172A]" : "text-[#0F172A] group-hover:text-white"}`}
+                          className={`w-5 h-5 xl:w-5 xl:h-5 text-[#0F172A]`}
                         />
                       )}
 
@@ -168,7 +163,7 @@ export function IngameNavbar() {
                       >
                         {item.label}
                       </span>
-                    </Link>
+                    </div>
 
                     {/* Connector Line (Desktop Only) */}
                     {index < navItems.length - 1 && (
@@ -266,7 +261,7 @@ export function IngameNavbar() {
                 onClick={() => {
                   resetGame();
                   setIsConfirmTerminate(false);
-                  router.push("/");
+                  window.location.href = "/";
                 }}
                 className="flex-1 bg-[#FF3366] hover:bg-[#FF3366]/90 text-white text-base md:text-lg"
               >

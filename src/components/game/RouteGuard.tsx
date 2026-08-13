@@ -12,9 +12,6 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
   const {
     preAssessmentCompleted,
     postAssessmentCompleted,
-    level1Verdict,
-    level2Verdict,
-    level3Verdict,
     completedLevels,
   } = useGameStore();
 
@@ -26,9 +23,9 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isMounted) return;
 
-    const isL1Done = completedLevels.includes(1) || level1Verdict !== null;
-    const isL2Done = completedLevels.includes(2) || level2Verdict !== null;
-    const isL3Done = completedLevels.includes(3) || level3Verdict !== null;
+    const isL1Done = completedLevels.includes(1);
+    const isL2Done = completedLevels.includes(2);
+    const isL3Done = completedLevels.includes(3);
 
     if (pathname.startsWith("/level/1") && !preAssessmentCompleted) {
       router.replace("/pre");
@@ -47,9 +44,6 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     router,
     preAssessmentCompleted,
     postAssessmentCompleted,
-    level1Verdict,
-    level2Verdict,
-    level3Verdict,
     completedLevels,
   ]);
 
