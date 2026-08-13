@@ -55,7 +55,7 @@ const TACTIC_DESCRIPTIONS: Record<string, string> = case001Data.TACTIC_DESCRIPTI
 
 export default function Level1Page() {
   const router = useRouter();
-  const { startTransition, isTransitioning } = useAppTransition();
+  const { startTransition, startInPlaceTransition, isTransitioning } = useAppTransition();
   const completeLevel = useGameStore((state) => state.completeLevel);
   const cumulativeScore = useGameStore((state) => state.cumulativeScore);
   const addCumulativeScore = useGameStore((state) => state.addCumulativeScore);
@@ -170,14 +170,17 @@ export default function Level1Page() {
               if (driverObjRef.current) {
                 driverObjRef.current.destroy();
               }
-              // Auto-advance past the tutorial round
-              setCurrentRoundIndex(1);
-              resetScoring();
-              setFlaggedIds(new Set());
-              setFoundClues([]);
-              setFoundDecoys([]);
-              setSourceCheckOpen(false);
-              setFeedback(null);
+              
+              startInPlaceTransition(() => {
+                // Auto-advance past the tutorial round
+                setCurrentRoundIndex(1);
+                resetScoring();
+                setFlaggedIds(new Set());
+                setFoundClues([]);
+                setFoundDecoys([]);
+                setSourceCheckOpen(false);
+                setFeedback(null);
+              });
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
@@ -335,11 +338,11 @@ export default function Level1Page() {
 
   return (
     <main 
-      className={`min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans ${currentRoundIndex === 0 ? 'pb-72 md:pb-56 lg:pb-48' : 'pb-32'}`}
+      className={`min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans ${currentRoundIndex === 0 ? 'pb-72 md:pb-56 lg:pb-48' : ''}`}
     >
       {/* Block all interactions during driver.js tour */}
       
-      <div className={`w-full max-w-[1200px] z-10 flex flex-col gap-8 pb-20 ${isTourActive ? 'pointer-events-none' : ''}`}>
+      <div className={`w-full max-w-[1200px] z-10 flex flex-col gap-8 ${isTourActive ? 'pointer-events-none' : ''}`}>
         
         {/* Header Info */}
         <CaseHeader 

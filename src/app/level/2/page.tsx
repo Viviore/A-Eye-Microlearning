@@ -109,7 +109,7 @@ const DETECTIVE_TIPS = [
 
 export default function Level2Page() {
   const router = useRouter();
-  const { startTransition, isTransitioning } = useAppTransition();
+  const { startTransition, startInPlaceTransition, isTransitioning } = useAppTransition();
   const { completeLevel, cumulativeScore, addCumulativeScore, addCase002Score, resetGame, playedCase002Rounds, markCase002RoundPlayed } = useGameStore();
 
   
@@ -259,17 +259,20 @@ export default function Level2Page() {
               if (driverObjRef.current) {
                 driverObjRef.current.destroy();
               }
-              // Auto-advance past the tutorial round
-              setCurrentRoundIndex(1);
-              resetScoring();
-              setFlaggedIds(new Set());
-              setFoundClues([]);
-              setFoundDecoys([]);
-              setFeedback(null);
-              setSelectedEvidenceId(null);
-              setSelectedTactic(null);
-              setShowVerdictModal(false);
-              setToolUsed(false);
+              
+              startInPlaceTransition(() => {
+                // Auto-advance past the tutorial round
+                setCurrentRoundIndex(1);
+                resetScoring();
+                setFlaggedIds(new Set());
+                setFoundClues([]);
+                setFoundDecoys([]);
+                setFeedback(null);
+                setSelectedEvidenceId(null);
+                setSelectedTactic(null);
+                setShowVerdictModal(false);
+                setToolUsed(false);
+              });
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
@@ -462,9 +465,9 @@ export default function Level2Page() {
 
   return (
     <main
-      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
+      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-8 md:pb-12"
     >
-      <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8 pb-20">
+      <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8">
         
         {/* Header Info */}
         <CaseHeader 

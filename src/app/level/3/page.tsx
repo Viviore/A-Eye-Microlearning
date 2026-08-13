@@ -18,6 +18,7 @@ import {
 import case003Data from "@/data/case003.json";
 import { CaseHeader } from "@/components/game/CaseHeader";
 import { useLevelScoring } from "@/hooks/useLevelScoring";
+import { MockBrowserWindow } from "@/components/game/MockBrowserWindow";
 import { GameOverModal, VerdictModalContainer, VerdictFeedback } from "@/components/game/VerdictModal";
 
 type VideoRound = {
@@ -51,7 +52,7 @@ const fadeUp = {
 
 export default function Level3Page() {
   const router = useRouter();
-  const { startTransition, isTransitioning } = useAppTransition();
+  const { startTransition, startInPlaceTransition, isTransitioning } = useAppTransition();
   const {
     completeLevel,
     cumulativeScore,
@@ -361,12 +362,15 @@ export default function Level3Page() {
               if (driverObjRef.current) {
                 driverObjRef.current.destroy();
               }
-              // Auto-advance past the tutorial round
-              setCurrentRoundIndex(1);
-              resetScoring();
-              setToolUsed(false);
-              setSelectedTell(null);
-              resetRoundState();
+              
+              startInPlaceTransition(() => {
+                // Auto-advance past the tutorial round
+                setCurrentRoundIndex(1);
+                resetScoring();
+                setToolUsed(false);
+                setSelectedTell(null);
+                resetRoundState();
+              });
             });
             navBtns.insertBefore(skipBtn, navBtns.firstChild);
           }
@@ -401,9 +405,9 @@ export default function Level3Page() {
 
   return (
     <main
-      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-32"
+      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-8 md:pb-12"
     >
-      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start pb-20">
+      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="w-full max-w-[1200px] z-10 grid grid-cols-1 gap-8 items-start">
 
         {/* Header Section */}
         <motion.div variants={fadeUp} className="w-full">
@@ -464,18 +468,10 @@ export default function Level3Page() {
         </motion.div>
 
         {/* Video Area */}
-        <motion.div variants={fadeUp} id="tutorial-videos" className="bg-white border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col">
-          <div className="border-b-[4px] border-[#0F172A] bg-[#FFB800] p-3 flex justify-between items-center shrink-0">
-            <div className="flex gap-2">
-              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-white" />
-              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-[#0F172A]" />
-              <div className="w-5 h-5 border-[4px] border-[#0F172A] bg-white" />
-            </div>
-            <h2 className="text-xl md:text-2xl font-black font-heading uppercase tracking-widest text-[#0F172A]">Which one is AI?</h2>
-            <div className="w-20"></div>
-          </div>
-
-          <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#FAFAFA]">
+        <motion.div variants={fadeUp} id="tutorial-videos" className="w-full">
+          <MockBrowserWindow className="bg-[#FAFAFA]">
+            <h2 className="text-2xl md:text-3xl font-black font-heading uppercase tracking-widest text-[#0F172A] mb-6 text-center">Which one is AI?</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Panel A */}
             {(() => {
               const isCorrect = currentRound.correctPanel === "A";
@@ -590,25 +586,19 @@ export default function Level3Page() {
           </div>
 
           {/* Confirm Dialog */}
-          <AnimatePresence>
-            {showConfirm && (
-              <motion.div
-                initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
-                exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                className="mx-6 md:mx-8 overflow-hidden"
-              >
-                <div className="p-6 mt-2 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex flex-col items-center gap-4">
-                  <h3 className="font-heading font-black text-2xl uppercase">Are you sure?</h3>
-                  <p className="font-sans font-bold text-center">You selected Panel {selectedPanel} as the AI fake. Locking this in will consume your answer.</p>
-                  <div className="flex gap-4">
-                    <BrutalButton onClick={handleCancelConfirm} variant="secondary">Cancel</BrutalButton>
-                    <BrutalButton onClick={handleConfirmPanel} variant="dark">Lock Answer</BrutalButton>
-                  </div>
+          {showConfirm && (
+            <div className="w-full mt-8">
+              <div className="p-6 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col items-center gap-4">
+                <h3 className="font-heading font-black text-2xl uppercase">Are you sure?</h3>
+                <p className="font-sans font-bold text-center">You selected Panel {selectedPanel} as the AI fake. Locking this in will consume your answer.</p>
+                <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto mt-2">
+                  <BrutalButton onClick={handleCancelConfirm} variant="secondary" className="w-full md:w-auto">Cancel</BrutalButton>
+                  <BrutalButton onClick={handleConfirmPanel} variant="dark" className="w-full md:w-auto">Lock Answer</BrutalButton>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </div>
+          )}
+          </MockBrowserWindow>
         </motion.div>
 
       </motion.div>

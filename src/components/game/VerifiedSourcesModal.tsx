@@ -33,7 +33,7 @@ export function VerifiedSourcesModal({
               </h2>
               <button 
                 onClick={onClose}
-                className="text-[#0F172A] hover:text-[#FF3366] transition-colors"
+                className="text-[#0F172A] hover:text-[#FF3366] transition-colors cursor-pointer"
               >
                 <XCircle className="w-8 h-8" strokeWidth={2.5} />
               </button>

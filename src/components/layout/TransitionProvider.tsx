@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { PixelTransition } from "./PixelTransition";
 
 type TransitionVariant = 'init' | 'next-case' | 'results' | 'post-assessment';
 
@@ -13,11 +14,13 @@ export type TransitionOptions = {
 
 type TransitionContextType = {
   startTransition: (href: string, options?: TransitionOptions) => void;
+  startInPlaceTransition: (action: () => void, options?: TransitionOptions) => void;
   isTransitioning: boolean;
 };
 
 const TransitionContext = createContext<TransitionContextType>({
   startTransition: () => {},
+  startInPlaceTransition: () => {},
   isTransitioning: false,
 });
 
@@ -76,6 +79,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const [statusText, setStatusText] = useState(STATUS_MESSAGES[0]);
   const [loadProgress, setLoadProgress] = useState<number | null>(null);
   const [variant, setVariant] = useState<TransitionVariant>('init');
+  const [isGlitching, setIsGlitching] = useState(false);
 
   const startTransition = (href: string, options?: TransitionOptions) => {
     if (pathname === href) {
@@ -99,6 +103,19 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     Promise.all([slideDownAnimation, options?.waitFor || Promise.resolve()]).then(() => {
       router.push(href);
     });
+  };
+
+  const startInPlaceTransition = (action: () => void, options?: TransitionOptions) => {
+    setIsGlitching(true);
+
+    setTimeout(() => {
+      // Execute the action at the peak of the transition
+      action();
+    }, 450);
+
+    setTimeout(() => {
+      setIsGlitching(false);
+    }, 550);
   };
 
   useEffect(() => {
@@ -147,7 +164,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const config = getVariantConfig(variant);
 
   return (
-    <TransitionContext.Provider value={{ startTransition, isTransitioning }}>
+    <TransitionContext.Provider value={{ startTransition, startInPlaceTransition, isTransitioning }}>
       {children}
 
       <AnimatePresence>
@@ -174,6 +191,8 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
           </motion.div>
         )}
       </AnimatePresence>
+
+      <PixelTransition isActive={isGlitching} />
     </TransitionContext.Provider>
   );
 }
