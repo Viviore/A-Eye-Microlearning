@@ -23,7 +23,7 @@ export function VerdictModalContainer({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className={`p-5 md:p-6 w-full max-w-2xl overflow-visible bg-white border-[4px] border-[#0F172A] shadow-[12px_12px_0px_0px_#0F172A] relative ${
+            className={`w-full max-w-[480px] overflow-visible bg-[#FAFAFA] border-[4px] border-[#0F172A] shadow-[16px_16px_0px_0px_#0F172A] relative ${
               alignTop
                 ? "mt-4 md:mt-12"
                 : "max-h-[90vh]"
@@ -70,50 +70,50 @@ export function VerdictFeedback({
       )}
 
       {/* Overlapping top-left icon */}
-      <div className="absolute -top-6 -left-4 md:-top-10 md:-left-10 z-10">
+      <div className="absolute -top-6 -left-4 md:-top-6 md:-left-6 z-10">
         {isSuccess ? (
-          <div className="w-12 h-12 md:w-16 md:h-16 bg-[#10B981] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+          <div className="w-12 h-12 md:w-14 md:h-14 bg-[#10B981] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A] -rotate-3">
             <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-white" strokeWidth={3} />
           </div>
         ) : (
-          <div className="w-12 h-12 md:w-16 md:h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+          <div className="w-12 h-12 md:w-14 md:h-14 bg-[#FF3366] border-[4px] border-[#0F172A] flex items-center justify-center shadow-[6px_6px_0px_0px_#0F172A] -rotate-3">
             <XCircle className="w-6 h-6 md:w-8 md:h-8 text-white" strokeWidth={3} />
           </div>
         )}
       </div>
 
-      <div className="pl-6 pt-6">
-        <h2 className="text-4xl md:text-5xl font-black font-heading tracking-wider uppercase text-[#0F172A] mb-3">
+      <div className="px-6 md:px-10 pt-8 md:pt-10">
+        <h2 className="text-3xl md:text-4xl font-black font-heading tracking-tight uppercase text-[#0F172A] mb-3">
           {title}
         </h2>
         
         {/* Short colored underline */}
-        <div className={`w-16 h-2 ${isSuccess ? "bg-[#10B981]" : "bg-[#E11D48]"}`}></div>
+        <div className={`w-20 h-2 ${isSuccess ? "bg-[#10B981]" : "bg-[#FF3366]"}`}></div>
       </div>
 
-      <div className="px-6 pb-2 mt-2">
-        <div className="border-[3px] border-[#0F172A] p-6 bg-white shadow-[6px_6px_0px_0px_#E2E8F0]">
-          <p className="text-xl md:text-2xl font-bold font-sans text-[#0F172A] leading-relaxed text-left">
+      <div className="px-6 md:px-10 pb-6 mt-6">
+        <div className="border-[4px] border-[#0F172A] p-6 bg-white relative">
+          <p className="text-lg md:text-xl font-bold font-sans text-[#0F172A]/90 leading-relaxed text-left">
             {message}
           </p>
         </div>
       </div>
 
-      <div className="px-6 pt-2 flex gap-4">
+      <div className="px-6 md:px-10 pb-8 md:pb-10 pt-2 flex gap-4">
         {isSuccess || forceNextAction ? (
           <BrutalButton
             onClick={onNext}
             variant="primary"
             size="lg"
-            className={`w-full md:w-auto ${!isFinalRound ? (isSuccess ? "bg-[#10B981] hover:bg-[#10B981]/90" : "bg-[#E11D48] hover:bg-[#E11D48]/90 text-white") : ""}`}
+            className={`w-full uppercase ${!isFinalRound ? (isSuccess ? "bg-[#10B981] hover:bg-[#10B981]/90 text-[#0F172A]" : "bg-[#FF3366] hover:bg-[#FF3366]/90 text-white") : ""}`}
           >
             {!isFinalRound ? (
-              <span className="flex items-center justify-center">
-                {nextButtonText || "Next Round"} <ArrowRight className="ml-3 w-6 h-6 shrink-0" strokeWidth={2.5} />
+              <span className="flex items-center justify-center w-full">
+                {nextButtonText || "Next Round"} <ArrowRight className="ml-3 w-6 h-6 shrink-0" strokeWidth={3} />
               </span>
             ) : (
-              <span className="flex items-center justify-center">
-                {nextButtonText || "Complete Case"} <Trophy className="ml-3 w-6 h-6 shrink-0" strokeWidth={2.5} />
+              <span className="flex items-center justify-center w-full">
+                {nextButtonText || "Complete Case"} <Trophy className="ml-3 w-6 h-6 shrink-0" strokeWidth={3} />
               </span>
             )}
           </BrutalButton>

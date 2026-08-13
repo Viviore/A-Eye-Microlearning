@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -221,9 +222,22 @@ export function IngameNavbar() {
       </div>
 
       {/* Confirmation Modal */}
-      {isConfirmTerminate && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#0F172A]/80 backdrop-blur-md transition-all">
-          <div className="relative bg-[#FAFAFA] border-[4px] border-[#0F172A] p-6 md:p-10 shadow-[12px_12px_0px_0px_#0F172A] max-w-lg w-full animate-in fade-in zoom-in-95 duration-200">
+      <AnimatePresence>
+        {isConfirmTerminate && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#0F172A]/80 backdrop-blur-md"
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="relative bg-[#FAFAFA] border-[4px] border-[#0F172A] p-6 md:p-10 shadow-[12px_12px_0px_0px_#0F172A] max-w-lg w-full"
+            >
             {/* Warning badge */}
             <div className="absolute -top-6 -left-4 md:-left-6 bg-[#FF3366] border-[4px] border-[#0F172A] p-3 shadow-[4px_4px_0px_0px_#0F172A] rotate-[-5deg] z-10">
               <AlertOctagon className="w-8 h-8 text-white" strokeWidth={3} />
@@ -268,9 +282,10 @@ export function IngameNavbar() {
                 Confirm
               </BrutalButton>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </header>
   );
 }
