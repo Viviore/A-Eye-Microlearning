@@ -592,125 +592,67 @@ export default function Level3Page() {
           </AnimatePresence>
         </motion.div>
 
-        {/* Verdict Form Area */}
-        <AnimatePresence>
-          {isPanelLocked && !showReveal && (
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              exit={{ opacity: 0, y: 50 }}
-              className="bg-white p-8 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col"
-            >
-              <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-2 uppercase tracking-wider text-center">
-                Explain Your Tell
-              </h2>
-              <p className="text-center font-bold text-[#0F172A]/70 mb-8">Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.</p>
+      </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <VerdictModalContainer isOpen={isPanelLocked || showTimeoutModal}>
+        {isPanelLocked && !showReveal && !showTimeoutModal && (
+          <>
+            <h2 className="text-3xl font-black font-heading text-[#0F172A] mb-4 border-b-[4px] border-dashed border-[#0F172A]/30 pb-3 uppercase tracking-wider text-center">
+              Explain Your Tell
+            </h2>
+            <div className="space-y-4 font-sans">
+              <h3 className="font-bold text-xl mb-3 font-heading">
+                Why do you think Panel {selectedPanel} is AI? Select the most obvious mistake.
+              </h3>
+              <div className="flex flex-col gap-3">
                 {currentTells.map((tell) => {
                   const isCorrect = currentRound.tells.includes(tell);
                   const isTutorial = currentRound.isTutorial && !isTourActive;
                   const isDisabled = isTutorial && !isCorrect;
                   const showPulse = isTutorial && isCorrect;
 
-                  let btnClass = "relative px-6 py-4 border-[4px] font-black font-heading uppercase text-lg md:text-xl transition-all duration-200 text-[#0F172A] cursor-pointer text-center flex items-center justify-center min-h-[5rem] ";
+                  let buttonClass = `p-4 border-[4px] font-bold font-sans transition-all text-[#0F172A] cursor-pointer text-left `;
 
                   if (isDisabled) {
-                    btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 !cursor-not-allowed ";
+                    buttonClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 cursor-not-allowed ";
                   } else if (showPulse) {
-                    btnClass += "bg-[#FFB800] border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0F172A] ";
+                    buttonClass += "bg-[#FFB800]/30 border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:bg-[#FFB800]/50 ";
                   } else {
-                    btnClass += "bg-white border-solid border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:bg-[#FFB800] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0F172A] active:translate-y-1 active:shadow-[2px_2px_0px_0px_#0F172A] ";
+                    buttonClass += "bg-white border-dashed border-[#0F172A]/50 hover:border-solid hover:border-[#0F172A] hover:shadow-[4px_4px_0px_0px_rgba(45,45,45,0.2)] ";
                   }
 
                   return (
                     <button
                       key={tell}
                       onClick={() => !isDisabled && handleTellClick(tell)}
-                      onMouseEnter={() => !isDisabled && setHoveredTell(tell)}
-                      onMouseLeave={() => !isDisabled && setHoveredTell(null)}
                       disabled={isDisabled}
-                      className={btnClass}
+                      className={buttonClass}
                     >
-                      {tell}
+                      <div className="text-lg">{tell}</div>
                     </button>
                   );
                 })}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </>
+        )}
 
-        {/* Feedback / Reveal Area */}
-        <AnimatePresence>
-          {showReveal && feedback && (
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              className={`relative p-8 mt-10 border-[4px] border-[#0F172A] shadow-[8px_8px_0px_0px_#0F172A] flex flex-col bg-[#FAFAFA] text-left`}
-            >
-              {/* Overlapping top-left icon */}
-              <div className="absolute -top-10 -left-10 z-10">
-                {feedback.isSuccess ? (
-                  <div className="w-16 h-16 bg-[#10B981] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
-                    <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={3} />
-                  </div>
-                ) : (
-                  <div className="w-16 h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
-                    <XCircle className="w-8 h-8 text-white" strokeWidth={3} />
-                  </div>
-                )}
-              </div>
+        {showReveal && feedback && !showTimeoutModal && (
+          <VerdictFeedback
+            isSuccess={feedback.isSuccess}
+            title={feedback.title}
+            message={feedback.message}
+            scoreBadge={feedback.scoreBadge}
+            forceNextAction={feedback.forceNext}
+            onNext={handleNextAction}
+            onRetry={handleNextAction}
+            retryButtonText={feedback.retryButtonText}
+            nextButtonText={currentRoundIndex < sessionRounds.length - 1 ? "Proceed to Next Video" : "Finish Case 003"}
+            isFinalRound={currentRoundIndex === sessionRounds.length - 1}
+          />
+        )}
 
-              {feedback.scoreBadge && (
-                <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
-                  {feedback.scoreBadge}
-                </div>
-              )}
-
-              {feedback.penalty && (
-                <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
-                  <div className="bg-[#0F172A] text-white px-3 py-1 font-mono font-bold text-lg border-[3px] border-[#0F172A] shadow-[4px_4px_0px_0px_#E11D48] rotate-2">
-                    -{feedback.penalty} PTS
-                  </div>
-                </div>
-              )}
-
-              <div className="pl-6 pt-2">
-                <h3 className="font-heading font-black text-3xl md:text-5xl text-[#0F172A] uppercase tracking-wider">
-                  {feedback.title}
-                </h3>
-                <div className={`w-16 h-2 mt-3 ${feedback.isSuccess ? "bg-[#10B981]" : "bg-[#E11D48]"}`}></div>
-              </div>
-
-              <div className="px-6 pb-2 mt-2">
-                <div className="border-[3px] border-[#0F172A] p-6 bg-white shadow-[6px_6px_0px_0px_#E2E8F0]">
-                  <p className="text-xl md:text-2xl font-bold font-sans text-[#0F172A] leading-relaxed text-left">
-                    {feedback.message}
-                  </p>
-                </div>
-              </div>
-
-              <div className="px-6 pb-4 pt-4 flex gap-4">
-                <BrutalButton
-                  onClick={handleNextAction}
-                  variant="dark"
-                  size="lg"
-                  className="w-full h-16 md:h-20 text-xl md:text-2xl group"
-                >
-                  {currentRoundIndex < sessionRounds.length - 1 ? (feedback.isSuccess ? "Proceed to Next Video" : "Retry with New Video") : "Finish Case 003"}
-                  <ArrowRight className="ml-4 w-8 h-8 transition-transform group-hover:translate-x-2" strokeWidth={3} />
-                </BrutalButton>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-
-      <VerdictModalContainer isOpen={showTimeoutModal}>
-        {feedback && (
+        {showTimeoutModal && feedback && (
           <VerdictFeedback
             isSuccess={feedback.isSuccess}
             title={feedback.title}

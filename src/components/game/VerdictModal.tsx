@@ -64,20 +64,20 @@ export function VerdictFeedback({
     <div className="py-4 space-y-6 relative text-left">
       {/* Absolute top-right score badge */}
       {scoreBadge && (
-        <div className="absolute top-0 right-0 -mt-8 -mr-4 z-20">
+        <div className="absolute top-0 right-0 -mt-6 -mr-2 md:-mt-8 md:-mr-4 z-20">
           {scoreBadge}
         </div>
       )}
 
       {/* Overlapping top-left icon */}
-      <div className="absolute -top-10 -left-10 z-10">
+      <div className="absolute -top-6 -left-4 md:-top-10 md:-left-10 z-10">
         {isSuccess ? (
-          <div className="w-16 h-16 bg-[#10B981] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
-            <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={3} />
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-[#10B981] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+            <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-white" strokeWidth={3} />
           </div>
         ) : (
-          <div className="w-16 h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
-            <XCircle className="w-8 h-8 text-white" strokeWidth={3} />
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+            <XCircle className="w-6 h-6 md:w-8 md:h-8 text-white" strokeWidth={3} />
           </div>
         )}
       </div>
@@ -109,17 +109,19 @@ export function VerdictFeedback({
           >
             {!isFinalRound ? (
               <span className="flex items-center justify-center">
-                {nextButtonText || "Next Round"} <ArrowRight className="ml-3 w-6 h-6" strokeWidth={2.5} />
+                {nextButtonText || "Next Round"} <ArrowRight className="ml-3 w-6 h-6 shrink-0" strokeWidth={2.5} />
               </span>
             ) : (
               <span className="flex items-center justify-center">
-                {nextButtonText || "Complete Case"} <Trophy className="ml-3 w-6 h-6" strokeWidth={2.5} />
+                {nextButtonText || "Complete Case"} <Trophy className="ml-3 w-6 h-6 shrink-0" strokeWidth={2.5} />
               </span>
             )}
           </BrutalButton>
         ) : (
           <BrutalButton onClick={onRetry} variant="secondary" size="lg" className="w-full md:w-auto">
-            <RotateCcw className="mr-3 w-6 h-6" strokeWidth={2.5} /> {retryButtonText || "Retry Verdict"}
+            <span className="flex items-center justify-center">
+              <RotateCcw className="mr-3 w-6 h-6 shrink-0" strokeWidth={2.5} /> {retryButtonText || "Retry Verdict"}
+            </span>
           </BrutalButton>
         )}
       </div>
@@ -137,9 +139,9 @@ export function GameOverModal({
   return (
     <VerdictModalContainer isOpen={isOpen}>
       <div className="py-4 space-y-6 relative text-left">
-        <div className="absolute -top-10 -left-10 z-10">
-          <div className="w-16 h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
-            <XCircle className="w-8 h-8 text-white" strokeWidth={3} />
+        <div className="absolute -top-6 -left-4 md:-top-10 md:-left-10 z-10">
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-[#E11D48] border-[3px] border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_0px_#0F172A] -rotate-6">
+            <XCircle className="w-6 h-6 md:w-8 md:h-8 text-white" strokeWidth={3} />
           </div>
         </div>
 
