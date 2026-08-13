@@ -313,7 +313,7 @@ export default function Level1Page() {
                   time={currentRound.postTime}
                 />
                 
-                {currentRoundIndex === 0 && flaggedIds.size === 0 && !isTourActive && (
+                {currentRoundIndex === 0 && flaggedIds.size === 0 && !showVideoTutorial && (
                   <motion.span 
                     animate={{ x: [0, 10, 0] }}
                     transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
