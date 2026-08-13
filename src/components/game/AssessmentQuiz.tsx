@@ -340,9 +340,13 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
             </div>
           </div>
 
-          {/* Icon */}
-          <div className="mx-auto mt-4 w-16 h-16 bg-[#FFB800] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center">
-            <Shield className="w-8 h-8 text-[#0F172A]" strokeWidth={2.5} />
+          {/* Mascot */}
+          <div className="mx-auto mt-4 -mb-2">
+            <img 
+              src={mode === "pre" ? "/character_mascot/thinking_expression.png" : "/character_mascot/determined_expression.png"} 
+              alt="A-Eye Mascot" 
+              className="w-32 h-32 object-contain filter drop-shadow-[4px_4px_0px_#0F172A]"
+            />
           </div>
 
           <h1 className="text-3xl md:text-4xl font-black font-heading uppercase tracking-widest text-[#0F172A]">
@@ -394,8 +398,13 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
             </div>
           </div>
 
-          <div className="mx-auto mt-4 w-16 h-16 bg-[#10B981] border-[4px] border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] flex items-center justify-center">
-            <ClipboardCheck className="w-8 h-8 text-white" strokeWidth={2.5} />
+          {/* Mascot */}
+          <div className="mx-auto mt-4 -mb-2">
+            <img 
+              src={mode === "pre" ? "/character_mascot/confident_expression.png" : "/character_mascot/confident_expression.png"} 
+              alt="A-Eye Mascot Complete" 
+              className="w-32 h-32 object-contain filter drop-shadow-[4px_4px_0px_#0F172A]"
+            />
           </div>
 
           <h1 className="text-3xl md:text-4xl font-black font-heading uppercase tracking-widest text-[#0F172A]">
