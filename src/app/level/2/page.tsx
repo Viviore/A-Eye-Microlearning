@@ -438,7 +438,7 @@ export default function Level2Page() {
 
   return (
     <main
-      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-8 md:pb-12"
+      className="min-h-[100dvh] bg-[#FAFAFA] bg-cubes text-[#0F172A] flex flex-col items-center pt-4 md:pt-8 p-4 md:p-8 relative overflow-hidden font-sans pb-8 md:pb-12"
     >
       <AnimatePresence>
         {showVideoTutorial && (
@@ -449,7 +449,7 @@ export default function Level2Page() {
           />
         )}
       </AnimatePresence>
-      <div className="w-full max-w-[1200px] z-10 flex flex-col gap-8">
+      <div className="w-full max-w-[1200px] z-10 flex flex-col gap-4 lg:gap-8">
         
         {/* Header Info */}
         <CaseHeader 
