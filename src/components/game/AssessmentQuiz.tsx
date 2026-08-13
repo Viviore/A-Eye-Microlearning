@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronRight,
@@ -267,6 +267,10 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
   });
   const [direction, setDirection] = useState(1);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentIndex, phase]);
+
   const totalQuestions = ASSESSMENT_QUESTIONS.length;
   const currentQuestion: AssessmentQuestion = ASSESSMENT_QUESTIONS[currentIndex];
   const introCopy = INTRO_COPY[mode];
@@ -311,7 +315,7 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
   // ─── INTRO PHASE ──────────────────────────────────────────────────
   if (phase === "intro") {
     return (
-      <main className="min-h-[100dvh] flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
+      <main className="flex-1 w-full flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -365,7 +369,7 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
   // ─── COMPLETE PHASE ───────────────────────────────────────────────
   if (phase === "complete") {
     return (
-      <main className="min-h-[100dvh] flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
+      <main className="flex-1 w-full flex flex-col items-center justify-center bg-[#FAFAFA] text-[#0F172A] p-4 font-sans bg-cubes">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -400,27 +404,25 @@ export function AssessmentQuiz({ mode, onComplete }: AssessmentQuizProps) {
 
   // ─── QUIZ PHASE ───────────────────────────────────────────────────
   return (
-    <main className="min-h-[100dvh] flex flex-col bg-[#FAFAFA] text-[#0F172A] font-sans bg-cubes">
-      {/* Top Bar */}
-      <div className="sticky top-[72px] md:top-[80px] z-30 bg-white border-b-[4px] border-[#0F172A] px-4 md:px-6 py-3">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-[#FFB800] border-[3px] border-[#0F172A]">
-                <ClipboardCheck className="w-4 h-4 text-[#0F172A]" strokeWidth={2.5} />
-              </div>
-              <span className="font-heading font-black text-sm uppercase tracking-widest text-[#0F172A]">
-                {mode === "pre" ? "Pre-Assessment" : "Post-Assessment"}
-              </span>
-            </div>
-          </div>
-          <ProgressBar current={currentIndex + 1} total={totalQuestions} />
-        </div>
-      </div>
-
+    <main className="flex-1 w-full flex flex-col bg-[#FAFAFA] text-[#0F172A] font-sans bg-cubes">
       {/* Question Content */}
       <div className="flex-1 flex flex-col items-center justify-start px-4 py-8 md:py-12">
         <div className="w-full max-w-2xl">
+          {/* Progress Header */}
+          <div className="mb-6 md:mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-[#FFB800] border-[3px] border-[#0F172A]">
+                  <ClipboardCheck className="w-4 h-4 text-[#0F172A]" strokeWidth={2.5} />
+                </div>
+                <span className="font-heading font-black text-sm uppercase tracking-widest text-[#0F172A]">
+                  {mode === "pre" ? "Pre-Assessment" : "Post-Assessment"}
+                </span>
+              </div>
+            </div>
+            <ProgressBar current={currentIndex + 1} total={totalQuestions} />
+          </div>
+
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={currentIndex}
