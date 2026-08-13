@@ -2,10 +2,10 @@ import case002 from '@/data/case002.json';
 import case003 from '@/data/case003.json';
 
 export async function preloadGameAssets(onProgress?: (progress: number) => void): Promise<void> {
-  const imageUrls = case002.map((c: any) => c.imageSrc);
+  const imageUrls = case002.map((c: { imageSrc: string }) => c.imageSrc);
   // To avoid massive bandwidth spikes, we preload all images but only the first few videos
   // (the rest can stream in while playing)
-  const videoUrls = case003.slice(0, 3).flatMap((c: any) => [c.videoA, c.videoB]);
+  const videoUrls = case003.slice(0, 3).flatMap((c: { videoA: string, videoB: string }) => [c.videoA, c.videoB]);
   
   const allUrls = [...imageUrls, ...videoUrls];
   

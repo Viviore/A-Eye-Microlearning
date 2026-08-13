@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 type TransitionVariant = 'init' | 'next-case' | 'results' | 'post-assessment';
 
 export type TransitionOptions = {
-  waitFor?: Promise<any>;
+  waitFor?: Promise<unknown>;
   variant?: TransitionVariant;
 };
 
@@ -103,12 +103,14 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (isTransitioning && sourcePath && pathname !== sourcePath) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNavigated(true);
     }
   }, [pathname, isTransitioning, sourcePath]);
 
   useEffect(() => {
     if (isTransitioning && navigated && minTimeElapsed) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsTransitioning(false);
     }
   }, [isTransitioning, navigated, minTimeElapsed]);
@@ -116,6 +118,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     if (!isTransitioning) return;
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStatusText(STATUS_MESSAGES[0]);
     let currentIndex = 0;
     
@@ -132,8 +135,8 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   }, [isTransitioning]);
 
   useEffect(() => {
-    const handleProgress = (e: any) => {
-      setLoadProgress(e.detail);
+    const handleProgress = (e: Event) => {
+      setLoadProgress((e as CustomEvent<number>).detail);
     };
     if (typeof window !== 'undefined') {
       window.addEventListener('preload-progress', handleProgress);

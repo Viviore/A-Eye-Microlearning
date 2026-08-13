@@ -19,6 +19,7 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
   } = useGameStore();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
   }, []);
 

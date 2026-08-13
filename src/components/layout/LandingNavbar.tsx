@@ -41,7 +41,7 @@ export function LandingNavbar({ ctaLabel = "Start Training", ctaHref = "/how-to-
     setIsMobileMenuOpen(false);
   };
 
-  const CtaButton = () => (
+  const renderCtaButton = () => (
     <BrutalButton 
       size="nav" 
       variant="hero"
@@ -53,7 +53,7 @@ export function LandingNavbar({ ctaLabel = "Start Training", ctaHref = "/how-to-
     </BrutalButton>
   );
 
-  const NavContent = () => (
+  const renderNavContent = () => (
     <>
       <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full md:w-auto">
         {navItems.map((item) => (
@@ -71,11 +71,11 @@ export function LandingNavbar({ ctaLabel = "Start Training", ctaHref = "/how-to-
 
       {onCtaClick ? (
         <div className="w-full md:w-auto">
-          <CtaButton />
+          {renderCtaButton()}
         </div>
       ) : (
         <Link href={ctaHref} passHref className="w-full md:w-auto">
-          <CtaButton />
+          {renderCtaButton()}
         </Link>
       )}
     </>
@@ -119,7 +119,7 @@ export function LandingNavbar({ ctaLabel = "Start Training", ctaHref = "/how-to-
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:items-center gap-8">
-          <NavContent />
+          {renderNavContent()}
         </nav>
       </div>
 
@@ -134,7 +134,7 @@ export function LandingNavbar({ ctaLabel = "Start Training", ctaHref = "/how-to-
             className="md:hidden overflow-hidden bg-white border-b-[4px] border-[#0F172A] absolute top-full left-0 right-0 z-40 shadow-[0_12px_0px_0px_rgba(0,0,0,0.1)]"
           >
             <div className="flex flex-col items-center gap-6 p-6">
-              <NavContent />
+              {renderNavContent()}
             </div>
           </motion.nav>
         )}

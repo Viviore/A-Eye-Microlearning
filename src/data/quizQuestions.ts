@@ -48,7 +48,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     postTime: "3 hrs ago",
     content:
       "Community cleanup drive this weekend, thank you to everyone who joined! 🧹🌊",
-    imageSrc: "/photos/quiz/assessment_q2.png",
+    imageSrc: "https://images.unsplash.com/photo-1565803974275-dccd2f933cbb?q=80&w=1200&auto=format&fit=crop",
     expected: "real",
   },
 

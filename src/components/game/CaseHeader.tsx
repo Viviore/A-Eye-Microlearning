@@ -36,7 +36,7 @@ export function CaseHeader({
           ) : (
             <FileVideo className="w-4 h-4 text-[#0F172A]" />
           )}
-          <span>{caseNumber} // {caseTitle}</span>
+          <span>{caseNumber} {"//"} {caseTitle}</span>
         </div>
         
         <span

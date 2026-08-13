@@ -13,10 +13,7 @@ export function AnimatedBackground({
   const isDark = theme === "dark";
   const lineColor = isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(15, 23, 42, 0.06)";
   const solidColor = isDark ? "#FAFAFA" : "#0F172A";
-  const shapeOpacity = isDark ? "0.03" : "0.04";
-  const accentOpacity = isDark ? "0.1" : "0.08";
   const crtColor = isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(15, 23, 42, 0.5)";
-  const crosshairOpacity = isDark ? "0.15" : "0.06";
 
   return (
     <div aria-hidden="true" className={className}>

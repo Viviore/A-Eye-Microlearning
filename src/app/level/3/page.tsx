@@ -113,10 +113,9 @@ export default function Level3Page() {
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
-        message: "You ran out of time. The AI generates new content fast, you must be faster.",
+        message: "You ran out of time. AI misinformation spreads rapidly in seconds. This case has been compromised, so we are assigning you a new one. You must act faster.",
         penalty: 50,
       });
-      setShowReveal(true);
     }
   });
 
@@ -135,8 +134,10 @@ export default function Level3Page() {
     const selected = shuffled.slice(0, 5);
     
     if (tutorial) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionRounds([tutorial, ...selected]);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionRounds(selected);
     }
     setIsReady(true);
@@ -154,13 +155,14 @@ export default function Level3Page() {
       const j = Math.floor(Math.random() * (i + 1));
       [tells[i], tells[j]] = [tells[j], tells[i]];
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentTells(tells);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRoundIndex, currentRound]);
 
   // Check Game Over condition
   useEffect(() => {
     if (cumulativeScore + roundScore <= 0 && !currentRound?.isTutorial) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowGameOverModal(true);
     }
   }, [roundScore, cumulativeScore, currentRound?.isTutorial]);
@@ -176,6 +178,7 @@ export default function Level3Page() {
     }
     
     if (available.length > 0) {
+      // eslint-disable-next-line react-hooks/purity
       const nextRound = available[Math.floor(Math.random() * available.length)];
       setSessionRounds(prev => {
         const next = [...prev];

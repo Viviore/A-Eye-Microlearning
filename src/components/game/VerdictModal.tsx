@@ -44,6 +44,7 @@ export function VerdictFeedback({
   onNext,
   onRetry,
   nextButtonText,
+  retryButtonText,
   isFinalRound,
   scoreBadge,
   forceNextAction,
@@ -54,6 +55,7 @@ export function VerdictFeedback({
   onNext: () => void;
   onRetry: () => void;
   nextButtonText?: string;
+  retryButtonText?: string;
   isFinalRound?: boolean;
   scoreBadge?: React.ReactNode;
   forceNextAction?: boolean;
@@ -117,7 +119,7 @@ export function VerdictFeedback({
           </BrutalButton>
         ) : (
           <BrutalButton onClick={onRetry} variant="secondary" size="lg" className="w-full md:w-auto">
-            <RotateCcw className="mr-3 w-6 h-6" strokeWidth={2.5} /> Retry Verdict
+            <RotateCcw className="mr-3 w-6 h-6" strokeWidth={2.5} /> {retryButtonText || "Retry Verdict"}
           </BrutalButton>
         )}
       </div>

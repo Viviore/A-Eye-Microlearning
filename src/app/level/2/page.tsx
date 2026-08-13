@@ -176,7 +176,7 @@ export default function Level2Page() {
   
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [hoveredTactic, setHoveredTactic] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode; forceNext?: boolean } | null>(null);
+  const [feedback, setFeedback] = useState<{ isSuccess: boolean; title: string; message: React.ReactNode; scoreBadge?: React.ReactNode; forceNext?: boolean; retryButtonText?: string } | null>(null);
   const [foundDecoys, setFoundDecoys] = useState<VisualClue[]>([]);
 
   const [isTourActive, setIsTourActive] = useState(true);
@@ -204,7 +204,13 @@ export default function Level2Page() {
       setFeedback({
         isSuccess: false,
         title: "TIME'S UP",
-        message: "You ran out of time. The AI generates new content fast, you must be faster."
+        message: "You ran out of time. AI misinformation spreads rapidly in seconds. This case has been compromised, so we are assigning you a new one. You must act faster.",
+        retryButtonText: "New Case",
+        scoreBadge: (
+          <span className="inline-block border-[3px] border-[#0F172A] text-white px-3 py-1 bg-[#E11D48] font-black whitespace-nowrap shadow-[4px_4px_0px_0px_#0F172A] text-lg">
+            -50 Points
+          </span>
+        )
       });
     }
   });
@@ -876,6 +882,7 @@ export default function Level2Page() {
             forceNextAction={feedback.forceNext}
             onNext={handleNextRound}
             onRetry={handleRetryRound}
+            retryButtonText={feedback.retryButtonText}
             nextButtonText="Next Photo"
             isFinalRound={currentRoundIndex === sessionRounds.length - 1}
           />
