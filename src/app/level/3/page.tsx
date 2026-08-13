@@ -100,7 +100,7 @@ export default function Level3Page() {
   } = useLevelScoring({
     isReady,
     hasTimer: true,
-    isPaused: currentRound?.isTutorial || isPanelLocked || isTourActive || showConfirm || showReveal || showTimeoutModal,
+    isPaused: currentRound?.isTutorial || isTourActive || showReveal || showTimeoutModal,
     onTimeout: () => {
       // Pause both videos immediately
       if (videoARef.current && videoBRef.current) {
@@ -230,10 +230,6 @@ export default function Level3Page() {
     if (isPanelLocked || isTourActive || showReveal) return;
     setSelectedPanel(panel);
     setShowConfirm(true);
-    if (videoARef.current && videoBRef.current) {
-      videoARef.current.pause();
-      videoBRef.current.pause();
-    }
   };
 
   const handleConfirmPanel = () => {
@@ -244,16 +240,18 @@ export default function Level3Page() {
   const handleCancelConfirm = () => {
     setSelectedPanel(null);
     setShowConfirm(false);
-    if (videoARef.current && videoBRef.current) {
-      videoARef.current.play();
-      videoBRef.current.play();
-    }
   };
 
   const handleTellClick = (tell: string) => {
     if (showReveal) return;
     setSelectedTell(tell);
     setShowReveal(true);
+    
+    // Pause videos when the round is completed
+    if (videoARef.current && videoBRef.current) {
+      videoARef.current.pause();
+      videoBRef.current.pause();
+    }
 
     const isCorrectPanel = selectedPanel === currentRound.correctPanel;
     const isCorrectTell = currentRound.tells.includes(tell);
@@ -614,14 +612,14 @@ export default function Level3Page() {
                   const isDisabled = isTutorial && !isCorrect;
                   const showPulse = isTutorial && isCorrect;
 
-                  let btnClass = "relative px-6 py-4 border-[4px] font-black font-heading uppercase text-lg md:text-xl transition-all text-[#0F172A] cursor-pointer text-center flex items-center justify-center min-h-[5rem] ";
+                  let btnClass = "relative px-6 py-4 border-[4px] font-black font-heading uppercase text-lg md:text-xl transition-all duration-200 text-[#0F172A] cursor-pointer text-center flex items-center justify-center min-h-[5rem] ";
 
                   if (isDisabled) {
                     btnClass += "bg-white/50 border-dashed border-[#0F172A]/20 opacity-40 !cursor-not-allowed ";
                   } else if (showPulse) {
-                    btnClass += "bg-[#FFB800] border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#0F172A] ";
+                    btnClass += "bg-[#FFB800] border-[#0F172A] border-solid shadow-[4px_4px_0px_0px_#0F172A] animate-pulse hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0F172A] ";
                   } else {
-                    btnClass += "bg-white border-solid border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:bg-[#FFB800] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#0F172A] active:translate-y-[2px] active:shadow-none ";
+                    btnClass += "bg-white border-solid border-[#0F172A] shadow-[4px_4px_0px_0px_#0F172A] hover:bg-[#FFB800] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0F172A] active:translate-y-1 active:shadow-[2px_2px_0px_0px_#0F172A] ";
                   }
 
                   return (
