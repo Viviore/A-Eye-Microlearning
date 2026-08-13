@@ -242,15 +242,18 @@ export default function Level1Page() {
     }
 
     if (currentRoundIndex < sessionRounds.length - 1) {
-      setCurrentRoundIndex(prev => prev + 1);
-      resetScoring();
-      setFlaggedIds(new Set());
-      setFoundClues([]);
-      setFoundDecoys([]);
-      setSourceCheckOpen(false);
-      setShowVerdictModal(false);
-      setSelectedTactic(null);
-      setFeedback(null);
+      startInPlaceTransition(() => {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        setCurrentRoundIndex(prev => prev + 1);
+        resetScoring();
+        setFlaggedIds(new Set());
+        setFoundClues([]);
+        setFoundDecoys([]);
+        setSourceCheckOpen(false);
+        setShowVerdictModal(false);
+        setSelectedTactic(null);
+        setFeedback(null);
+      });
     } else {
       completeLevel(1);
       startTransition('/level/2', { variant: 'next-case' });
@@ -299,6 +302,13 @@ export default function Level1Page() {
           scorePopups={scorePopups}
           icon="fileText"
         />
+
+        <div className="block lg:hidden w-full">
+          <ObjectivePanel>
+            Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
+            Find at least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] mx-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong></span> to proceed.
+          </ObjectivePanel>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
@@ -369,10 +379,12 @@ export default function Level1Page() {
         {/* Right Column: Evidence Board & Source Check */}
         <div className={`lg:col-span-5 flex flex-col gap-6 h-full ${currentRoundIndex === 0 ? "" : "sticky top-28"}`}>
           
-          <ObjectivePanel>
-            Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
-            Find at least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] mx-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong></span> to proceed.
-          </ObjectivePanel>
+          <div className="hidden lg:block">
+            <ObjectivePanel>
+              Read the post carefully. Click on any sentence that looks suspicious to flag it as evidence. 
+              Find at least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] mx-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">{currentRound.cluesNeeded} real {currentRound.cluesNeeded === 1 ? 'clue' : 'clues'}</strong></span> to proceed.
+            </ObjectivePanel>
+          </div>
 
           <EvidenceBoard
             flaggedCount={foundClues.length}

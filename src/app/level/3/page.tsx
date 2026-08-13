@@ -185,23 +185,26 @@ export default function Level3Page() {
   // Timer and deduct logic replaced by useLevelScoring hook
 
   const swapToRandomRound = () => {
-    const usedIds = sessionRounds.map(r => r.id);
-    let available = VIDEO_ROUNDS.filter(r => !r.isTutorial && !usedIds.includes(r.id) && !playedCase003Rounds.includes(r.id));
+    startInPlaceTransition(() => {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      const usedIds = sessionRounds.map(r => r.id);
+      let available = VIDEO_ROUNDS.filter(r => !r.isTutorial && !usedIds.includes(r.id) && !playedCase003Rounds.includes(r.id));
 
-    if (available.length === 0) {
-      available = VIDEO_ROUNDS.filter(r => !r.isTutorial && r.id !== currentRound?.id);
-    }
+      if (available.length === 0) {
+        available = VIDEO_ROUNDS.filter(r => !r.isTutorial && r.id !== currentRound?.id);
+      }
 
-    if (available.length > 0) {
-      // eslint-disable-next-line react-hooks/purity
-      const nextRound = available[Math.floor(Math.random() * available.length)];
-      setSessionRounds(prev => {
-        const next = [...prev];
-        next[currentRoundIndex] = nextRound;
-        return next;
-      });
-    }
-    resetRoundState();
+      if (available.length > 0) {
+        // eslint-disable-next-line react-hooks/purity
+        const nextRound = available[Math.floor(Math.random() * available.length)];
+        setSessionRounds(prev => {
+          const next = [...prev];
+          next[currentRoundIndex] = nextRound;
+          return next;
+        });
+      }
+      resetRoundState();
+    });
   };
 
   const resetRoundState = () => {

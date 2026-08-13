@@ -389,30 +389,33 @@ export default function Level2Page() {
   
   const handleNextRound = () => {
     if (currentRoundIndex < sessionRounds.length - 1) {
-      setCurrentRoundIndex((prev) => prev + 1);
-      resetScoring();
-      setToolUsed(false);
-      setFlaggedIds(new Set());
-      setFoundClues([]);
-      setFoundDecoys([]);
-      setFeedback(null);
-      setSelectedEvidenceId(null);
-      setSelectedTactic(null);
-      setVerdictStep(1);
-      setShowVerdictModal(false);
-      setRoundScore(100);
-      setTimeLeft(60);
-      setToolUsed(false);
-      setMagnifier({
-        show: false,
-        x: 0,
-        y: 0,
-        xPercent: 0,
-        yPercent: 0,
-        imgWidth: 0,
-        imgHeight: 0,
+      startInPlaceTransition(() => {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        setCurrentRoundIndex((prev) => prev + 1);
+        resetScoring();
+        setToolUsed(false);
+        setFlaggedIds(new Set());
+        setFoundClues([]);
+        setFoundDecoys([]);
+        setFeedback(null);
+        setSelectedEvidenceId(null);
+        setSelectedTactic(null);
+        setVerdictStep(1);
+        setShowVerdictModal(false);
+        setRoundScore(100);
+        setTimeLeft(60);
+        setToolUsed(false);
+        setMagnifier({
+          show: false,
+          x: 0,
+          y: 0,
+          xPercent: 0,
+          yPercent: 0,
+          imgWidth: 0,
+          imgHeight: 0,
+        });
+        setIsHoveringImage(false);
       });
-      setIsHoveringImage(false);
     } else {
       completeLevel(2);
       startTransition("/level/3", { variant: 'next-case' });
@@ -447,6 +450,16 @@ export default function Level2Page() {
           scorePopups={deductions}
           icon="fileText"
         />
+
+        <div className="block lg:hidden w-full">
+          <ObjectivePanel>
+            Use the Magnifier Tool to inspect the viral photo. Click on any
+            areas that look like AI generation mistakes to flag them. Find at
+            least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] mx-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">
+              {currentRound.cluesNeeded} visual clue{currentRound.cluesNeeded !== 1 ? "s" : ""}
+            </strong></span> to proceed.
+          </ObjectivePanel>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Photo Feed */}
@@ -652,13 +665,15 @@ export default function Level2Page() {
         {/* Right Column: Evidence Board */}
         <div className={`lg:col-span-5 flex flex-col gap-6 ${currentRound.isTutorial ? "" : "sticky top-28"}`}>
           
-          <ObjectivePanel>
-            Use the Magnifier Tool to inspect the viral photo. Click on any
-            areas that look like AI generation mistakes to flag them. Find at
-            least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] mx-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">
-              {currentRound.cluesNeeded} visual clue{currentRound.cluesNeeded !== 1 ? "s" : ""}
-            </strong></span> to proceed.
-          </ObjectivePanel>
+          <div className="hidden lg:block">
+            <ObjectivePanel>
+              Use the Magnifier Tool to inspect the viral photo. Click on any
+              areas that look like AI generation mistakes to flag them. Find at
+              least <span className="inline-block bg-white px-2 py-0.5 border-[3px] border-[#0F172A] shadow-[2px_2px_0px_0px_#0F172A] mx-1"><strong className="text-[#FF3366] font-black uppercase tracking-wider">
+                {currentRound.cluesNeeded} visual clue{currentRound.cluesNeeded !== 1 ? "s" : ""}
+              </strong></span> to proceed.
+            </ObjectivePanel>
+          </div>
 
           <EvidenceBoard
             flaggedCount={foundClues.length}
